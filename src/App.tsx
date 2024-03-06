@@ -80,7 +80,8 @@ export default function App() {
         lastSeenCookie.current = sessionCookie;
         return false;
       });
-      
+    console.log("isLoggedIn after request",isLoggedIn);
+    
     return isLoggedIn;
   }, [userState.isLoggedIn]);
 
