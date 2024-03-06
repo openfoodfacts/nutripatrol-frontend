@@ -55,6 +55,7 @@ export default function App() {
         isLoggedIn: false,
       });
       lastSeenCookie.current = sessionCookie;
+      return false;
     }
     // If the session cookie is not null, send a request to the server to check if the user is logged in
     const isLoggedIn = axios
@@ -80,8 +81,6 @@ export default function App() {
         lastSeenCookie.current = sessionCookie;
         return false;
       });
-    console.log("isLoggedIn after request",isLoggedIn);
-    
     return isLoggedIn;
   }, [userState.isLoggedIn]);
 
