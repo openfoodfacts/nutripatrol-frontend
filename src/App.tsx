@@ -48,9 +48,7 @@ export default function App() {
     if (sessionCookie === lastSeenCookie.current) {
       return userState.isLoggedIn;
     }
-    // If the session cookie is null, the user is not logged in
-    console.log("i'm here before the cookie");
-    
+    // If the session cookie is null, the user is not logged in    
     if (!sessionCookie) {
       setUserState({
         userName: "",
@@ -58,8 +56,6 @@ export default function App() {
       });
       lastSeenCookie.current = sessionCookie;
     }
-    console.log("i'm here after the cookie");
-    
     // If the session cookie is not null, send a request to the server to check if the user is logged in
     const isLoggedIn = axios
       .get(`${import.meta.env.VITE_PO_URL}/cgi/session.pl`, {
