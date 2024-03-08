@@ -8,10 +8,16 @@ import axios from "axios";
 
 import HomePage from '../pages/HomePage.tsx'
 import ModerationPage from '../pages/ModerationPage.tsx'
+import NonModeratorPage from '../pages/NonModeratorPage.tsx'
 import LoginPage from '../pages/LoginPage.tsx'
 import LayoutMenu from "../components/Layouts/LayoutMenu.tsx";
 import LoginContext from "./contexts/login.tsx";
 import NotFound from "../pages/NotFound.tsx";
+
+const MODERATORS = [
+  "valimp",
+  "alex-off",
+]
 
 export default function App() {
 
@@ -48,7 +54,7 @@ export default function App() {
     if (sessionCookie === lastSeenCookie.current) {
       return userState.isLoggedIn;
     }
-    // If the session cookie is null, the user is not logged in
+    // If the session cookie is null, the user is not logged in    
     if (!sessionCookie) {
       setUserState({
         userName: "",
@@ -59,7 +65,7 @@ export default function App() {
     }
     // If the session cookie is not null, send a request to the server to check if the user is logged in
     const isLoggedIn = axios
-      .get(`${import.meta.env.VITE_PO_URL}/cgi/session.pl`, {
+      .get(`${import.meta.env.VITE_PO_URL}/cgi/auth.pl`, {
         withCredentials: true,
       })
       // If the request is successful, set the user state to logged in
@@ -81,7 +87,6 @@ export default function App() {
         lastSeenCookie.current = sessionCookie;
         return false;
       });
-      
     return isLoggedIn;
   }, [userState.isLoggedIn]);
 
@@ -89,12 +94,27 @@ export default function App() {
     refresh(); 
   }, [refresh]);
 
+  const isModerator = MODERATORS.includes(userState.userName);
+
   return (
       <LoginContext.Provider value={{ ...userState, refresh }}>
           <LayoutMenu>
             <Routes>
               <Route path="/" element={<HomePage />} />
-              <Route path="/moderation" element={userState.isLoggedIn ? < ModerationPage/> : <LoginPage />} />
+              <Route
+                path="/moderation"
+                element={
+                  userState.isLoggedIn ? (
+                    isModerator ? (
+                      <ModerationPage />
+                    ) : (
+                      <NonModeratorPage />
+                    )
+                  ) : (
+                    <LoginPage />
+                  )
+                }
+              />
               <Route path="/login" element={<LoginPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
