@@ -13,6 +13,11 @@ import LayoutMenu from "../components/Layouts/LayoutMenu.tsx";
 import LoginContext from "./contexts/login.tsx";
 import NotFound from "../pages/NotFound.tsx";
 
+const MODERATORS = [
+  "valimp",
+  "alex-off",
+]
+
 export default function App() {
 
   // turn in to true to test the moderation page - it will always be logged in
@@ -88,12 +93,14 @@ export default function App() {
     refresh(); 
   }, [refresh]);
 
+  const showTickets = MODERATORS.includes(userState.userName);
+
   return (
       <LoginContext.Provider value={{ ...userState, refresh }}>
           <LayoutMenu>
             <Routes>
               <Route path="/" element={<HomePage />} />
-              <Route path="/moderation" element={userState.isLoggedIn ? < ModerationPage/> : <LoginPage />} />
+              <Route path="/moderation" element={userState.isLoggedIn && showTickets ? < ModerationPage/> : <LoginPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
