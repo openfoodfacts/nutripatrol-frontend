@@ -1,9 +1,9 @@
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
-import Date from '../components/Date'
-import CloseButton from '../components/CloseButton'
-import ArchiveButton from '../components/ArchiveButton'
-import BarcodeButton from '../components/BarcodeButton'
+import Date from './Date'
+import CloseButton from './CloseButton'
+import ArchiveButton from './ArchiveButton'
+import BarcodeButton from './BarcodeButton'
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',

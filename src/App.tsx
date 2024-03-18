@@ -7,6 +7,7 @@ import off from "./off.ts";
 import axios from "axios";
 
 import HomePage from '../pages/HomePage.tsx'
+import ImageModerationPage from '../pages/ImageModerationPage.tsx'
 import ModerationPage from '../pages/ModerationPage.tsx'
 import NonModeratorPage from '../pages/NonModeratorPage.tsx'
 import LoginPage from '../pages/LoginPage.tsx'
@@ -94,13 +95,27 @@ export default function App() {
     refresh(); 
   }, [refresh]);
 
-  const isModerator = MODERATORS.includes(userState.userName);
+  const isModerator =  devMode ? true : MODERATORS.includes(userState.userName);
 
   return (
       <LoginContext.Provider value={{ ...userState, refresh }}>
           <LayoutMenu>
             <Routes>
               <Route path="/" element={<HomePage />} />
+              <Route
+                path="/image-moderation"
+                element={
+                  userState.isLoggedIn ? (
+                    isModerator ? (
+                      <ImageModerationPage />
+                    ) : (
+                      <NonModeratorPage />
+                    )
+                  ) : (
+                    <LoginPage />
+                  )
+                }
+              />
               <Route
                 path="/moderation"
                 element={
