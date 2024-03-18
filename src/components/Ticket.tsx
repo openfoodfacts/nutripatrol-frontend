@@ -4,7 +4,6 @@ import Date from './Date'
 import CloseButton from './CloseButton'
 import ArchiveButton from './ArchiveButton'
 import BarcodeButton from './BarcodeButton'
-import React from 'react';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
