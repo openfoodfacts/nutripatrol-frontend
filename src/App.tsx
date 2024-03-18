@@ -6,14 +6,14 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import off from "./off.ts";
 import axios from "axios";
 
-import HomePage from '../pages/HomePage.tsx'
-import ImageModerationPage from '../pages/ImageModerationPage.tsx'
-import ModerationPage from '../pages/ModerationPage.tsx'
-import NonModeratorPage from '../pages/NonModeratorPage.tsx'
-import LoginPage from '../pages/LoginPage.tsx'
-import LayoutMenu from "../components/Layouts/LayoutMenu.tsx";
+import HomePage from './pages/HomePage.tsx'
+import ImageModerationPage from './pages/ImageModerationPage.tsx'
+import ModerationPage from './pages/ModerationPage.tsx'
+import NonModeratorPage from './pages/NonModeratorPage.tsx'
+import LoginPage from './pages/LoginPage.tsx'
+import LayoutMenu from "./components/Layouts/LayoutMenu.tsx";
 import LoginContext from "./contexts/login.tsx";
-import NotFound from "../pages/NotFound.tsx";
+import NotFound from "./pages/NotFound.tsx";
 
 const MODERATORS = [
   "valimp",
