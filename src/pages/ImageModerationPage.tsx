@@ -30,6 +30,9 @@ export default function ImageModerationPage() {
     }
     return (
         <>
+            <h2 style={{width: "100vw", zIndex: "-10", color: '#281900', display: 'flex',flexDirection: "column", alignItems: "center", justifyContent:"center", padding: 20}}>
+                🇫🇷 Modération d'image ~ 🇺🇸 / 🇬🇧 Image moderation
+            </h2>
             <Stack spacing={2}>
                 {
                 // Map through the tickets and create a ticket component for each ticket with status
