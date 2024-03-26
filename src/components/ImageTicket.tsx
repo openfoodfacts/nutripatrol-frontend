@@ -11,7 +11,7 @@ export default function ImageTicket({ticket}: any) {
             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
         >
             <TableCell align="center">
-                <div style={{ display: 'flex', gap: '10px', alignItems: 'center'}}>
+                <div style={{ display: 'flex', gap: '10px', alignItems: 'center', justifyContent: 'center'}}>
                     <img 
                         src={ticket.url} 
                         // src='https://images.openfoodfacts.net/images/products/327/408/000/5003/1.400.jpg'
