@@ -19,8 +19,10 @@ export default function Ticket({ticket}: any) {
         <Item>
             <div className='ticket-container'>
                 
-                <p>barcode : {ticket.barcode}</p>
-                <p>type: {ticket.type}</p>
+                <p>{ticket.barcode}</p>
+                <p>{ticket.type}</p>
+                <p>{ticket.flavor}</p>
+                <p>{ticket.image_id}</p>
                 <Date created_at={ticket.created_at} />
                 <div style={{ display: 'flex', gap: '30px' }}>
                     <BarcodeButton barcode={ticket.barcode} />
