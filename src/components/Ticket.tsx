@@ -19,15 +19,8 @@ export default function Ticket({ticket}: any) {
         <Item>
             <div className='ticket-container'>
                 
-                <div style={{ display: 'flex', gap: '10px', alignItems: 'center'}}>
-                    <img 
-                        src={ticket.url} 
-                        // src='https://images.openfoodfacts.net/images/products/327/408/000/5003/1.400.jpg'
-                        alt={ticket.barcode}
-                        width={100}
-                        height={100}
-                    />
-                </div>
+                <p>barcode : {ticket.barcode}</p>
+                <p>type: {ticket.type}</p>
                 <Date created_at={ticket.created_at} />
                 <div style={{ display: 'flex', gap: '30px' }}>
                     <BarcodeButton barcode={ticket.barcode} />

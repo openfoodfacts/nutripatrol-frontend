@@ -1,5 +1,5 @@
 import { Stack } from '@mui/material'
-import ImageTicket from '../components/ImageTicket'
+import Ticket from '../components/Ticket'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 
@@ -37,7 +37,7 @@ export default function ImageModerationPage() {
                 {
                 // Map through the tickets and create a ticket component for each ticket with status
                 Tickets.map((ticket) => (
-                    ticket.status === "open" && <ImageTicket key={ticket.barcode} ticket={ticket} />
+                    ticket.status === "open" && <Ticket key={ticket.barcode} ticket={ticket} />
                 ))
                 }
             </Stack>
