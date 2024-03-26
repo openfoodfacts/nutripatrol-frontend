@@ -17,7 +17,13 @@ import NotFound from "./pages/NotFound.tsx";
 
 const MODERATORS = [
   "valimp",
+  "raphael0202",
   "alex-off",
+  "charlesnepote",
+  "gala-nafikova",
+  "manoncorneille",
+  "stephane",
+  "teolemon"
 ]
 
 export default function App() {
