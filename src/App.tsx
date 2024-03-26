@@ -6,17 +6,24 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import off from "./off.ts";
 import axios from "axios";
 
-import HomePage from '../pages/HomePage.tsx'
-import ModerationPage from '../pages/ModerationPage.tsx'
-import NonModeratorPage from '../pages/NonModeratorPage.tsx'
-import LoginPage from '../pages/LoginPage.tsx'
-import LayoutMenu from "../components/Layouts/LayoutMenu.tsx";
+import HomePage from './pages/HomePage.tsx'
+import ImageModerationPage from './pages/ImageModerationPage.tsx'
+import ModerationPage from './pages/ModerationPage.tsx'
+import NonModeratorPage from './pages/NonModeratorPage.tsx'
+import LoginPage from './pages/LoginPage.tsx'
+import LayoutMenu from "./components/Layouts/LayoutMenu.tsx";
 import LoginContext from "./contexts/login.tsx";
-import NotFound from "../pages/NotFound.tsx";
+import NotFound from "./pages/NotFound.tsx";
 
 const MODERATORS = [
   "valimp",
+  "raphael0202",
   "alex-off",
+  "charlesnepote",
+  "gala-nafikova",
+  "manoncorneille",
+  "stephane",
+  "teolemon"
 ]
 
 export default function App() {
@@ -94,13 +101,27 @@ export default function App() {
     refresh(); 
   }, [refresh]);
 
-  const isModerator = MODERATORS.includes(userState.userName);
+  const isModerator =  devMode ? true : MODERATORS.includes(userState.userName);
 
   return (
       <LoginContext.Provider value={{ ...userState, refresh }}>
           <LayoutMenu>
             <Routes>
               <Route path="/" element={<HomePage />} />
+              <Route
+                path="/image-moderation"
+                element={
+                  userState.isLoggedIn ? (
+                    isModerator ? (
+                      <ImageModerationPage />
+                    ) : (
+                      <NonModeratorPage />
+                    )
+                  ) : (
+                    <LoginPage />
+                  )
+                }
+              />
               <Route
                 path="/moderation"
                 element={
