@@ -14,6 +14,7 @@ import LoginPage from './pages/LoginPage.tsx'
 import LayoutMenu from "./components/Layouts/LayoutMenu.tsx";
 import LoginContext from "./contexts/login.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import FlagFormPage from "./pages/FlagFormPage.tsx";
 
 const MODERATORS = [
   "valimp",
@@ -108,6 +109,7 @@ export default function App() {
           <LayoutMenu>
             <Routes>
               <Route path="/" element={<HomePage />} />
+              <Route path="/flag" element={<FlagFormPage />} />
               <Route
                 path="/image-moderation"
                 element={
