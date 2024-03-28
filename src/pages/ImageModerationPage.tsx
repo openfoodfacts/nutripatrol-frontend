@@ -22,7 +22,7 @@ export default function ImageModerationPage() {
     useEffect(() => {
         // send get request to api to get tickets and set Tickets to the response
         axios.get(`${import.meta.env.VITE_API_URL}/tickets?type_=image&status=open`).then((res) => {
-            setTickets(res.data.tickets)
+            setTickets(res.data)
         })
     }, [])
         
