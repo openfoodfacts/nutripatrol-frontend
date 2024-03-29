@@ -109,7 +109,16 @@ export default function App() {
           <LayoutMenu>
             <Routes>
               <Route path="/" element={<HomePage />} />
-              <Route path="/flag" element={<FlagFormPage />} />
+              <Route 
+                path="/flag" 
+                element={
+                  userState.isLoggedIn ? (
+                    <FlagFormPage />
+                  ) : (
+                    <LoginPage />
+                  )
+                } 
+              />
               <Route
                 path="/image-moderation"
                 element={
