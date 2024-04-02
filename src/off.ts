@@ -11,6 +11,10 @@ const offService = {
       return "";
   },
 
+  deleteCookie(name: any) {
+      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+  },
+
   // Get user id from cookie return empty string if not found
   getUsername() {
     const sessionCookie = this.getCookie("session");
