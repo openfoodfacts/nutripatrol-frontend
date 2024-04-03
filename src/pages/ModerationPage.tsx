@@ -17,6 +17,7 @@ interface Ticket {
     flavor: string;
     created_at: string;
     id: number;
+    reason?: string;
   // Add other properties here if needed
 }
 
@@ -28,8 +29,20 @@ export default function ImageModerationPage() {
         // send get request to api to get tickets and set Tickets to the response
         axios.get(`${import.meta.env.VITE_API_URL}/tickets?status=open`).then((res) => {
             setTickets(res.data)
+            // let ticketList = []
+            // Tickets.forEach(ticket => {
+            //     ticketList.push(ticket.id)
+            // });
+            // axios.post(`${import.meta.env.VITE_API_URL}/flags/batch`).then((res) => {
+            //     setTickets(res.data)
+            // })
+        }).catch((err) => {
+            console.error(err)
         })
+        
     }, [])
+
+    
         
     if (Tickets.length === 0) {
         return (
