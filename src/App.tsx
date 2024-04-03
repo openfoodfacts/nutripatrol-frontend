@@ -113,7 +113,7 @@ export default function App() {
                 path="/flag" 
                 element={
                   userState.isLoggedIn ? (
-                    <FlagFormPage />
+                    <FlagFormPage user_id={userState.userName} />
                   ) : (
                     <LoginPage />
                   )
