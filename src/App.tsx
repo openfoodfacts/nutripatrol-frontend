@@ -110,10 +110,10 @@ export default function App() {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route 
-                path="/flag" 
+                path="/flag/:barcode" 
                 element={
                   userState.isLoggedIn ? (
-                    <FlagFormPage user_id={userState.userName} />
+                    <FlagFormPage />
                   ) : (
                     <LoginPage />
                   )
