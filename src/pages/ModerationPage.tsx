@@ -24,22 +24,26 @@ interface Ticket {
 export default function ImageModerationPage() {
 
     const [Tickets, setTickets] = useState<Ticket[]>([])
+    const [Flags, setFlags] = useState<any[]>([])
 
     useEffect(() => {
-        // send get request to api to get tickets and set Tickets to the response
-        axios.get(`${import.meta.env.VITE_API_URL}/tickets?status=open`).then((res) => {
-            setTickets(res.data)
-            // let ticketList = []
-            // Tickets.forEach(ticket => {
-            //     ticketList.push(ticket.id)
-            // });
-            // axios.post(`${import.meta.env.VITE_API_URL}/flags/batch`).then((res) => {
-            //     setTickets(res.data)
-            // })
-        }).catch((err) => {
-            console.error(err)
-        })
-        
+        const fetchTickets = async () => {
+            try {
+                const response = await axios.get(`${import.meta.env.VITE_API_URL}/tickets?status=open`);
+                const ticketsData = response.data;
+                setTickets(ticketsData);
+
+                const ticketIds = ticketsData.map((ticket: any) => ticket.id);
+                const flagsResponse = await axios.post(`${import.meta.env.VITE_API_URL}/flags/batch`, {
+                    ticket_ids: ticketIds
+                });
+
+                setFlags(flagsResponse.data.ticket_id_to_flags);
+            } catch (err) {
+                console.error(err)
+            }
+        };
+        fetchTickets()
     }, [])
 
     
@@ -54,6 +58,7 @@ export default function ImageModerationPage() {
     }
     return (
         <>
+            {console.log(Tickets, Flags)}
             <h2 style={{width: "100vw", zIndex: "-10", color: '#281900', display: 'flex',flexDirection: "column", alignItems: "center", justifyContent:"center", padding: 20}}>
                 🇫🇷 Modération des tickets ~ 🇺🇸 / 🇬🇧 Tickets moderation
             </h2>
