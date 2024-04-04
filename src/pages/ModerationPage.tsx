@@ -76,6 +76,7 @@ export default function ImageModerationPage() {
                             <TableCell align="center">Type</TableCell>
                             <TableCell align="center">Image ID</TableCell>
                             <TableCell align="center">Flavor</TableCell>
+                            <TableCell align="center">Reasons</TableCell>
                             <TableCell align="center">Created at</TableCell>
                             <TableCell align="center">Actions</TableCell>
                         </TableRow>
