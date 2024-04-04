@@ -110,7 +110,7 @@ export default function App() {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route 
-                path="/flag/:barcode" 
+                path="/flag/product/:source/:flavor/:barcode/:user_id" 
                 element={
                   userState.isLoggedIn ? (
                     <FlagFormPage />

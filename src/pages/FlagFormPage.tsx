@@ -16,15 +16,15 @@ interface FormData {
 
 export default function FlagFormPage() {
 
-    const { barcode } = useParams<{ barcode: string }>();
+    const { source, flavor, barcode, user_id } = useParams<{ source: string, flavor: string, barcode: string, user_id: string }>();
 
     const [formData, setFormData] = useState<FormData>({
         barcode: barcode ?? '',
         type: '',
         url: '',
-        user_id: '',
-        source: '',
-        flavor: '',
+        user_id: user_id ?? '',
+        source: source ?? '',
+        flavor: flavor ?? '',
         reason: '',
         comment: ''
     })
@@ -56,40 +56,10 @@ export default function FlagFormPage() {
                         <input type="hidden" name="barcode" value={formData.barcode} />
                         <input type="hidden" name="type" value="product" />
                         <input type="hidden" name="url" value={`${import.meta.env.VITE_PO_URL}/product/${formData.barcode}`} />
+                        <input type="hidden" name="user_id" value={formData.user_id} />
+                        <input type="hidden" name="source" value={formData.source} />
+                        <input type="hidden" name="flavor" value={formData.flavor} />
 
-                        <Grid item xs={12}>
-                            <TextField
-                                label="user id (auto)"
-                                name="user_id"
-                                fullWidth
-                                type="text"
-                                value={formData.user_id}
-                                onChange={handleChange}
-                                required
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                label="source (auto)"
-                                name="source"
-                                fullWidth
-                                type="text"
-                                value={formData.source}
-                                onChange={handleChange}
-                                required
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                label="flavor (auto)"
-                                name="flavor"
-                                fullWidth
-                                type="text"
-                                value={formData.flavor}
-                                onChange={handleChange}
-                                required
-                            />
-                        </Grid>
                         <Grid item xs={12}>
                             <TextField
                                 label="reason"
