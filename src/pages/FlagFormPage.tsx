@@ -10,13 +10,14 @@ interface FormData {
     user_id: string;
     source: string;
     flavor: string;
+    image_id?: string;
     reason: string;
     comment: string;
 }
 
-export default function FlagFormPage() {
+export default function FlagFormPage(props: { type: string }) {
 
-    const { source, flavor, barcode, user_id } = useParams<{ source: string, flavor: string, barcode: string, user_id: string }>();
+    const { source, flavor, barcode, user_id, image_id } = useParams<{ source: string, flavor: string, barcode: string, user_id: string, image_id: string }>();
 
     const [formData, setFormData] = useState<FormData>({
         barcode: barcode ?? '',
@@ -25,6 +26,7 @@ export default function FlagFormPage() {
         user_id: user_id ?? '',
         source: source ?? '',
         flavor: flavor ?? '',
+        image_id: image_id ?? '',
         reason: '',
         comment: ''
     })
@@ -48,13 +50,24 @@ export default function FlagFormPage() {
         <>
             <div style={{margin: '3rem 3rem', color: '#281900'}}>
                 <h1 style={{margin: '2rem 0', fontSize: '1.5rem'}}>
-                    🇫🇷 Signalez un problème
+                    🇫🇷 Signalez un problème { props.type === 'product' ? "de produit" : "d'image" }
                 </h1>
                 <form onSubmit={handleSubmit}>
                     <Grid container spacing={2}>
 
                         <input type="hidden" name="barcode" value={formData.barcode} />
-                        <input type="hidden" name="type" value="product" />
+                        {
+                            props.type === 'product' ?
+                                <input type="hidden" name="type" value="product" />
+                                :
+                                <input type="hidden" name="type" value="image" />
+                        }
+                        {
+                            props.type === 'product' ?
+                                <input type="hidden" name="image_id" value={formData.image_id} />
+                                :
+                                <input type="hidden" name="image_id" value="" />
+                        }
                         <input type="hidden" name="url" value={`${import.meta.env.VITE_PO_URL}/product/${formData.barcode}`} />
                         <input type="hidden" name="user_id" value={formData.user_id} />
                         <input type="hidden" name="source" value={formData.source} />

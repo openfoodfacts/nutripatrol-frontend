@@ -113,7 +113,17 @@ export default function App() {
                 path="/flag/product/:source/:flavor/:barcode/:user_id" 
                 element={
                   userState.isLoggedIn ? (
-                    <FlagFormPage />
+                    <FlagFormPage type="product" />
+                  ) : (
+                    <LoginPage />
+                  )
+                } 
+              />
+              <Route 
+                path="/flag/image/:source/:flavor/:barcode/:image_id/:user_id" 
+                element={
+                  userState.isLoggedIn ? (
+                    <FlagFormPage type="image" />
                   ) : (
                     <LoginPage />
                   )
