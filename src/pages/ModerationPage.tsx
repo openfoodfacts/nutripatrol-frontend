@@ -17,14 +17,13 @@ interface Ticket {
     flavor: string;
     created_at: string;
     id: number;
-    reason?: string;
+    reasons?: string;
   // Add other properties here if needed
 }
 
 export default function ImageModerationPage() {
 
     const [Tickets, setTickets] = useState<Ticket[]>([])
-    const [Flags, setFlags] = useState<any[]>([])
 
     useEffect(() => {
         const fetchTickets = async () => {
@@ -38,7 +37,14 @@ export default function ImageModerationPage() {
                     ticket_ids: ticketIds
                 });
 
-                setFlags(flagsResponse.data.ticket_id_to_flags);
+                // update ticket by adding reasons from flags
+                const ticketIdToFlags = flagsResponse.data.ticket_id_to_flags;
+                const updatedTickets = ticketsData.map((ticket: any) => {
+                    ticket.reasons = ticketIdToFlags[ticket.id].map((flag: any) => flag.reason);
+                    return ticket;
+                });
+
+                setTickets(updatedTickets);
             } catch (err) {
                 console.error(err)
             }
@@ -58,7 +64,6 @@ export default function ImageModerationPage() {
     }
     return (
         <>
-            {console.log(Tickets, Flags)}
             <h2 style={{width: "100vw", zIndex: "-10", color: '#281900', display: 'flex',flexDirection: "column", alignItems: "center", justifyContent:"center", padding: 20}}>
                 🇫🇷 Modération des tickets ~ 🇺🇸 / 🇬🇧 Tickets moderation
             </h2>
