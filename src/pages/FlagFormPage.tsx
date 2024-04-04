@@ -1,6 +1,7 @@
 import { TextField, Button, Grid } from '@mui/material';
 import axios from 'axios';
 import { useState, ChangeEvent, FormEvent } from 'react';
+import { useParams } from 'react-router-dom';
 
 interface FormData {
     barcode: string;
@@ -13,10 +14,12 @@ interface FormData {
     comment: string;
 }
 
-export default function FlagFormPage(props: { user_id: string }) {
+export default function FlagFormPage() {
+
+    const { barcode } = useParams<{ barcode: string }>();
 
     const [formData, setFormData] = useState<FormData>({
-        barcode: '',
+        barcode: barcode ?? '',
         type: '',
         url: '',
         user_id: '',
@@ -31,9 +34,6 @@ export default function FlagFormPage(props: { user_id: string }) {
         setFormData({ ...formData, [name]: value });
     };
 
-    // type of flag: 'product', 'image'
-    const [type, setType] = useState<string>('product');
-
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         try {
@@ -44,105 +44,83 @@ export default function FlagFormPage(props: { user_id: string }) {
         console.log(formData);
     };
 
-    if (type === 'product') {
-        return (
-            <>
-                <div style={{margin: '3rem 3rem', color: '#281900'}}>
-                    <h1 style={{margin: '2rem 0', fontSize: '1.5rem'}}>
-                        🇫🇷 Signalez un problème
-                    </h1>
-                    <form onSubmit={handleSubmit}>
-                        <Grid container spacing={2}>
+    return (
+        <>
+            <div style={{margin: '3rem 3rem', color: '#281900'}}>
+                <h1 style={{margin: '2rem 0', fontSize: '1.5rem'}}>
+                    🇫🇷 Signalez un problème
+                </h1>
+                <form onSubmit={handleSubmit}>
+                    <Grid container spacing={2}>
 
-                            <input type="hidden" name="type" value="product" />
+                        <input type="hidden" name="barcode" value={formData.barcode} />
+                        <input type="hidden" name="type" value="product" />
+                        <input type="hidden" name="url" value={`${import.meta.env.VITE_PO_URL}/product/${formData.barcode}`} />
 
-                            <Grid item xs={12}>
-                                <TextField
-                                    label="barcode (auto)"
-                                    name="barcode"
-                                    fullWidth
-                                    type='text'
-                                    value={formData.barcode}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    label="url (auto)"
-                                    name="url"
-                                    fullWidth
-                                    type="text"
-                                    value={formData.url}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    label="user id (auto)"
-                                    name="user_id"
-                                    fullWidth
-                                    type="text"
-                                    value={formData.user_id}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    label="source (auto)"
-                                    name="source"
-                                    fullWidth
-                                    type="text"
-                                    value={formData.source}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    label="flavor (auto)"
-                                    name="flavor"
-                                    fullWidth
-                                    type="text"
-                                    value={formData.flavor}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    label="reason"
-                                    name="reason"
-                                    fullWidth
-                                    type="text"
-                                    value={formData.reason}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    label="comment"
-                                    name="comment"
-                                    fullWidth
-                                    type="text"
-                                    value={formData.comment}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </Grid>
-    
-                            <Grid item xs={12}>
-                                <Button type="submit" variant="contained" color="primary">
-                                    Envoyer
-                                </Button>
-                            </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                label="user id (auto)"
+                                name="user_id"
+                                fullWidth
+                                type="text"
+                                value={formData.user_id}
+                                onChange={handleChange}
+                                required
+                            />
                         </Grid>
-                    </form>
-                </div>
-            </>
-        )
-    }
+                        <Grid item xs={12}>
+                            <TextField
+                                label="source (auto)"
+                                name="source"
+                                fullWidth
+                                type="text"
+                                value={formData.source}
+                                onChange={handleChange}
+                                required
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                label="flavor (auto)"
+                                name="flavor"
+                                fullWidth
+                                type="text"
+                                value={formData.flavor}
+                                onChange={handleChange}
+                                required
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                label="reason"
+                                name="reason"
+                                fullWidth
+                                type="text"
+                                value={formData.reason}
+                                onChange={handleChange}
+                                required
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                label="comment"
+                                name="comment"
+                                fullWidth
+                                type="text"
+                                value={formData.comment}
+                                onChange={handleChange}
+                                required
+                            />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <Button type="submit" variant="contained" color="primary">
+                                Envoyer
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </form>
+            </div>
+        </>
+    )
 }
