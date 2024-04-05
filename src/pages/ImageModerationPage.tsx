@@ -23,6 +23,8 @@ export default function ImageModerationPage() {
         // send get request to api to get tickets and set Tickets to the response
         axios.get(`${import.meta.env.VITE_API_URL}/tickets?type_=image&status=open`).then((res) => {
             setTickets(res.data)
+        }).catch((err) => {
+            console.error(err)
         })
     }, [])
         

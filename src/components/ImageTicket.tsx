@@ -3,7 +3,7 @@ import TableRow from '@mui/material/TableRow';
 import Date from './Date'
 import TicketsButtons from './TicketsButtons'
 
-export default function ImageTicket({ticket}: any) {
+export default function ImageTicket({ticket}: {ticket: any}) {
     
     return (
         <TableRow
