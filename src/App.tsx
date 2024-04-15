@@ -105,7 +105,7 @@ export default function App() {
 
   return (
       <LoginContext.Provider value={{ ...userState, refresh }}>
-          <LayoutMenu>
+          <LayoutMenu isLoggedIn={userState.isLoggedIn} >
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route

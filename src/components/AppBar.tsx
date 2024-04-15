@@ -13,11 +13,16 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import { Link } from 'react-router-dom'
 import OffLogo from '../assets/off-logo.png';
+import { deepOrange, lightGreen } from '@mui/material/colors';
 
 const pages = [{ label: 'Home', path: '/'}, { label: "Picture moderation", path: '/image-moderation' }, { label: "Moderation", path: '/moderation' }];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const settings = ['Logout'];
 
-function ResponsiveAppBar() {
+interface ResponsiveAppBarProps {
+  isLoggedIn: boolean;
+}
+
+function ResponsiveAppBar({ isLoggedIn }: ResponsiveAppBarProps) {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
@@ -90,8 +95,8 @@ function ResponsiveAppBar() {
               }}
             >
               {pages.map((page) => (
-                <Link to={page.path}>
-                  <MenuItem key={page.label} onClick={handleCloseNavMenu}>                  
+                <Link to={page.path} key={page.label}>
+                  <MenuItem onClick={handleCloseNavMenu}>                  
                     <Typography 
                       textAlign="center"
                       sx={{
@@ -135,9 +140,8 @@ function ResponsiveAppBar() {
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
-              <Link to={page.path}>
+              <Link to={page.path} key={page.label}>
                 <Button
-                  key={page.label}
                   onClick={handleCloseNavMenu}
                   sx={{ my: 2, color: 'white', display: 'block' }}
                 >
@@ -161,7 +165,13 @@ function ResponsiveAppBar() {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                {
+                  isLoggedIn ? (
+                    <Avatar sx={{ bgcolor: lightGreen[500] }} />
+                  ) : (
+                    <Avatar sx={{ bgcolor: deepOrange[500] }} />
+                  )
+                }
               </IconButton>
             </Tooltip>
             <Menu
