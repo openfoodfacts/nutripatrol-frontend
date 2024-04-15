@@ -35,8 +35,11 @@ export default function ImageModerationPage() {
             {
                 // if the page is loading, display a loading message
                 isLoading ? (
-                    <div>Is loading...</div>
+                    <div style={{position: "absolute", width: "100vw", height: "100vh", zIndex: "-10", color: '#281900', display: 'flex',flexDirection: "column", alignItems: "center", justifyContent:"center"}}>
+                        Load data...
+                    </div>
                 ) : (
+                    // if there are no tickets, display a message
                     Tickets.length === 0 ? (
                         <div style={{position: "absolute", width: "100vw", height: "100vh", zIndex: "-10", color: '#281900', display: 'flex',flexDirection: "column", alignItems: "center", justifyContent:"center"}}>
                             <h2 style={{fontSize: '1.4rem', margin: "2rem 0"}}>No new ticket </h2> 
