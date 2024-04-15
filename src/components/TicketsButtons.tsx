@@ -35,7 +35,7 @@ export default function BasicButtonGroup(props: { id: number, barcode: string })
                 color="success"
                 onClick={() => handleStatus(props.id, 'closed')}
             >
-                I fixed it !
+                I fixed it!
             </Button>
         </ButtonGroup>
   );
