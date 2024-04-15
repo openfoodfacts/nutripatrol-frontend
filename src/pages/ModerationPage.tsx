@@ -69,6 +69,7 @@ export default function ImageModerationPage() {
                             <h2 style={{fontSize: '1.4rem', margin: "2rem 0"}}>No new ticket </h2> 
                         </div>
                     ) : (
+                        // if there are tickets, display them in a table
                         <div>
                             <h2 style={{width: "100vw", zIndex: "-10", color: '#281900', display: 'flex',flexDirection: "column", alignItems: "center", justifyContent:"center", padding: 20}}>
                                 Tickets moderation

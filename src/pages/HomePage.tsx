@@ -2,7 +2,7 @@ export default function HomePage() {
     return (
         <>
             <div style={{margin: '3rem 8rem', color: '#281900'}}>
-                <h1 style={{margin: '2rem 0', fontSize: '1.5rem'}}>
+                <h1 style={{margin: '4rem 0', fontSize: '1.5rem'}}>
                     Discover Nutripatrol: the moderation tool currently in development for OpenFoodFacts.
                 </h1>
                 <p style={{margin: '2rem 0', fontSize: '1.2rem'}}>
