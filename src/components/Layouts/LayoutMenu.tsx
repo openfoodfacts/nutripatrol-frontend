@@ -1,10 +1,15 @@
 // Layout Menu Component
 import AppBar from '../AppBar'
 
-export default function LayoutMenu({ children }: any) {
+interface LayoutMenuProps {
+  children: React.ReactNode;
+  isLoggedIn: boolean;
+}
+
+export default function LayoutMenu({ children, isLoggedIn }: LayoutMenuProps) {
   return (
     <div className='main-container'>
-        <AppBar />
+        <AppBar isLoggedIn={isLoggedIn} />
         { children }
     </div>
   );
