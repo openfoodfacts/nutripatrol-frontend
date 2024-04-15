@@ -8,6 +8,7 @@ import TableRow from '@mui/material/TableRow';
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import Ticket from '../components/Ticket'
+import { Typography } from '@mui/material';
 
 interface Ticket {
     barcode: string;
@@ -59,21 +60,25 @@ export default function ImageModerationPage() {
             {
                 // if the page is loading, display a loading message
                 isLoading ? (
-                    <div style={{position: "absolute", width: "100vw", height: "100vh", zIndex: "-10", color: '#281900', display: 'flex',flexDirection: "column", alignItems: "center", justifyContent:"center"}}>
-                        Load data...
-                    </div>
+                    <Typography variant="h4">
+                        Loading data...
+                    </Typography>
                 ) : (
                     // if there is no ticket, display a message
                     Tickets.length === 0 ? (
                         <div style={{position: "absolute", width: "100vw", height: "100vh", zIndex: "-10", color: '#281900', display: 'flex',flexDirection: "column", alignItems: "center", justifyContent:"center"}}>
-                            <h2 style={{fontSize: '1.4rem', margin: "2rem 0"}}>No new ticket </h2> 
+                            <Typography variant="h4">
+                                No tickets to moderate
+                            </Typography>
                         </div>
                     ) : (
                         // if there are tickets, display them in a table
                         <div>
-                            <h2 style={{width: "100vw", zIndex: "-10", color: '#281900', display: 'flex',flexDirection: "column", alignItems: "center", justifyContent:"center", padding: 20}}>
-                                Tickets moderation
-                            </h2>
+                            <div style={{width: "100vw", zIndex: "-10", color: '#281900', display: 'flex',flexDirection: "column", alignItems: "center", justifyContent:"center", padding: 20}}>
+                                <Typography variant="h4">
+                                    Ticket Moderation
+                                </Typography>
+                            </div>
                             <div style={{ height: 400, width: '100%' }}>
                             <TableContainer component={Paper}>
                                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
