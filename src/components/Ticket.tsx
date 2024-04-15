@@ -14,6 +14,7 @@ export default function Ticket({ticket}: any) {
             <TableCell align="center">{ticket.type}</TableCell>
             <TableCell align="center">{ticket.image_id}</TableCell>
             <TableCell align="center">{ticket.flavor}</TableCell>
+            <TableCell align="center">{ticket.reasons}</TableCell>
             <Date created_at={ticket.created_at} />
             <TableCell align="center"><TicketsButtons barcode={ticket.barcode} id={ticket.id} /></TableCell>
         </TableRow>

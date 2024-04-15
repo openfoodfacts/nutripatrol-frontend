@@ -17,6 +17,7 @@ interface Ticket {
     flavor: string;
     created_at: string;
     id: number;
+    reasons?: string;
   // Add other properties here if needed
 }
 
@@ -25,24 +26,45 @@ export default function ImageModerationPage() {
     const [Tickets, setTickets] = useState<Ticket[]>([])
 
     useEffect(() => {
-        // send get request to api to get tickets and set Tickets to the response
-        axios.get(`${import.meta.env.VITE_API_URL}/tickets?status=open`).then((res) => {
-            setTickets(res.data)
-        })
+        const fetchTickets = async () => {
+            try {
+                const response = await axios.get(`${import.meta.env.VITE_API_URL}/tickets?status=open`);
+                const ticketsData = response.data;
+                setTickets(ticketsData);
+
+                const ticketIds = ticketsData.map((ticket: any) => ticket.id);
+                const flagsResponse = await axios.post(`${import.meta.env.VITE_API_URL}/flags/batch`, {
+                    ticket_ids: ticketIds
+                });
+
+                // update ticket by adding reasons from flags
+                const ticketIdToFlags = flagsResponse.data.ticket_id_to_flags;
+                const updatedTickets = ticketsData.map((ticket: any) => {
+                    ticket.reasons = ticketIdToFlags[ticket.id].map((flag: any) => flag.reason);
+                    return ticket;
+                });
+
+                setTickets(updatedTickets);
+            } catch (err) {
+                console.error(err)
+            }
+        };
+        fetchTickets()
     }, [])
+
+    
         
     if (Tickets.length === 0) {
         return (
             <div style={{position: "absolute", width: "100vw", height: "100vh", zIndex: "-10", color: '#281900', display: 'flex',flexDirection: "column", alignItems: "center", justifyContent:"center"}}>
-                <h2 style={{fontSize: '1.4rem', margin: "2rem 0"}}>🇫🇷 Aucun nouveau ticket </h2>
-                <h2 style={{fontSize: '1.4rem', margin: "2rem 0"}}>🇺🇸 / 🇬🇧 No new ticket </h2> 
+                <h2 style={{fontSize: '1.4rem', margin: "2rem 0"}}>No new ticket </h2> 
             </div>
         )
     }
     return (
         <>
             <h2 style={{width: "100vw", zIndex: "-10", color: '#281900', display: 'flex',flexDirection: "column", alignItems: "center", justifyContent:"center", padding: 20}}>
-                🇫🇷 Modération des tickets ~ 🇺🇸 / 🇬🇧 Tickets moderation
+                Tickets moderation
             </h2>
             <div style={{ height: 400, width: '100%' }}>
             <TableContainer component={Paper}>
@@ -53,6 +75,7 @@ export default function ImageModerationPage() {
                             <TableCell align="center">Type</TableCell>
                             <TableCell align="center">Image ID</TableCell>
                             <TableCell align="center">Flavor</TableCell>
+                            <TableCell align="center">Reasons</TableCell>
                             <TableCell align="center">Created at</TableCell>
                             <TableCell align="center">Actions</TableCell>
                         </TableRow>

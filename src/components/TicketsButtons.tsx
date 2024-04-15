@@ -33,9 +33,9 @@ export default function BasicButtonGroup(props: { id: number, barcode: string })
             <Button
                 variant="outlined"
                 color="success"
-                onClick={() => handleStatus(props.id, 'archived')}
+                onClick={() => handleStatus(props.id, 'closed')}
             >
-                I fixed it !
+                I fixed it!
             </Button>
         </ButtonGroup>
   );
