@@ -31,7 +31,7 @@ export default function ImageModerationPage() {
         const fetchTickets = async () => {
             try {
                 const response = await axios.get(`${import.meta.env.VITE_API_URL}/tickets?status=open`);
-                const ticketsData = response.data;
+                const ticketsData = await response.data;
                 setTickets(ticketsData);
 
                 const ticketIds = ticketsData.map((ticket: any) => ticket.id);

@@ -22,13 +22,17 @@ export default function ImageModerationPage() {
     const [isLoading, setIsLoading] = useState<Boolean>(true)
 
     useEffect(() => {
-        // send get request to api to get tickets and set Tickets to the response
-        axios.get(`${import.meta.env.VITE_API_URL}/tickets?type_=image&status=open`).then((res) => {
-            setTickets(res.data)
-            setIsLoading(false)
-        }).catch((err) => {
-            console.error(err)
-        })
+        const fetchTickets = async () => {
+            try {
+                const response = await axios.get(`${import.meta.env.VITE_API_URL}/tickets?type_=image&status=open`);
+                const ticketsData = await response.data;
+                setTickets(ticketsData);
+                setIsLoading(false);
+            } catch (err) {
+                console.error(err)
+            }
+        };
+        fetchTickets()
     }, [])
         
     return (
