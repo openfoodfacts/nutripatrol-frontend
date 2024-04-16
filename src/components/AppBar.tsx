@@ -14,6 +14,7 @@ import MenuItem from '@mui/material/MenuItem';
 import { Link } from 'react-router-dom'
 import OffLogo from '../assets/off-logo.png';
 import { deepOrange, lightGreen } from '@mui/material/colors';
+import off from '../off.ts';
 
 const pages = [{ label: 'Home', path: '/'}, { label: "Images", path: '/image-moderation' }, { label: "Product", path: '/moderation' }];
 const settings = ['Logout'];
@@ -40,6 +41,12 @@ function ResponsiveAppBar({ isLoggedIn }: ResponsiveAppBarProps) {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
+  const handleLogout = () => {
+    off.deleteCookie('session');
+    handleCloseUserMenu();
+    window.location.reload();
+  }
 
   return (
     <AppBar position="static" sx={{backgroundColor: '#f2e9e4'}}>
@@ -191,7 +198,7 @@ function ResponsiveAppBar({ isLoggedIn }: ResponsiveAppBarProps) {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                <MenuItem key={setting} onClick={handleLogout}>
                   <Typography 
                   textAlign="center" 
                   sx={{
