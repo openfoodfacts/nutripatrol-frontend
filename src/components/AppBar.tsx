@@ -52,6 +52,14 @@ function ResponsiveAppBar({ isLoggedIn }: ResponsiveAppBarProps) {
     <AppBar position="static" sx={{backgroundColor: '#f2e9e4'}}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}>
+            <img 
+              src={OffLogo}
+              alt="off logo" 
+              width={50}
+              height={50}
+            />
+          </Box>
           <Typography
             variant="h6"
             noWrap
@@ -121,12 +129,14 @@ function ResponsiveAppBar({ isLoggedIn }: ResponsiveAppBarProps) {
               ))}
             </Menu>
           </Box>
-          <img 
-            src={OffLogo}
-            alt="off logo" 
-            width={50}
-            height={50}
-          />
+          <Box sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }}>
+            <img 
+              src={OffLogo}
+              alt="off logo" 
+              width={50}
+              height={50}
+            />
+          </Box>
           <Typography
             variant="h5"
             noWrap
