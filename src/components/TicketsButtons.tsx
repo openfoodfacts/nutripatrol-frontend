@@ -5,8 +5,12 @@ import axios from 'axios';
 
 // Change status of ticket to archived
 function handleStatus(id: number, status: string) {
-    axios.put(`${import.meta.env.VITE_API_URL}/tickets/${id}/status?status=${status}`)
-    window.location.reload();
+    try {
+        axios.put(`${import.meta.env.VITE_API_URL}/tickets/${id}/status?status=${status}`)
+        window.location.reload();
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 export default function BasicButtonGroup(props: { id: number, barcode: string }) {
