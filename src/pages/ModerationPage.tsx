@@ -60,9 +60,11 @@ export default function ImageModerationPage() {
             {
                 // if the page is loading, display a loading message
                 isLoading ? (
-                    <Typography variant="h4">
-                        Loading data...
-                    </Typography>
+                    <div style={{position: "absolute", width: "100vw", height: "100vh", zIndex: "-10", color: '#281900', display: 'flex',flexDirection: "column", alignItems: "center", justifyContent:"center"}}>
+                        <Typography variant="h4">
+                            Loading data...
+                        </Typography>
+                    </div>
                 ) : (
                     // if there is no ticket, display a message
                     Tickets.length === 0 ? (
@@ -94,8 +96,8 @@ export default function ImageModerationPage() {
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                    {Tickets.map((ticket) => (
-                                        <Ticket ticket={ticket} />
+                                    {Tickets.map((ticket, index) => (
+                                        <Ticket key={index} ticket={ticket} />
                                     ))}
                                     </TableBody>
                                 </Table>

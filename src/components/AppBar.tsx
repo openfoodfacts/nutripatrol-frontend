@@ -15,7 +15,7 @@ import { Link } from 'react-router-dom'
 import OffLogo from '../assets/off-logo.png';
 import { deepOrange, lightGreen } from '@mui/material/colors';
 
-const pages = [{ label: 'Home', path: '/'}, { label: "Picture moderation", path: '/image-moderation' }, { label: "Moderation", path: '/moderation' }];
+const pages = [{ label: 'Home', path: '/'}, { label: "Images", path: '/image-moderation' }, { label: "Product", path: '/moderation' }];
 const settings = ['Logout'];
 
 interface ResponsiveAppBarProps {
