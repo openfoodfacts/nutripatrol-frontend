@@ -1,4 +1,7 @@
-import { Typography } from "@mui/material"
+import { Typography } from "@mui/material";
+import { Button } from "@mui/material";
+import { Link } from "react-router-dom";
+import FlagIcon from '@mui/icons-material/Flag';
 
 export default function HomePage() {
     return (
@@ -13,6 +16,14 @@ export default function HomePage() {
                 <Typography variant="body1" style={{margin: '2rem 0'}}>
                     Join us in contributing to the improvement of the OpenFoodFacts database and helping consumers worldwide make informed decisions about their diet.
                 </Typography>
+                <Typography variant="body1" style={{margin: '2rem 0'}}>
+                    You can start by moderating images of food products. Click the button below to get started.
+                </Typography>
+                <Link to="/image-moderation">
+                    <Button variant='contained' color='inherit' endIcon={<FlagIcon />}>
+                        Get started
+                    </Button>
+                </Link>
             </div>
         </>
     )

@@ -2,6 +2,9 @@ import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import EditIcon from '@mui/icons-material/Edit';
+import NotInterestedIcon from '@mui/icons-material/NotInterested';
+import CheckIcon from '@mui/icons-material/Check';
 
 // Change status of ticket to archived
 function handleStatus(id: number, status: string) {
@@ -23,20 +26,23 @@ export default function BasicButtonGroup(props: { id: number, barcode: string })
                 component={Link} 
                 to={linkUrl} 
                 variant='contained'
-                color="primary"
+                color="inherit"
+                endIcon={<EditIcon />}
                 target="_blank" >
                 Edit
             </Button>
             <Button
-                variant="outlined"
+                variant="contained"
                 color="error"
+                endIcon={<NotInterestedIcon />}
                 onClick={() => handleStatus(props.id, 'closed')}
             >
                 No problem
             </Button>
             <Button
-                variant="outlined"
+                variant="contained"
                 color="success"
+                endIcon={<CheckIcon />}
                 onClick={() => handleStatus(props.id, 'closed')}
             >
                 I fixed it!
