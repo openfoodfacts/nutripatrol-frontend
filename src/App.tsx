@@ -107,35 +107,30 @@ export default function App() {
       <LoginContext.Provider value={{ ...userState, refresh }}>
           <LayoutMenu isLoggedIn={userState.isLoggedIn} >
             <Routes>
+              {/* Index */}
               <Route path="/" element={<HomePage />} />
-              <Route
-                path="/image-moderation"
-                element={
-                  userState.isLoggedIn ? (
-                    isModerator ? (
-                      <ImageModerationPage />
-                    ) : (
-                      <NonModeratorPage />
-                    )
+              {/* LoggedIn routes */}
+              {
+                userState.isLoggedIn ? (
+                  isModerator ? (
+                    <>
+                      <Route path="/image-moderation" element={<ImageModerationPage />} />
+                      <Route path="/moderation" element={<ModerationPage />} />
+                    </>
                   ) : (
-                    <LoginPage />
+                    <>
+                      <Route path="/image-moderation" element={<NonModeratorPage />} />
+                      <Route path="/moderation" element={<NonModeratorPage />} />
+                    </>
                   )
-                }
-              />
-              <Route
-                path="/moderation"
-                element={
-                  userState.isLoggedIn ? (
-                    isModerator ? (
-                      <ModerationPage />
-                    ) : (
-                      <NonModeratorPage />
-                    )
-                  ) : (
-                    <LoginPage />
-                  )
-                }
-              />
+                ) : (
+                  <>
+                    <Route path="/image-moderation" element={<LoginPage />} />
+                    <Route path="/moderation" element={<LoginPage />} />
+                  </>
+                )
+              }
+              {/* Non LoggedIn routes */}
               <Route path="/login" element={<LoginPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
