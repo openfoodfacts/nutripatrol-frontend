@@ -148,6 +148,7 @@ function ResponsiveAppBar({ isLoggedIn }: ResponsiveAppBarProps) {
               flexGrow: 1,
               fontFamily: 'monospace',
               fontWeight: 700,
+              fontSize: '1rem',
               letterSpacing: '.3rem',
               color: 'black',
               textDecoration: 'none',
