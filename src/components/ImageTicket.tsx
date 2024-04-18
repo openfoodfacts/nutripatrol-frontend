@@ -7,15 +7,15 @@ import { useMediaQuery } from '@mui/material';
 
 export default function ImageTicket({ticket}: {ticket: any}) {
 
-    const isSmallScreen = useMediaQuery('(max-width:700px)');
+    const isMobile = useMediaQuery('(max-width:700px)');
     
     return (
         <TableRow
             key={ticket.barcode}
             sx={{ 
                 '&:last-child td, &:last-child th': { border: 0 },
-                display: isSmallScreen ? 'flex' : 'table-row',
-                flexDirection: isSmallScreen ? 'column' : 'initial',
+                display: isMobile ? 'flex' : 'table-row',
+                flexDirection: isMobile ? 'column' : 'initial',
                 alignItems: 'center',
                 width: '100%',
             }}
