@@ -1,10 +1,10 @@
 import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
-import { Typography } from '@mui/material';
+import { Typography, Box } from '@mui/material';
 
 export default function LoginPage() {
     return (
-        <div style={{position: "absolute", width: "100vw", height: "100vh", zIndex: "-10", color: '#281900', display: 'flex',flexDirection: "column", alignItems: "center", justifyContent:"center"}}>
+        <Box sx={{position: "absolute", width: "100vw", height: "100vh", zIndex: "-10", color: '#281900', display: 'flex',flexDirection: "column", alignItems: "center", justifyContent:"center"}}>
             <Typography variant="h4" style={{margin: '2rem 0'}}>
                 Login with your OpenFoodFacts account
             </Typography>
@@ -16,6 +16,6 @@ export default function LoginPage() {
                 target="_blank" >
                 Login
             </Button>
-        </div>
+        </Box>
     )
 }
