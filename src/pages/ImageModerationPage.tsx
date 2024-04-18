@@ -9,6 +9,7 @@ import TableRow from '@mui/material/TableRow';
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import ImageTicket from '../components/ImageTicket';
+import { Box } from '@mui/material';
 
 interface Ticket {
   barcode: string;
@@ -36,28 +37,28 @@ export default function ImageModerationPage() {
             {
                 // if the page is loading, display a loading message
                 isLoading ? (
-                    <div style={{position: "absolute", width: "100vw", height: "100vh", zIndex: "-10", color: '#281900', display: 'flex',flexDirection: "column", alignItems: "center", justifyContent:"center"}}>
-                        <Typography variant="h4">
+                    <Box sx={{position: "absolute", width: "100vw", height: "100vh", zIndex: "-10", color: '#281900', display: 'flex',flexDirection: "column", alignItems: "center", justifyContent:"center"}}>
+                        <Typography variant="h4" sx={{fontSize: {xs: '1.2rem', md: '1.7rem'}}}>
                             Loading data...
                         </Typography>
-                    </div>
+                    </Box>
                 ) : (
                     // if there are no tickets, display a message
                     Tickets.length === 0 ? (
-                        <div style={{position: "absolute", width: "100vw", height: "100vh", zIndex: "-10", color: '#281900', display: 'flex',flexDirection: "column", alignItems: "center", justifyContent:"center"}}>
-                            <Typography variant="h4">
+                        <Box sx={{position: "absolute", width: "100vw", height: "100vh", zIndex: "-10", color: '#281900', display: 'flex',flexDirection: "column", alignItems: "center", justifyContent:"center"}}>
+                            <Typography variant="h4" sx={{fontSize: {xs: '1.2rem', md: '1.7rem'}}}>
                                 No tickets to moderate
                             </Typography>
-                        </div>
+                        </Box>
                     ) : (
                         // if there are tickets, display them in a table
-                        <div>
-                            <div style={{width: "100vw", zIndex: "-10", color: '#281900', display: 'flex',flexDirection: "column", alignItems: "center", justifyContent:"center", padding: 20}}>
-                                <Typography variant="h4">
+                        <>
+                            <Box sx={{width: "100vw", zIndex: "-10", color: '#281900', display: 'flex',flexDirection: "column", alignItems: "center", justifyContent:"center", padding: 2}}>
+                                <Typography variant="h4" sx={{fontSize: {xs: '1.2rem', md: '1.7rem'}}}>
                                     Image Moderation
                                 </Typography>
-                            </div>
-                            <div style={{ height: 400, width: '100%' }}>
+                            </Box>
+                            <Box sx={{ height: 400, width: '100%' }}>
                             <TableContainer component={Paper}>
                                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                                     <TableHead>
@@ -74,8 +75,8 @@ export default function ImageModerationPage() {
                                     </TableBody>
                                 </Table>
                             </TableContainer>
-                            </div>
-                         </div>
+                            </Box>
+                         </>
                     )
                 )
             }

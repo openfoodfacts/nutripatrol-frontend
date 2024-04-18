@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 import Ticket from '../components/Ticket'
 import { Typography } from '@mui/material';
+import { Box } from '@mui/material';
 
 interface Ticket {
     barcode: string;
@@ -60,49 +61,49 @@ export default function ImageModerationPage() {
             {
                 // if the page is loading, display a loading message
                 isLoading ? (
-                    <div style={{position: "absolute", width: "100vw", height: "100vh", zIndex: "-10", color: '#281900', display: 'flex',flexDirection: "column", alignItems: "center", justifyContent:"center"}}>
-                        <Typography variant="h4">
+                    <Box sx={{position: "absolute", width: "100vw", height: "100vh", zIndex: "-10", color: '#281900', display: 'flex',flexDirection: "column", alignItems: "center", justifyContent:"center"}}>
+                        <Typography variant="h4" sx={{fontSize: {xs: '1.2rem', md: '1.7rem'}}}>
                             Loading data...
                         </Typography>
-                    </div>
+                    </Box>
                 ) : (
                     // if there is no ticket, display a message
                     Tickets.length === 0 ? (
-                        <div style={{position: "absolute", width: "100vw", height: "100vh", zIndex: "-10", color: '#281900', display: 'flex',flexDirection: "column", alignItems: "center", justifyContent:"center"}}>
-                            <Typography variant="h4">
+                        <Box sx={{position: "absolute", width: "100vw", height: "100vh", zIndex: "-10", color: '#281900', display: 'flex',flexDirection: "column", alignItems: "center", justifyContent:"center"}}>
+                            <Typography variant="h4" sx={{fontSize: {xs: '1.2rem', md: '1.7rem'}}}>
                                 No tickets to moderate
                             </Typography>
-                        </div>
+                        </Box>
                     ) : (
                         // if there are tickets, display them in a table
                         <div>
-                            <div style={{width: "100vw", zIndex: "-10", color: '#281900', display: 'flex',flexDirection: "column", alignItems: "center", justifyContent:"center", padding: 20}}>
-                                <Typography variant="h4">
+                            <Box sx={{width: "100vw", zIndex: "-10", color: '#281900', display: 'flex',flexDirection: "column", alignItems: "center", justifyContent:"center", padding: 2}}>
+                                <Typography variant="h4" sx={{fontSize: {xs: '1.2rem', md: '1.7rem'}}}>
                                     Ticket Moderation
                                 </Typography>
-                            </div>
-                            <div style={{ height: 400, width: '100%' }}>
-                            <TableContainer component={Paper}>
-                                <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell align="center">Barcode</TableCell>
-                                            <TableCell align="center">Type</TableCell>
-                                            <TableCell align="center">Image ID</TableCell>
-                                            <TableCell align="center">Flavor</TableCell>
-                                            <TableCell align="center">Reasons</TableCell>
-                                            <TableCell align="center">Created at</TableCell>
-                                            <TableCell align="center">Actions</TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                    {Tickets.map((ticket, index) => (
-                                        <Ticket key={index} ticket={ticket} />
-                                    ))}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                            </div>
+                            </Box>
+                            <Box sx={{ height: 400, width: '100%' }}>
+                                <TableContainer component={Paper}>
+                                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell align="center">Barcode</TableCell>
+                                                <TableCell align="center">Type</TableCell>
+                                                <TableCell align="center">Image ID</TableCell>
+                                                <TableCell align="center">Flavor</TableCell>
+                                                <TableCell align="center">Reasons</TableCell>
+                                                <TableCell align="center">Created at</TableCell>
+                                                <TableCell align="center">Actions</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                        {Tickets.map((ticket, index) => (
+                                            <Ticket key={index} ticket={ticket} />
+                                        ))}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                            </Box>
                         </div>
                     )
                 )
