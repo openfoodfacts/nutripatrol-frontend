@@ -78,7 +78,7 @@ export default function ImageModerationPage() {
                         </Box>
                     ) : (
                         // if there are tickets, display them in a table
-                        <div>
+                        <>
                             <Box sx={{width: "100vw", zIndex: "-10", color: '#281900', display: 'flex',flexDirection: "column", alignItems: "center", justifyContent:"center", padding: 2}}>
                                 <Typography variant="h4" sx={{fontSize: {xs: '1.2rem', md: '1.7rem'}}}>
                                     Ticket Moderation
@@ -108,7 +108,7 @@ export default function ImageModerationPage() {
                                     </Table>
                                 </TableContainer>
                             </Box>
-                        </div>
+                        </>
                     )
                 )
             }
