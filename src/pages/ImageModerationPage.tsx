@@ -9,6 +9,8 @@ import TableRow from '@mui/material/TableRow';
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import ImageTicket from '../components/ImageTicket';
+import { Box } from '@mui/material';
+import { useMediaQuery } from '@mui/material';
 
 interface Ticket {
   barcode: string;
@@ -20,6 +22,7 @@ export default function ImageModerationPage() {
 
     const [Tickets, setTickets] = useState<Ticket[]>([])
     const [isLoading, setIsLoading] = useState<Boolean>(true)
+    const isMobile = useMediaQuery('(max-width:800px)')
 
     useEffect(() => {
         // send get request to api to get tickets and set Tickets to the response
@@ -36,46 +39,48 @@ export default function ImageModerationPage() {
             {
                 // if the page is loading, display a loading message
                 isLoading ? (
-                    <div style={{position: "absolute", width: "100vw", height: "100vh", zIndex: "-10", color: '#281900', display: 'flex',flexDirection: "column", alignItems: "center", justifyContent:"center"}}>
-                        <Typography variant="h4">
+                    <Box sx={{position: "absolute", width: "100vw", height: "100vh", zIndex: "-10", color: '#281900', display: 'flex',flexDirection: "column", alignItems: "center", justifyContent:"center"}}>
+                        <Typography variant="h4" sx={{fontSize: {xs: '1.2rem', md: '1.7rem'}}}>
                             Loading data...
                         </Typography>
-                    </div>
+                    </Box>
                 ) : (
                     // if there are no tickets, display a message
                     Tickets.length === 0 ? (
-                        <div style={{position: "absolute", width: "100vw", height: "100vh", zIndex: "-10", color: '#281900', display: 'flex',flexDirection: "column", alignItems: "center", justifyContent:"center"}}>
-                            <Typography variant="h4">
+                        <Box sx={{position: "absolute", width: "100vw", height: "100vh", zIndex: "-10", color: '#281900', display: 'flex',flexDirection: "column", alignItems: "center", justifyContent:"center"}}>
+                            <Typography variant="h4" sx={{fontSize: {xs: '1.2rem', md: '1.7rem'}}}>
                                 No tickets to moderate
                             </Typography>
-                        </div>
+                        </Box>
                     ) : (
                         // if there are tickets, display them in a table
-                        <div>
-                            <div style={{width: "100vw", zIndex: "-10", color: '#281900', display: 'flex',flexDirection: "column", alignItems: "center", justifyContent:"center", padding: 20}}>
-                                <Typography variant="h4">
+                        <>
+                            <Box sx={{width: "100vw", zIndex: "-10", color: '#281900', display: 'flex',flexDirection: "column", alignItems: "center", justifyContent:"center", padding: 2}}>
+                                <Typography variant="h4" sx={{fontSize: {xs: '1.2rem', md: '1.7rem'}}}>
                                     Image Moderation
                                 </Typography>
-                            </div>
-                            <div style={{ height: 400, width: '100%' }}>
-                            <TableContainer component={Paper}>
-                                <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell align="center">Image</TableCell>
-                                            <TableCell align="center">Date</TableCell>
-                                            <TableCell align="center">Actions</TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                    {Tickets.map((ticket, index) => (
-                                        <ImageTicket key={index} ticket={ticket} />
-                                    ))}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                            </div>
-                         </div>
+                            </Box>
+                            <Box sx={{ height: 400, width: '100%' }}>
+                                <TableContainer component={Paper}>
+                                    <Table aria-label="simple table">
+                                        {!isMobile && 
+                                            <TableHead>
+                                                <TableRow>
+                                                    <TableCell align="center">Image</TableCell>
+                                                    <TableCell align="center">Date</TableCell>
+                                                    <TableCell align="center">Actions</TableCell>
+                                                </TableRow>
+                                            </TableHead>
+                                        }
+                                        <TableBody>
+                                            {Tickets.map((ticket, index) => (
+                                                <ImageTicket key={index} ticket={ticket} />
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                            </Box>
+                         </>
                     )
                 )
             }

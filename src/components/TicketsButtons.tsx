@@ -28,6 +28,7 @@ export default function BasicButtonGroup(props: { id: number, barcode: string })
                 variant='contained'
                 color="inherit"
                 endIcon={<EditIcon />}
+                sx={{ maxHeight: '40px' }}
                 target="_blank" >
                 Edit
             </Button>
@@ -35,6 +36,7 @@ export default function BasicButtonGroup(props: { id: number, barcode: string })
                 variant="contained"
                 color="error"
                 endIcon={<NotInterestedIcon />}
+                sx={{ maxHeight: '40px' }}
                 onClick={() => handleStatus(props.id, 'closed')}
             >
                 No problem
@@ -43,6 +45,7 @@ export default function BasicButtonGroup(props: { id: number, barcode: string })
                 variant="contained"
                 color="success"
                 endIcon={<CheckIcon />}
+                sx={{ maxHeight: '40px' }}
                 onClick={() => handleStatus(props.id, 'closed')}
             >
                 I fixed it!
