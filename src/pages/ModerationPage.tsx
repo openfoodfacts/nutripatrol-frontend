@@ -10,6 +10,7 @@ import axios from 'axios'
 import Ticket from '../components/Ticket'
 import { Typography } from '@mui/material';
 import { Box } from '@mui/material';
+import { useMediaQuery } from '@mui/material';
 
 interface Ticket {
     barcode: string;
@@ -27,6 +28,7 @@ export default function ImageModerationPage() {
 
     const [Tickets, setTickets] = useState<Ticket[]>([])
     const [isLoading, setIsLoading] = useState<Boolean>(true)
+    const isMobile = useMediaQuery('(max-width:800px)')
 
     useEffect(() => {
         const fetchTickets = async () => {
@@ -84,18 +86,20 @@ export default function ImageModerationPage() {
                             </Box>
                             <Box sx={{ height: 400, width: '100%' }}>
                                 <TableContainer component={Paper}>
-                                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                                        <TableHead>
-                                            <TableRow>
-                                                <TableCell align="center">Barcode</TableCell>
-                                                <TableCell align="center">Type</TableCell>
-                                                <TableCell align="center">Image ID</TableCell>
-                                                <TableCell align="center">Flavor</TableCell>
-                                                <TableCell align="center">Reasons</TableCell>
-                                                <TableCell align="center">Created at</TableCell>
-                                                <TableCell align="center">Actions</TableCell>
-                                            </TableRow>
-                                        </TableHead>
+                                    <Table aria-label="simple table">
+                                        {!isMobile &&
+                                            <TableHead>
+                                                <TableRow>
+                                                    <TableCell align="center">Barcode</TableCell>
+                                                    <TableCell align="center">Type</TableCell>
+                                                    <TableCell align="center">Image ID</TableCell>
+                                                    <TableCell align="center">Flavor</TableCell>
+                                                    <TableCell align="center">Reasons</TableCell>
+                                                    <TableCell align="center">Created at</TableCell>
+                                                    <TableCell align="center">Actions</TableCell>
+                                                </TableRow>
+                                            </TableHead>
+                                        }
                                         <TableBody>
                                         {Tickets.map((ticket, index) => (
                                             <Ticket key={index} ticket={ticket} />
