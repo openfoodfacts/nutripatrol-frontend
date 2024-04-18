@@ -9,7 +9,8 @@ import TableRow from '@mui/material/TableRow';
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import ImageTicket from '../components/ImageTicket';
-import { Box } from '@mui/material';
+import { Box } from '@mui/material';
+import { useMediaQuery } from '@mui/material';
 
 interface Ticket {
   barcode: string;
@@ -21,6 +22,7 @@ export default function ImageModerationPage() {
 
     const [Tickets, setTickets] = useState<Ticket[]>([])
     const [isLoading, setIsLoading] = useState<Boolean>(true)
+    const isMobile = useMediaQuery('(max-width:800px)')
 
     useEffect(() => {
         // send get request to api to get tickets and set Tickets to the response
@@ -59,22 +61,24 @@ export default function ImageModerationPage() {
                                 </Typography>
                             </Box>
                             <Box sx={{ height: 400, width: '100%' }}>
-                            <TableContainer component={Paper}>
-                                <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell align="center">Image</TableCell>
-                                            <TableCell align="center">Date</TableCell>
-                                            <TableCell align="center">Actions</TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                    {Tickets.map((ticket, index) => (
-                                        <ImageTicket key={index} ticket={ticket} />
-                                    ))}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
+                                <TableContainer component={Paper}>
+                                    <Table aria-label="simple table">
+                                        {!isMobile && 
+                                            <TableHead>
+                                                <TableRow>
+                                                    <TableCell align="center">Image</TableCell>
+                                                    <TableCell align="center">Date</TableCell>
+                                                    <TableCell align="center">Actions</TableCell>
+                                                </TableRow>
+                                            </TableHead>
+                                        }
+                                        <TableBody>
+                                            {Tickets.map((ticket, index) => (
+                                                <ImageTicket key={index} ticket={ticket} />
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
                             </Box>
                          </>
                     )

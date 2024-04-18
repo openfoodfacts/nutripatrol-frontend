@@ -3,13 +3,22 @@ import TableRow from '@mui/material/TableRow';
 import Date from './Date'
 import TicketsButtons from './TicketsButtons'
 import Box from '@mui/material/Box';
+import { useMediaQuery } from '@mui/material';
 
 export default function ImageTicket({ticket}: {ticket: any}) {
+
+    const isSmallScreen = useMediaQuery('(max-width:700px)');
     
     return (
         <TableRow
             key={ticket.barcode}
-            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            sx={{ 
+                '&:last-child td, &:last-child th': { border: 0 },
+                display: isSmallScreen ? 'flex' : 'table-row',
+                flexDirection: isSmallScreen ? 'column' : 'initial',
+                alignItems: 'center',
+                width: '100%',
+            }}
         >
             <TableCell align="center">
                 <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center', justifyContent: 'center'}}>
