@@ -14,6 +14,7 @@ import LoginPage from './pages/LoginPage.tsx'
 import LayoutMenu from "./components/Layouts/LayoutMenu.tsx";
 import LoginContext from "./contexts/login.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import FlagFormPage from "./pages/FlagFormPage.tsx";
 
 const MODERATORS = [
   "valimp",
@@ -132,6 +133,9 @@ export default function App() {
               }
               {/* Non LoggedIn routes */}
               <Route path="/login" element={<LoginPage />} />
+              <Route path="/flag/product" element={<FlagFormPage type_="product" />} />
+              <Route path="/flag/image" element={<FlagFormPage type_="image" />} />
+              <Route path="/flag/search" element={<FlagFormPage type_="search" />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </LayoutMenu>
