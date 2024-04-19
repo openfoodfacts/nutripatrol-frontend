@@ -1,5 +1,5 @@
 # nutripatrol-frontend
-The front-end (React) of nutripatrol moderation tool
+The front-end (React) of nutripatrol moderation tool. It is deployed @ https://nutripatrol.openfoodfacts.net/
 
 ## Get started 🎯
 
