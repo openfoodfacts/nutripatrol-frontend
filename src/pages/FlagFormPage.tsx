@@ -1,4 +1,14 @@
-import { Typography, Container, TextField, Button } from '@mui/material';
+import { 
+    Typography, 
+    Container, 
+    TextField, 
+    Select, 
+    MenuItem, 
+    Button, 
+    InputLabel, 
+    FormControl 
+} from '@mui/material';
+import axios from 'axios';
 import { useState } from 'react';
 
 interface FlagFormProps {
@@ -8,11 +18,10 @@ interface FlagFormProps {
 interface FormData {
     barcode: string;
     type: 'product' | 'image' | 'search';
-    url: string;
     user_id: string;
     source: string;
     flavor: string;
-    reason: string;
+    reason: 'innapropriate' | 'duplicate' | 'other' | 'spam' | '';
     comment: string;
 
 }
@@ -20,33 +29,36 @@ interface FormData {
 export default function FlagForm({ type_ }: FlagFormProps) {
 
     const [formData, setFormData] = useState<FormData>({
-        barcode: "",
-        type: type_,
-        url: "",
-        user_id: "",
-        source: "",
-        flavor: "",
+        barcode: "", // only for product and image
+        type: type_, // product, image, search
+        user_id: "", // not in the form
+        source: "", // not in the form
+        flavor: "", // not in the form
         reason: "",
         comment: ""
     });
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: any) => {
         const { name, value } = e.target;
         setFormData((prevData) => ({
             ...prevData,
-            [name]: value,
+            [name as string]: value,
         }));
-      };
+    };   
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        // You can do something with the form data here, like submit it to a server
-        console.log('Form data:', formData);
+        try {
+            axios.post(`${import.meta.env.VITE_API_URL}/flags`, formData)
+        } catch (err) {
+            console.error(err)
+        }
     };
 
+    /* FORM FOR PRODUCT */
     return (
         <Container sx={{ marginTop: '2rem' }} >
-            <Typography>
+            <Typography variant='h4'>
                 Flag Form
             </Typography>
             <form onSubmit={handleSubmit}>
@@ -57,14 +69,7 @@ export default function FlagForm({ type_ }: FlagFormProps) {
                     onChange={handleChange}
                     fullWidth
                     margin="normal"
-                />
-                <TextField
-                    name="url"
-                    label="URL"
-                    value={formData.url}
-                    onChange={handleChange}
-                    fullWidth
-                    margin="normal"
+                    required
                 />
                 <TextField
                     name="user_id"
@@ -73,6 +78,7 @@ export default function FlagForm({ type_ }: FlagFormProps) {
                     onChange={handleChange}
                     fullWidth
                     margin="normal"
+                    required
                 />
                 <TextField
                     name="source"
@@ -81,6 +87,7 @@ export default function FlagForm({ type_ }: FlagFormProps) {
                     onChange={handleChange}
                     fullWidth
                     margin="normal"
+                    required
                 />
                 <TextField
                     name="flavor"
@@ -89,15 +96,25 @@ export default function FlagForm({ type_ }: FlagFormProps) {
                     onChange={handleChange}
                     fullWidth
                     margin="normal"
+                    required
                 />
-                <TextField
-                    name="reason"
-                    label="Reason"
-                    value={formData.reason}
-                    onChange={handleChange}
-                    fullWidth
-                    margin="normal"
-                />
+                <FormControl fullWidth margin="normal">
+                    <InputLabel id="reason">Reason *</InputLabel>
+                    <Select
+                        labelId='reason'
+                        name="reason"
+                        label="Reason *"
+                        value={formData.reason}
+                        onChange={handleChange}
+                        fullWidth
+                        required
+                    >
+                        <MenuItem value="innapropriate">Innapropriate</MenuItem>
+                        <MenuItem value="duplicate">Duplicate</MenuItem>
+                        <MenuItem value="other">Other</MenuItem>
+                        <MenuItem value="spam">Spam</MenuItem>
+                    </Select>
+                </FormControl>
                 <TextField
                     name="comment"
                     label="Comment"
@@ -105,6 +122,7 @@ export default function FlagForm({ type_ }: FlagFormProps) {
                     onChange={handleChange}
                     fullWidth
                     margin="normal"
+                    required
                 />
                 <Button type="submit" variant="contained" color="success">
                     Flag {type_}
