@@ -18,6 +18,7 @@ interface FlagFormProps {
 interface FormData {
     barcode: string;
     type: 'product' | 'image' | 'search';
+    image_id?: string;
     user_id: string;
     source: string;
     flavor: string;
@@ -32,6 +33,7 @@ export default function FlagForm({ type_ }: FlagFormProps) {
         barcode: "", // only for product and image
         type: type_, // product, image, search
         user_id: "", // not in the form
+        image_id: "", // only for image
         source: "", // not in the form
         flavor: "", // not in the form
         reason: "",
@@ -50,6 +52,9 @@ export default function FlagForm({ type_ }: FlagFormProps) {
         e.preventDefault();
         try {
             axios.post(`${import.meta.env.VITE_API_URL}/flags`, formData)
+            .then(() => {
+                window.location.replace('/');
+            })
         } catch (err) {
             console.error(err)
         }
@@ -71,6 +76,19 @@ export default function FlagForm({ type_ }: FlagFormProps) {
                     margin="normal"
                     required
                 />
+                {
+                    type_==='image' && (
+                        <TextField
+                            name="image_id"
+                            label="Image ID"
+                            value={formData.image_id}
+                            onChange={handleChange}
+                            fullWidth
+                            margin="normal"
+                            required
+                        />
+                    )
+                }
                 <TextField
                     name="user_id"
                     label="User ID"
