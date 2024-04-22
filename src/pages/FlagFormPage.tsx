@@ -13,6 +13,7 @@ import { useState } from 'react';
 
 interface FlagFormProps {
     type_: 'product' | 'image' | 'search';
+    user_id: string;
 }
 
 interface FormData {
@@ -27,13 +28,13 @@ interface FormData {
 
 }
 
-export default function FlagForm({ type_ }: FlagFormProps) {
+export default function FlagForm({ type_, user_id }: FlagFormProps) {
 
     const [formData, setFormData] = useState<FormData>({
         barcode: "", // only for product and image
         type: type_, // product, image, search
-        user_id: "", // not in the form
-        image_id: "", // only for image
+        user_id: user_id, // not in the form
+        image_id: "no_image", // only for image
         source: "", // not in the form
         flavor: "", // not in the form
         reason: "",
@@ -89,15 +90,6 @@ export default function FlagForm({ type_ }: FlagFormProps) {
                         />
                     )
                 }
-                <TextField
-                    name="user_id"
-                    label="User ID"
-                    value={formData.user_id}
-                    onChange={handleChange}
-                    fullWidth
-                    margin="normal"
-                    required
-                />
                 <TextField
                     name="source"
                     label="Source"

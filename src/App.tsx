@@ -36,7 +36,7 @@ export default function App() {
   const [userState, setUserState] = useState(() => {
     if (devMode) {
       return {
-        userName: "",
+        userName: "DEVMODE_USER",
         isLoggedIn: true,
       };
     }
@@ -110,7 +110,23 @@ export default function App() {
             <Routes>
               {/* Index */}
               <Route path="/" element={<HomePage />} />
-              {/* LoggedIn routes */}
+              {/* LoggedIn routes (user) */}
+              {
+                userState.isLoggedIn ? (
+                  <>
+                    <Route path="/flag/product" element={<FlagFormPage type_="product" user_id={userState.userName} />} />
+                    <Route path="/flag/image" element={<FlagFormPage type_="image" user_id={userState.userName} />} />
+                    <Route path="/flag/search" element={<FlagFormPage type_="search" user_id={userState.userName} />} />
+                  </>
+                ) : (
+                  <>
+                    <Route path="/flag/product" element={<LoginPage />} />
+                    <Route path="/flag/image" element={<LoginPage />} />
+                    <Route path="/flag/search" element={<LoginPage />} />
+                  </>
+                )
+              }
+              {/* LoggedIn routes (moderator) */}
               {
                 userState.isLoggedIn ? (
                   isModerator ? (
@@ -133,9 +149,6 @@ export default function App() {
               }
               {/* Non LoggedIn routes */}
               <Route path="/login" element={<LoginPage />} />
-              <Route path="/flag/product" element={<FlagFormPage type_="product" />} />
-              <Route path="/flag/image" element={<FlagFormPage type_="image" />} />
-              <Route path="/flag/search" element={<FlagFormPage type_="search" />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </LayoutMenu>
