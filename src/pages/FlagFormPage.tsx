@@ -62,9 +62,9 @@ const reasons = {
 export default function FlagForm({ type_, user_id }: FlagFormProps) {
 
     const [searchParams] = useSearchParams();
-    const barcode = searchParams.get('barcode') || "";
-    const source = searchParams.get('source') || "";
-    const flavor = searchParams.get('flavor') || "";
+    const barcode = searchParams.get('barcode') || undefined;
+    const source = searchParams.get('source') || undefined;
+    const flavor = searchParams.get('flavor') || undefined;
 
     if ( source === undefined || !sources.includes(source) || flavor === undefined || !flavors.includes(flavor) ){
         return (
