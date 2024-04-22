@@ -10,8 +10,11 @@ import {
 } from '@mui/material';
 import axios from 'axios';
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
+/**
+ * Interfaces
+ */
 interface FlagFormProps {
     type_: 'product' | 'image' | 'search';
     user_id: string;
@@ -29,11 +32,41 @@ interface FormData {
 
 }
 
+/**
+ * Constants
+ */
+
+// list of sources
+const sources = ['web', 'mobile']
+
+// list of flavors
+const flavors = ['off', 'obf', 'opff', 'opf']
+
+// dict of reasons for flagging a product, image or search result
+const reasons = {
+    product: [
+        { value: 'inapropriate', label: 'Inappropriate' },
+        { value: 'duplicate', label: 'Duplicate' },
+        { value: 'other', label: 'Other' },
+    ],
+    image: [
+        { value: 'missing_data', label: 'Missing Data' },
+        { value: 'wrong_data', label: 'Wrong Data' },
+        { value: 'other', label: 'Other' },
+    ],
+    search: [
+        { value: 'other', label: 'Other' },
+    ]
+}
+
 export default function FlagForm({ type_, user_id }: FlagFormProps) {
 
-    const { source, flavor, barcode } = useParams<{ source: string, flavor: string, barcode: string }>();
+    const [searchParams] = useSearchParams();
+    const barcode = searchParams.get('barcode') || "";
+    const source = searchParams.get('source') || "";
+    const flavor = searchParams.get('flavor') || "";
 
-    if ( source === undefined || !["web", "mobile"].includes(source) || flavor === undefined || !["off", "obf", "opff"].includes(flavor) ){
+    if ( source === undefined || !sources.includes(source) || flavor === undefined || !flavors.includes(flavor) ){
         return (
             <Container>
                 <Typography variant="h4">
@@ -114,10 +147,12 @@ export default function FlagForm({ type_, user_id }: FlagFormProps) {
                         fullWidth
                         required
                     >
-                        <MenuItem value="innapropriate">Innapropriate</MenuItem>
-                        <MenuItem value="duplicate">Duplicate</MenuItem>
-                        <MenuItem value="other">Other</MenuItem>
-                        <MenuItem value="spam">Spam</MenuItem>
+                        { reasons[type_].map((reason) => (
+                                <MenuItem key={reason.value} value={reason.value}>
+                                    {reason.label}
+                                </MenuItem>
+                            ))    
+                        }
                     </Select>
                 </FormControl>
                 <TextField

@@ -116,15 +116,15 @@ export default function App() {
               {
                 userState.isLoggedIn ? (
                   <>
-                    <Route path="/flag/product/:source/:flavor/:barcode" element={<FlagFormPage type_="product" user_id={userState.userName} />} />
-                    <Route path="/flag/image/:source/:flavor/:barcode" element={<FlagFormPage type_="image" user_id={userState.userName} />} />
-                    {/* <Route path="/flag/search/:source/:flavor/:barcode" element={<FlagFormPage type_="search" user_id={userState.userName} />} /> */}
+                    <Route path="/flag/product/" element={<FlagFormPage type_="product" user_id={userState.userName} />} />
+                    <Route path="/flag/image/" element={<FlagFormPage type_="image" user_id={userState.userName} />} />
+                    {/* <Route path="/flag/search/" element={<FlagFormPage type_="search" user_id={userState.userName} />} /> */}
                   </>
                 ) : (
                   <>
-                    <Route path="/flag/product/:source/:flavor" element={<LoginPage />} />
-                    <Route path="/flag/image/:source/:flavor" element={<LoginPage />} />
-                    {/* <Route path="/flag/search/:source/:flavor" element={<LoginPage />} /> */}
+                    <Route path="/flag/product/" element={<LoginPage />} />
+                    <Route path="/flag/image/" element={<LoginPage />} />
+                    {/* <Route path="/flag/search/" element={<LoginPage />} /> */}
                   </>
                 )
               }
