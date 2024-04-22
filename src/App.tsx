@@ -15,6 +15,7 @@ import LayoutMenu from "./components/Layouts/LayoutMenu.tsx";
 import LoginContext from "./contexts/login.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import FlagFormPage from "./pages/FlagFormPage.tsx";
+import FlagInfos from "./pages/FlagInfos.tsx";
 
 const MODERATORS = [
   "valimp",
@@ -110,6 +111,7 @@ export default function App() {
             <Routes>
               {/* Index */}
               <Route path="/" element={<HomePage />} />
+              <Route path="/flag" element={<FlagInfos />} />
               {/* LoggedIn routes (user) */}
               {
                 userState.isLoggedIn ? (
