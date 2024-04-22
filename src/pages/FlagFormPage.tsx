@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 import axios from 'axios';
 import { useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 interface FlagFormProps {
     type_: 'product' | 'image' | 'search';
@@ -30,13 +31,15 @@ interface FormData {
 
 export default function FlagForm({ type_, user_id }: FlagFormProps) {
 
+    const { source, flavor, barcode } = useParams<{ source: string, flavor: string, barcode: string }>();
+
     const [formData, setFormData] = useState<FormData>({
-        barcode: "", // only for product and image
+        barcode: barcode || "", // only for product and image
         type: type_, // product, image, search
         user_id: user_id, // not in the form
         image_id: "no_image", // only for image
-        source: "", // not in the form
-        flavor: "", // not in the form
+        source: source || "", // not in the form
+        flavor: flavor || "", // not in the form
         reason: "",
         comment: ""
     });
@@ -90,24 +93,6 @@ export default function FlagForm({ type_, user_id }: FlagFormProps) {
                         />
                     )
                 }
-                <TextField
-                    name="source"
-                    label="Source"
-                    value={formData.source}
-                    onChange={handleChange}
-                    fullWidth
-                    margin="normal"
-                    required
-                />
-                <TextField
-                    name="flavor"
-                    label="Flavor"
-                    value={formData.flavor}
-                    onChange={handleChange}
-                    fullWidth
-                    margin="normal"
-                    required
-                />
                 <FormControl fullWidth margin="normal">
                     <InputLabel id="reason">Reason *</InputLabel>
                     <Select
