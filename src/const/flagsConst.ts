@@ -10,13 +10,16 @@
  */
 export const reasons = {
     product: [
-        { value: 'inapropriate', label: 'Inappropriate' },
-        { value: 'duplicate', label: 'Duplicate' },
+        { value: 'wrong_barcode', label: 'Wrong Barcode' },
+        { value: 'missing_data', label: 'Missing Data' },
+        { value: 'wrong_data', label: 'Wrong Data' },
         { value: 'other', label: 'Other' },
     ],
     image: [
-        { value: 'missing_data', label: 'Missing Data' },
-        { value: 'wrong_data', label: 'Wrong Data' },
+        { value: 'inapropriate', label: 'Inappropriate' },
+        { value: 'outdated', label: 'Outdated' },
+        { value: 'includes_personal_infos', label: 'Includes Personal Information' },
+        { value: 'duplicate', label: 'Duplicate' },
         { value: 'other', label: 'Other' },
     ],
     search: [
