@@ -11,6 +11,7 @@ import {
 import axios from 'axios';
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { reasons, sources, flavors } from '../const/flagsConst';
 
 /**
  * Interfaces
@@ -30,33 +31,6 @@ interface FormData {
     reason: 'innapropriate' | 'duplicate' | 'other' | 'spam' | '';
     comment: string;
 
-}
-
-/**
- * Constants
- */
-
-// list of sources
-const sources = ['web', 'mobile']
-
-// list of flavors
-const flavors = ['off', 'obf', 'opff', 'opf']
-
-// dict of reasons for flagging a product, image or search result
-const reasons = {
-    product: [
-        { value: 'inapropriate', label: 'Inappropriate' },
-        { value: 'duplicate', label: 'Duplicate' },
-        { value: 'other', label: 'Other' },
-    ],
-    image: [
-        { value: 'missing_data', label: 'Missing Data' },
-        { value: 'wrong_data', label: 'Wrong Data' },
-        { value: 'other', label: 'Other' },
-    ],
-    search: [
-        { value: 'other', label: 'Other' },
-    ]
 }
 
 export default function FlagForm({ type_, user_id }: FlagFormProps) {
