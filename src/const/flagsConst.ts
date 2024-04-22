@@ -29,6 +29,8 @@ export const reasons = {
  * SOURCES : 
  * 
  * Sources are the origin of the flag
+ * We have 2 sources : web and mobile
+ * Robotoff is explicitly excluded because it is a different system
  * 
  */
 export const sources = ['web', 'mobile']
@@ -40,4 +42,4 @@ export const sources = ['web', 'mobile']
  * Flavors give more information about the origin of the flag
  * 
  */
-export const flavors = ['off', 'obf', 'opff', 'opf']
+export const flavors = ['off', 'obf', 'opff', 'opf', 'off-pro']
