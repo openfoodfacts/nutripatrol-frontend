@@ -33,6 +33,16 @@ export default function FlagForm({ type_, user_id }: FlagFormProps) {
 
     const { source, flavor, barcode } = useParams<{ source: string, flavor: string, barcode: string }>();
 
+    if ( source === undefined || !["web", "mobile"].includes(source) || flavor === undefined || !["off", "obf", "opff"].includes(flavor) ){
+        return (
+            <Container>
+                <Typography variant="h4">
+                    Error: Wrong source or flavor
+                </Typography>
+            </Container>
+        )
+    }
+
     const [formData, setFormData] = useState<FormData>({
         barcode: barcode || "", // only for product and image
         type: type_, // product, image, search
