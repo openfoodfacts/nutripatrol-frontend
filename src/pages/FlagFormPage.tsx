@@ -68,8 +68,8 @@ export default function FlagForm({ type_, user_id }: FlagFormProps) {
 
     if ( source === undefined || !sources.includes(source) || flavor === undefined || !flavors.includes(flavor) ){
         return (
-            <Container>
-                <Typography variant="h4">
+            <Container maxWidth='lg'>
+                <Typography variant="h4" sx={{margin: '4rem 0', fontSize: {xs: '1.2rem', md: '1.7rem'}, fontWeight: 700}}>
                     Error: Wrong source or flavor
                 </Typography>
             </Container>
