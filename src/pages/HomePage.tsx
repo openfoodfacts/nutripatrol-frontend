@@ -2,6 +2,7 @@ import Container from '@mui/material/Container';
 import { Typography } from "@mui/material";
 import { Button } from "@mui/material";
 import { Link } from "react-router-dom";
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import FlagIcon from '@mui/icons-material/Flag';
 
 export default function HomePage() {
@@ -20,9 +21,14 @@ export default function HomePage() {
                 <Typography variant="body1" sx={{margin: '2rem 0', fontSize: {xs: '0.8rem', md: '1.2rem'}}}>
                     You can start by moderating images of food products. Click the button below to get started.
                 </Typography>
-                <Link to="/image-moderation">
-                    <Button variant='contained' color='inherit' endIcon={<FlagIcon />}>
+                <Link to="/image-moderation" >
+                    <Button variant='contained' color='inherit' sx={{margin: '1rem'}} endIcon={<PlayArrowIcon />}>
                         Get started
+                    </Button>
+                </Link>
+                <Link to="/flag" >
+                    <Button variant='contained' color='inherit' sx={{margin: '1rem'}} endIcon={<FlagIcon />}>
+                        Flag a product
                     </Button>
                 </Link>
             </Container>
