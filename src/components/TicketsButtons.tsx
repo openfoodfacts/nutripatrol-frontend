@@ -6,19 +6,28 @@ import EditIcon from '@mui/icons-material/Edit';
 import NotInterestedIcon from '@mui/icons-material/NotInterested';
 import CheckIcon from '@mui/icons-material/Check';
 
-// Change status of ticket to archived
-function handleStatus(id: number, status: string) {
-    try {
-        axios.put(`${import.meta.env.VITE_API_URL}/tickets/${id}/status?status=${status}`)
-        window.location.reload();
-    } catch (error) {
-        console.error(error);
-    }
+interface BasicButtonGroup {
+    id: number;
+    barcode: string;
+    setTickets: any;
+    tickets: any;
 }
 
-export default function BasicButtonGroup(props: { id: number, barcode: string }) {
+export default function BasicButtonGroup({id, barcode, setTickets, tickets}: BasicButtonGroup) {
 
-    const linkUrl = `${import.meta.env.VITE_PO_URL}/cgi/product.pl?type=edit&code=${props.barcode}`;
+    // Change status of ticket to archived
+    function handleStatus(id: number, status: string) {
+        try {
+            axios.put(`${import.meta.env.VITE_API_URL}/tickets/${id}/status?status=${status}`)
+            // remove ticket from tickets
+            const updatedTickets = tickets.filter((ticket: any) => ticket.id !== id);
+            setTickets(updatedTickets);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    const linkUrl = `${import.meta.env.VITE_PO_URL}/cgi/product.pl?type=edit&code=${barcode}`;
 
     return (
         <ButtonGroup variant="contained" aria-label="ticket_actions">
@@ -37,7 +46,7 @@ export default function BasicButtonGroup(props: { id: number, barcode: string })
                 color="error"
                 endIcon={<NotInterestedIcon />}
                 sx={{ maxHeight: '40px' }}
-                onClick={() => handleStatus(props.id, 'closed')}
+                onClick={() => handleStatus(id, 'closed')}
             >
                 No problem
             </Button>
@@ -46,7 +55,7 @@ export default function BasicButtonGroup(props: { id: number, barcode: string })
                 color="success"
                 endIcon={<CheckIcon />}
                 sx={{ maxHeight: '40px' }}
-                onClick={() => handleStatus(props.id, 'closed')}
+                onClick={() => handleStatus(id, 'closed')}
             >
                 I fixed it!
             </Button>

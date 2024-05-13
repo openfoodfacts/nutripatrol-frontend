@@ -5,7 +5,7 @@ import TicketsButtons from './TicketsButtons'
 import Box from '@mui/material/Box';
 import { useMediaQuery } from '@mui/material';
 
-export default function ImageTicket({ticket}: {ticket: any}) {
+export default function ImageTicket({ticket, setTickets, tickets}: {ticket: any, setTickets: any, tickets: any}) {
 
     const isMobile = useMediaQuery('(max-width:700px)');
     // format url to get mini image
@@ -34,7 +34,9 @@ export default function ImageTicket({ticket}: {ticket: any}) {
                 </Box>
             </TableCell>
             <Date created_at={ticket.created_at} />
-            <TableCell align="center"><TicketsButtons barcode={ticket.barcode} id={ticket.id} /></TableCell>
+            <TableCell align="center">
+                <TicketsButtons barcode={ticket.barcode} id={ticket.id} setTickets={setTickets} tickets={tickets} />
+            </TableCell>
         </TableRow>
     )
 }
