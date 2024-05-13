@@ -6,17 +6,21 @@ import EditIcon from '@mui/icons-material/Edit';
 import NotInterestedIcon from '@mui/icons-material/NotInterested';
 import CheckIcon from '@mui/icons-material/Check';
 
-// Change status of ticket to archived
-function handleStatus(id: number, status: string) {
-    try {
-        axios.put(`${import.meta.env.VITE_API_URL}/tickets/${id}/status?status=${status}`)
-        window.location.reload();
-    } catch (error) {
-        console.error(error);
-    }
-}
 
-export default function BasicButtonGroup(props: { id: number, barcode: string }) {
+
+export default function BasicButtonGroup(props: { id: number, barcode: string, setTickets: any, tickets: any}) {
+
+    // Change status of ticket to archived
+    function handleStatus(id: number, status: string) {
+        try {
+            axios.put(`${import.meta.env.VITE_API_URL}/tickets/${id}/status?status=${status}`)
+            // remove ticket from tickets
+            const updatedTickets = props.tickets.filter((ticket: any) => ticket.id !== id);
+            props.setTickets(updatedTickets);
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     const linkUrl = `${import.meta.env.VITE_PO_URL}/cgi/product.pl?type=edit&code=${props.barcode}`;
 

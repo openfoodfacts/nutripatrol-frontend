@@ -102,7 +102,7 @@ export default function ImageModerationPage() {
                                         }
                                         <TableBody>
                                         {Tickets.map((ticket, index) => (
-                                            <Ticket key={index} ticket={ticket} />
+                                            <Ticket key={index} ticket={ticket} setTickets={setTickets} tickets={Tickets} />
                                         ))}
                                         </TableBody>
                                     </Table>
