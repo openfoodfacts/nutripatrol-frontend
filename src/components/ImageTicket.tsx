@@ -8,6 +8,8 @@ import { useMediaQuery } from '@mui/material';
 export default function ImageTicket({ticket}: {ticket: any}) {
 
     const isMobile = useMediaQuery('(max-width:700px)');
+    // format url to get mini image
+    const imageUrl = ticket.url.replace(/\.jpg$/, '.100.jpg');
     
     return (
         <TableRow
@@ -23,7 +25,7 @@ export default function ImageTicket({ticket}: {ticket: any}) {
             <TableCell align="center">
                 <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center', justifyContent: 'center'}}>
                     <img 
-                        src={ticket.url} 
+                        src={imageUrl} 
                         // src='https://images.openfoodfacts.net/images/products/327/408/000/5003/1.400.jpg'
                         alt={ticket.barcode}
                         width={100}
