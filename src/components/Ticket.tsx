@@ -4,7 +4,13 @@ import Date from './Date'
 import TicketsButtons from './TicketsButtons'
 import { useMediaQuery } from '@mui/material';
 
-export default function Ticket({ticket, setTickets, tickets}: any) {
+interface TicketProps {
+    ticket: any;
+    setTickets: any;
+    tickets: any;
+}
+
+export default function Ticket({ticket, setTickets, tickets}: TicketProps) {
 
     const isMobile = useMediaQuery('(max-width:700px)');
     
