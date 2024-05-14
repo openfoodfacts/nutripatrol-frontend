@@ -9,6 +9,7 @@ import TableRow from '@mui/material/TableRow';
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import ImageTicket from '../components/ImageTicket';
+import Paginate from '../components/Paginate'
 import { Box } from '@mui/material';
 import { useMediaQuery } from '@mui/material';
 
@@ -22,18 +23,23 @@ export default function ImageModerationPage() {
 
     const [Tickets, setTickets] = useState<Ticket[]>([])
     const [isLoading, setIsLoading] = useState<Boolean>(true)
+    const [currentPage, setCurrentPage] = useState<number>(1)
+    const [maxPage, setMaxPage] = useState<number>(1)
     const isMobile = useMediaQuery('(max-width:800px)')
 
     useEffect(() => {
         // send get request to api to get tickets and set Tickets to the response
-        const url = `${import.meta.env.VITE_API_URL}/tickets?type_=image&status=open&page=1&per_page=10`
+        const url = `${import.meta.env.VITE_API_URL}/tickets?type_=image&status=open&page=${currentPage}&page_size=3`
         axios.get(url).then((res) => {
-            setTickets(res.data)
+            console.log(res.data.tickets);
+            
+            setTickets(res.data.tickets)
+            setMaxPage(res.data.max_page)
             setIsLoading(false)
         }).catch((err) => {
             console.error(err)
         })
-    }, [])
+    }, [currentPage])
         
     return (
         <>
@@ -80,6 +86,7 @@ export default function ImageModerationPage() {
                                         </TableBody>
                                     </Table>
                                 </TableContainer>
+                                <Paginate currentPage={currentPage} setCurrentPage={setCurrentPage} maxPage={maxPage} />
                             </Box>
                          </>
                     )

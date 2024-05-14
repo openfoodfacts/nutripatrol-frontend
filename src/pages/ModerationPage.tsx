@@ -8,6 +8,7 @@ import TableRow from '@mui/material/TableRow';
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import Ticket from '../components/Ticket'
+import Paginate from '../components/Paginate'
 import { Typography } from '@mui/material';
 import { Box } from '@mui/material';
 import { useMediaQuery } from '@mui/material';
@@ -28,15 +29,18 @@ export default function ImageModerationPage() {
 
     const [Tickets, setTickets] = useState<Ticket[]>([])
     const [isLoading, setIsLoading] = useState<Boolean>(true)
+    const [currentPage, setCurrentPage] = useState<number>(1)
+    const [maxPage, setMaxPage] = useState<number>(1)
     const isMobile = useMediaQuery('(max-width:800px)')
 
     useEffect(() => {
-        const url = `${import.meta.env.VITE_API_URL}/tickets?type_=product&status=open&page=1&per_page=10`
+        const url = `${import.meta.env.VITE_API_URL}/tickets?type_=product&status=open&page=${currentPage}&page_size=5`
         const fetchTickets = async () => {
             try {
                 const response = await axios.get(url);
-                const ticketsData = response.data;
+                const ticketsData = response.data.tickets;
                 setTickets(ticketsData);
+                setMaxPage(response.data.max_page);
 
                 const ticketIds = ticketsData.map((ticket: any) => ticket.id);
                 const flagsResponse = await axios.post(`${import.meta.env.VITE_API_URL}/flags/batch`, {
@@ -57,7 +61,7 @@ export default function ImageModerationPage() {
             }
         };
         fetchTickets()
-    }, [])
+    }, [currentPage])
 
     return (
         <>
@@ -108,6 +112,7 @@ export default function ImageModerationPage() {
                                         </TableBody>
                                     </Table>
                                 </TableContainer>
+                                <Paginate currentPage={currentPage} setCurrentPage={setCurrentPage} maxPage={maxPage} />
                             </Box>
                         </>
                     )
