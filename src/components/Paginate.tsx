@@ -8,7 +8,7 @@ interface PaginateProps {
 
 export default function Paginate({ currentPage, setCurrentPage, maxPage } : PaginateProps) {
 
-    const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    const handleChange = (_: React.ChangeEvent<unknown>, value: number) => {
         setCurrentPage(value);
     };
 
