@@ -84,7 +84,9 @@ export default function ImageModerationPage() {
                                         </TableBody>
                                     </Table>
                                 </TableContainer>
-                                <Paginate currentPage={currentPage} setCurrentPage={setCurrentPage} maxPage={maxPage} />
+                                <Box sx={{display: 'flex', justifyContent: 'center', marginTop: 2}}>
+                                    <Paginate currentPage={currentPage} setCurrentPage={setCurrentPage} maxPage={maxPage} />
+                                </Box>
                             </Box>
                          </>
                     )
