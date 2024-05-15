@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.1](https://github.com/openfoodfacts/nutripatrol-frontend/compare/v1.0.0...v1.0.1) (2024-05-15)
+
+
+### Bug Fixes
+
+* centered paginate component ([40ec5d8](https://github.com/openfoodfacts/nutripatrol-frontend/commit/40ec5d891b2b4d233d3bffd3956ddec215c0beca))
+* get minified images ([6b408ba](https://github.com/openfoodfacts/nutripatrol-frontend/commit/6b408ba2f44622b955297a6851ea9b306e78f9f6))
+* make image clickable ([05011de](https://github.com/openfoodfacts/nutripatrol-frontend/commit/05011deea53d8c0e7a3d29c4ba551e9cd072382c))
+* page size pagination ([c4217fc](https://github.com/openfoodfacts/nutripatrol-frontend/commit/c4217fc4d649c9259e0e4e4004e453970258317b))
+* pagination v1 ([4c6c338](https://github.com/openfoodfacts/nutripatrol-frontend/commit/4c6c33842f8ab18b6f8f164e70eec504ce602de1))
+* props types ([98cc360](https://github.com/openfoodfacts/nutripatrol-frontend/commit/98cc36095e09b1a67555a0deb5776e5ac88b6331))
+* remove unused params ([a784b9f](https://github.com/openfoodfacts/nutripatrol-frontend/commit/a784b9fe707871d4fd9ac34789cd16935371744e))
+* useState remove button ([d4b1305](https://github.com/openfoodfacts/nutripatrol-frontend/commit/d4b130597739354f2b4fbd27992dd27ea31e7358))
+
 ## 1.0.0 (2024-04-30)
 
 
