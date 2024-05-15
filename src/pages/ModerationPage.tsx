@@ -34,7 +34,7 @@ export default function ImageModerationPage() {
     const isMobile = useMediaQuery('(max-width:800px)')
 
     useEffect(() => {
-        const url = `${import.meta.env.VITE_API_URL}/tickets?type_=product&status=open&page=${currentPage}&page_size=5`
+        const url = `${import.meta.env.VITE_API_URL}/tickets?type_=product&status=open&page=${currentPage}&page_size=8`
         const fetchTickets = async () => {
             try {
                 const response = await axios.get(url);

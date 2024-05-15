@@ -29,7 +29,7 @@ export default function ImageModerationPage() {
 
     useEffect(() => {
         // send get request to api to get tickets and set Tickets to the response
-        const url = `${import.meta.env.VITE_API_URL}/tickets?type_=image&status=open&page=${currentPage}&page_size=3`
+        const url = `${import.meta.env.VITE_API_URL}/tickets?type_=image&status=open&page=${currentPage}&page_size=5`
         axios.get(url).then((res) => {            
             setTickets(res.data.tickets)
             setMaxPage(res.data.max_page)
