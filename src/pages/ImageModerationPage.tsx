@@ -12,6 +12,8 @@ import ImageTicket from '../components/ImageTicket';
 import Paginate from '../components/Paginate'
 import { Box } from '@mui/material';
 import { useMediaQuery } from '@mui/material';
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
 interface Ticket {
   barcode: string;
@@ -25,11 +27,17 @@ export default function ImageModerationPage() {
     const [isLoading, setIsLoading] = useState<Boolean>(true)
     const [currentPage, setCurrentPage] = useState<number>(1)
     const [maxPage, setMaxPage] = useState<number>(1)
+    const [reasons, setReasons] = useState<string[]>([])
     const isMobile = useMediaQuery('(max-width:800px)')
 
     useEffect(() => {
+        setIsLoading(true)
+        // parse reasons to query string
+        const reasonsQuery = reasons.map((reason) => `reason=${reason}`).join('&')
         // send get request to api to get tickets and set Tickets to the response
-        const url = `${import.meta.env.VITE_API_URL}/tickets?type_=image&status=open&page=${currentPage}&page_size=5`
+        const url = `${import.meta.env.VITE_API_URL}/tickets?type_=image&status=open&page=${currentPage}&page_size=8${reasonsQuery ? `&${reasonsQuery}` : ''}`
+        console.log(url);
+        
         axios.get(url).then((res) => {            
             setTickets(res.data.tickets)
             setMaxPage(res.data.max_page)
@@ -37,10 +45,29 @@ export default function ImageModerationPage() {
         }).catch((err) => {
             console.error(err)
         })
-    }, [currentPage])
-        
+    }, [currentPage, reasons])
+
     return (
         <>
+            <Box sx={{width: "100vw", zIndex: "-10", color: '#281900', display: 'flex',flexDirection: "column", alignItems: "center", justifyContent:"center", padding: 2}}>
+                <Typography variant="h4" sx={{fontSize: {xs: '1.2rem', md: '1.7rem'}}}>
+                    Image Moderation
+                </Typography>
+            </Box>
+            <Box sx={{display: 'flex', justifyContent: 'center', marginBottom: 2}}>
+                <ToggleButtonGroup
+                    value={reasons}
+                    onChange={(_, newReasons) => {
+                        setReasons(newReasons)
+                    }}
+                    aria-label="text alignment"
+                >
+                    <ToggleButton value="inappropriate">Inappropriate</ToggleButton>
+                    <ToggleButton value="human">Human</ToggleButton>
+                    <ToggleButton value="beauty">Beauty</ToggleButton>
+                    <ToggleButton value="other">Other</ToggleButton>
+                </ToggleButtonGroup>
+            </Box>
             {
                 // if the page is loading, display a loading message
                 isLoading ? (
@@ -60,11 +87,6 @@ export default function ImageModerationPage() {
                     ) : (
                         // if there are tickets, display them in a table
                         <>
-                            <Box sx={{width: "100vw", zIndex: "-10", color: '#281900', display: 'flex',flexDirection: "column", alignItems: "center", justifyContent:"center", padding: 2}}>
-                                <Typography variant="h4" sx={{fontSize: {xs: '1.2rem', md: '1.7rem'}}}>
-                                    Image Moderation
-                                </Typography>
-                            </Box>
                             <Box sx={{ height: 400, width: '100%' }}>
                                 <TableContainer component={Paper}>
                                     <Table aria-label="simple table">
