@@ -65,6 +65,11 @@ export default function ImageModerationPage() {
 
     return (
         <>
+            <Box sx={{width: "100vw", zIndex: "-10", color: '#281900', display: 'flex',flexDirection: "column", alignItems: "center", justifyContent:"center", padding: 2}}>
+                <Typography variant="h4" sx={{fontSize: {xs: '1.2rem', md: '1.7rem'}}}>
+                    Ticket Moderation
+                </Typography>
+            </Box>
             {
                 // if the page is loading, display a loading message
                 isLoading ? (
@@ -84,11 +89,6 @@ export default function ImageModerationPage() {
                     ) : (
                         // if there are tickets, display them in a table
                         <>
-                            <Box sx={{width: "100vw", zIndex: "-10", color: '#281900', display: 'flex',flexDirection: "column", alignItems: "center", justifyContent:"center", padding: 2}}>
-                                <Typography variant="h4" sx={{fontSize: {xs: '1.2rem', md: '1.7rem'}}}>
-                                    Ticket Moderation
-                                </Typography>
-                            </Box>
                             <Box sx={{ height: 400, width: '100%' }}>
                                 <TableContainer component={Paper}>
                                     <Table aria-label="simple table">
