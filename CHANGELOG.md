@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.2](https://github.com/openfoodfacts/nutripatrol-frontend/compare/v1.0.1...v1.0.2) (2024-05-16)
+
+
+### Bug Fixes
+
+* filter by reasons ([26af1e2](https://github.com/openfoodfacts/nutripatrol-frontend/commit/26af1e253a05c74e2deee4b79291bc56814d6745))
+* refactor title ([eeb825f](https://github.com/openfoodfacts/nutripatrol-frontend/commit/eeb825fb57cc0280797aee943a6272ca81fe70a6))
+
 ## [1.0.1](https://github.com/openfoodfacts/nutripatrol-frontend/compare/v1.0.0...v1.0.1) (2024-05-15)
 
 
