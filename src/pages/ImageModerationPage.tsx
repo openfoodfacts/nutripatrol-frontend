@@ -52,7 +52,11 @@ export default function ImageModerationPage() {
     // fetch tickets when there are no tickets
     useEffect(() => {
         if (Tickets.length === 0) {
+            // if the current page is empty, fetch the first page
             fetchImageTickets(url)
+            if (Tickets.length === 0) {
+                setCurrentPage(1)
+            }
         }
     }, [Tickets.length])
 
