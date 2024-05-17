@@ -30,22 +30,35 @@ export default function ImageModerationPage() {
     const [reasons, setReasons] = useState<string[]>([])
     const isMobile = useMediaQuery('(max-width:800px)')
 
-    useEffect(() => {
-        setIsLoading(true)
-        // parse reasons to query string
-        const reasonsQuery = reasons.map((reason) => `reason=${reason}`).join('&')
-        // send get request to api to get tickets and set Tickets to the response
-        const url = `${import.meta.env.VITE_API_URL}/tickets?type_=image&status=open&page=${currentPage}&page_size=8${reasonsQuery ? `&${reasonsQuery}` : ''}`
-        console.log(url);
-        
-        axios.get(url).then((res) => {            
+    const fetchImageTickets = (url_: string) => {
+        axios.get(url_).then((res) => {            
             setTickets(res.data.tickets)
             setMaxPage(res.data.max_page)
             setIsLoading(false)
         }).catch((err) => {
             console.error(err)
         })
+    }
+
+    const reasonsQuery = reasons.map((reason) => `reason=${reason}`).join('&')
+    const url = `${import.meta.env.VITE_API_URL}/tickets?type_=image&status=open&page=${currentPage}&page_size=8${reasonsQuery ? `&${reasonsQuery}` : ''}`
+
+    // fetch tickets on page load
+    useEffect(() => {
+        setIsLoading(true)
+        fetchImageTickets(url)
     }, [currentPage, reasons])
+
+    // fetch tickets when there are no tickets
+    useEffect(() => {
+        if (Tickets.length === 0) {
+            // if the current page is empty, fetch the first page
+            fetchImageTickets(url)
+            if (Tickets.length === 0) {
+                setCurrentPage(1)
+            }
+        }
+    }, [Tickets.length])
 
     return (
         <>

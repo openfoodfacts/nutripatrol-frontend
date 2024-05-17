@@ -25,7 +25,8 @@ const MODERATORS = [
   "gala-nafikova",
   "manoncorneille",
   "stephane",
-  "teolemon"
+  "teolemon",
+  "segundo",
 ]
 
 export default function App() {
