@@ -27,6 +27,10 @@ const MODERATORS = [
   "stephane",
   "teolemon",
   "segundo",
+  "tacite",
+  "october-food-facts",
+  "odinh",
+  "jusdekiwi",
 ]
 
 export default function App() {
