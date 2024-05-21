@@ -4,6 +4,7 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { useState } from 'react';
 import axios from 'axios';
+import PreviewOutlinedIcon from '@mui/icons-material/PreviewOutlined';
 
 const style = {
     position: 'absolute' as 'absolute',
@@ -54,7 +55,14 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
 
     return (
         <div>
-            <Button onClick={handleOpen}>Open modal</Button>
+            <Button 
+                onClick={handleOpen}
+                startIcon={<PreviewOutlinedIcon />}
+                size='small'
+                color='primary'
+            >
+                Open preview
+            </Button>
             <Modal
                 open={open}
                 onClose={handleClose}
