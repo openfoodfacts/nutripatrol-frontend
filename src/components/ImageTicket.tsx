@@ -4,6 +4,7 @@ import Date from './Date'
 import TicketsButtons from './TicketsButtons'
 import Box from '@mui/material/Box';
 import { useMediaQuery } from '@mui/material';
+import InfoModal from './InfoModal';
 
 export default function ImageTicket({ticket, setTickets, tickets}: {ticket: any, setTickets: any, tickets: any}) {
 
@@ -37,6 +38,7 @@ export default function ImageTicket({ticket, setTickets, tickets}: {ticket: any,
             </TableCell>
             <Date created_at={ticket.created_at} />
             <TableCell align="center">
+                <InfoModal barcode={ticket.barcode} />
                 <TicketsButtons barcode={ticket.barcode} id={ticket.id} setTickets={setTickets} tickets={tickets} />
             </TableCell>
         </TableRow>
