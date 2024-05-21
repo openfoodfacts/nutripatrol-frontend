@@ -72,14 +72,17 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
                 <Box sx={style}>
                 {isLoaded ? (
                     <>
-                        <Typography id="modal-modal-title" variant="h6" component="h2">
-                            Product name : {ticketInfo?.name}
+                        <Typography id="modal-modal-title" variant="h5" component="h2">
+                            {ticketInfo?.name}
                         </Typography>
-                        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                        <Typography id="modal-modal-description" variant="h6" sx={{ mt: 2 }}>
                             Barcode : {ticketInfo?.barcode}
                         </Typography>
+                        <Typography id="modal-modal-description" variant="h6" sx={{ mt: 2 }}>
+                            Images :
+                        </Typography>
                         {ticketInfo?.images ? (
-                            <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center', justifyContent: 'center'}}>
+                            <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center', justifyContent: 'center', mt:2}}>
                                 {Object.keys(ticketInfo.images).map((key) => (
                                     <a href={ticketInfo.images[key]} target='_blank' key={key}>
                                         <img 
