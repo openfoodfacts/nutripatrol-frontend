@@ -5,13 +5,14 @@ import Modal from '@mui/material/Modal';
 import { useState } from 'react';
 import axios from 'axios';
 import PreviewOutlinedIcon from '@mui/icons-material/PreviewOutlined';
+import Grid from '@mui/material/Unstable_Grid2';
 
 const style = {
     position: 'absolute' as 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 1000,
+    width: '90%',
     bgcolor: 'background.paper',
     border: '2px solid #000',
     boxShadow: 24,
@@ -25,18 +26,36 @@ interface ModalInfoProps {
 export default function ModalInfo({barcode}: ModalInfoProps) {
 
     const [open, setOpen] = useState(false);
+    const buildUrl = (barcode: string, imageId: string, def: string, rev?: string) => {
+        const part1 = barcode.slice(0, 3);
+        const part2 = barcode.slice(3, 6);
+        const part3 = barcode.slice(6, 9);
+        const part4 = barcode.slice(9);
+        if (rev) {
+            console.log(`${import.meta.env.VITE_PO_IMAGE_URL}/images/products/${part1}/${part2}/${part3}/${part4}/${imageId}.${rev}.${def}.jpg`);
+            
+            return `${import.meta.env.VITE_PO_IMAGE_URL}/images/products/${part1}/${part2}/${part3}/${part4}/${imageId}.${rev}.${def}.jpg`;
+        }
+        return `${import.meta.env.VITE_PO_IMAGE_URL}/images/products/${part1}/${part2}/${part3}/${part4}/${imageId}.${def}.jpg`;
+    }
     const handleTicketInfo = () => {
         axios.get(`${import.meta.env.VITE_PO_URL}/api/v2/product/${barcode}.json`).then((res) => {
-            const usedData = {
+            const usedData: any = {
                 name: res.data.product.product_name || null,
                 barcode: res.data.code || null,
-                images: {
-                    front_small: res.data.product.image_front_small_url || null,
-                    ingrediants_small: res.data.product.image_ingredients_small_url || null,
-                    nutrition_small: res.data.product.image_nutrition_small_url || null,
-                    image_small: res.data.product.image_small_url || null,
-                }
+                images: {},
             }
+            if (res.data.product.images) {
+                Object.keys(res.data.product.images).forEach((key) => {
+                    if (isNaN(parseInt(key))) {
+                        usedData.images[key] = buildUrl(barcode, key, '400', res.data.product.images[key].rev);
+                    } else {
+                        usedData.images[key] = buildUrl(barcode, key, '400');
+                    }
+                });
+            }
+            console.log(usedData);
+            
             setTicketInfo(usedData);
             setIsLoaded(true);
         }).catch((err) => {
@@ -83,16 +102,20 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
                         </Typography>
                         {ticketInfo?.images ? (
                             <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center', justifyContent: 'center', mt:2}}>
-                                {Object.keys(ticketInfo.images).map((key) => (
-                                    <a href={ticketInfo.images[key]} target='_blank' key={key}>
-                                        <img 
-                                            src={ticketInfo.images[key]} 
-                                            alt={key}
-                                            width={200}
-                                            height={200}
-                                        />
-                                    </a>
-                                ))}
+                                <Grid container spacing={2}>
+                                    {Object.keys(ticketInfo.images).map((key) => (
+                                        <Grid>
+                                            <a href={ticketInfo.images[key]} target='_blank' key={key}>
+                                                <img 
+                                                    src={ticketInfo.images[key]} 
+                                                    alt={key}
+                                                    width={150}
+                                                    height={150}
+                                                />
+                                            </a>
+                                        </Grid>
+                                    ))}
+                                </Grid>
                             </Box>
                         ) : (
                             <Typography id="modal-modal-description" sx={{ mt: 2 }}>
