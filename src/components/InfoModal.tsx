@@ -32,8 +32,6 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
         const part3 = barcode.slice(6, 9);
         const part4 = barcode.slice(9);
         if (rev) {
-            console.log(`${import.meta.env.VITE_PO_IMAGE_URL}/images/products/${part1}/${part2}/${part3}/${part4}/${imageId}.${rev}.${def}.jpg`);
-            
             return `${import.meta.env.VITE_PO_IMAGE_URL}/images/products/${part1}/${part2}/${part3}/${part4}/${imageId}.${rev}.${def}.jpg`;
         }
         return `${import.meta.env.VITE_PO_IMAGE_URL}/images/products/${part1}/${part2}/${part3}/${part4}/${imageId}.${def}.jpg`;
@@ -48,14 +46,12 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
             if (res.data.product.images) {
                 Object.keys(res.data.product.images).forEach((key) => {
                     if (isNaN(parseInt(key))) {
-                        usedData.images[key] = buildUrl(barcode, key, '400', res.data.product.images[key].rev);
+                        usedData.images[key] = buildUrl(barcode, key, '100', res.data.product.images[key].rev);
                     } else {
-                        usedData.images[key] = buildUrl(barcode, key, '400');
+                        usedData.images[key] = buildUrl(barcode, key, '100');
                     }
                 });
             }
-            console.log(usedData);
-            
             setTicketInfo(usedData);
             setIsLoaded(true);
         }).catch((err) => {
@@ -104,7 +100,7 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
                             <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center', justifyContent: 'center', mt:2}}>
                                 <Grid container spacing={2}>
                                     {Object.keys(ticketInfo.images).map((key) => (
-                                        <Grid>
+                                        <Grid key={key}>
                                             <a href={ticketInfo.images[key]} target='_blank' key={key}>
                                                 <img 
                                                     src={ticketInfo.images[key]} 
