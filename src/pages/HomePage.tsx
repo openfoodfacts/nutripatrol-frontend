@@ -21,7 +21,7 @@ export default function HomePage() {
                 <Typography variant="body1" sx={{margin: '2rem 0', fontSize: {xs: '0.8rem', md: '1.2rem'}}}>
                     You can start by moderating images of food products. Click the button below to get started.
                 </Typography>
-                <Link to="/image-moderation" >
+                <Link to="/tutorial" >
                     <Button variant='contained' color='inherit' sx={{margin: '1rem'}} endIcon={<PlayArrowIcon />}>
                         Get started
                     </Button>
