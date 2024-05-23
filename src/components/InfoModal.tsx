@@ -27,13 +27,16 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
 
     const [open, setOpen] = useState(false);
     const buildUrl = (barcode: string, imageId: string, def: string, rev?: string) => {
+        // split the barcode into 4 parts
         const part1 = barcode.slice(0, 3);
         const part2 = barcode.slice(3, 6);
         const part3 = barcode.slice(6, 9);
         const part4 = barcode.slice(9);
+        // if rev is defined, return the url with rev
         if (rev) {
             return `${import.meta.env.VITE_PO_IMAGE_URL}/images/products/${part1}/${part2}/${part3}/${part4}/${imageId}.${rev}.${def}.jpg`;
         }
+        // else return the url without rev
         return `${import.meta.env.VITE_PO_IMAGE_URL}/images/products/${part1}/${part2}/${part3}/${part4}/${imageId}.${def}.jpg`;
     }
     const handleTicketInfo = () => {
@@ -42,7 +45,9 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
                 name: res.data.product.product_name || null,
                 barcode: res.data.code || null,
                 images: {},
+                selectedImages: {},
             }
+            // loop through the images and build the url
             if (res.data.product.images) {
                 Object.keys(res.data.product.images).forEach((key) => {
                     if (isNaN(parseInt(key))) {
@@ -52,6 +57,14 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
                     }
                 });
             }
+            // loop through the selected images and keep only the url
+            if (res.data.product.selected_images) {
+                Object.keys(res.data.product.selected_images).forEach((key) => {
+                    usedData.selectedImages[key] = res.data.product.selected_images[key].small;
+                });
+            }
+            console.log(usedData);
+            
             setTicketInfo(usedData);
             setIsLoaded(true);
         }).catch((err) => {
