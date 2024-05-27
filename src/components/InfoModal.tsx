@@ -63,8 +63,6 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
                     usedData.selectedImages[key] = res.data.product.selected_images[key].small;
                 });
             }
-            console.log(usedData);
-            
             setTicketInfo(usedData);
             setIsLoaded(true);
         }).catch((err) => {
