@@ -27,7 +27,7 @@ export default function ImageModerationPage() {
     const [isLoading, setIsLoading] = useState<Boolean>(true)
     const [currentPage, setCurrentPage] = useState<number>(1)
     const [maxPage, setMaxPage] = useState<number>(1)
-    const [reasons, setReasons] = useState<string[]>([])
+    const [reason, setReason] = useState<string | null>(null)
     const isMobile = useMediaQuery('(max-width:800px)')
 
     const fetchImageTickets = (url_: string) => {
@@ -40,14 +40,13 @@ export default function ImageModerationPage() {
         })
     }
 
-    const reasonsQuery = reasons.map((reason) => `reason=${reason}`).join('&')
-    const url = `${import.meta.env.VITE_API_URL}/tickets?type_=image&status=open&page=${currentPage}&page_size=8${reasonsQuery ? `&${reasonsQuery}` : ''}`
+    const url = `${import.meta.env.VITE_API_URL}/tickets?type_=image&status=open&page=${currentPage}&page_size=8${reason === null ? "" : `&reason=${reason}`}`
 
     // fetch tickets on page load
     useEffect(() => {
         setIsLoading(true)
         fetchImageTickets(url)
-    }, [currentPage, reasons])
+    }, [currentPage, reason])
 
     // fetch tickets when there are no tickets
     useEffect(() => {
@@ -69,9 +68,10 @@ export default function ImageModerationPage() {
             </Box>
             <Box sx={{display: 'flex', justifyContent: 'center', marginBottom: 2}}>
                 <ToggleButtonGroup
-                    value={reasons}
+                    value={reason}
+                    exclusive
                     onChange={(_, newReasons) => {
-                        setReasons(newReasons)
+                        setReason(newReasons)
                     }}
                     aria-label="text alignment"
                 >
