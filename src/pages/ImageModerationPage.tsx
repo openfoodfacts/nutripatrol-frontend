@@ -40,7 +40,7 @@ export default function ImageModerationPage() {
         })
     }
 
-    const url = `${import.meta.env.VITE_API_URL}/tickets?type_=image&status=open&page=${currentPage}&page_size=8${reason === null ? "" : `&reason=${reason}`}`
+    const url = `${import.meta.env.VITE_API_URL}/tickets?type_=image&status=open&page=${currentPage}&page_size=10${reason === null ? "" : `&reason=${reason}`}`
 
     // fetch tickets on page load
     useEffect(() => {
@@ -74,6 +74,8 @@ export default function ImageModerationPage() {
                         setReason(newReasons)
                     }}
                     aria-label="text alignment"
+                    size='small'
+                    color='primary'
                 >
                     <ToggleButton value="inappropriate">Inappropriate</ToggleButton>
                     <ToggleButton value="human">Human</ToggleButton>

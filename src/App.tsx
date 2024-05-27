@@ -120,42 +120,55 @@ export default function App() {
               <Route path="/flag" element={<FlagInfos />} />
               <Route path="/tutorial" element={<Tutorial />} />
               {/* LoggedIn routes (user) */}
-              {
-                userState.isLoggedIn ? (
-                  <>
-                    <Route path="/flag/product/" element={<FlagFormPage type_="product" user_id={userState.userName} />} />
-                    <Route path="/flag/image/" element={<FlagFormPage type_="image" user_id={userState.userName} />} />
-                    {/* <Route path="/flag/search/" element={<FlagFormPage type_="search" user_id={userState.userName} />} /> */}
-                  </>
-                ) : (
-                  <>
-                    <Route path="/flag/product/" element={<LoginPage />} />
-                    <Route path="/flag/image/" element={<LoginPage />} />
-                    {/* <Route path="/flag/search/" element={<LoginPage />} /> */}
-                  </>
-                )
-              }
-              {/* LoggedIn routes (moderator) */}
-              {
-                userState.isLoggedIn ? (
-                  isModerator ? (
-                    <>
-                      <Route path="/image-moderation" element={<ImageModerationPage />} />
-                      <Route path="/moderation" element={<ModerationPage />} />
-                    </>
+              <Route
+                path="/flag/product/"
+                element={
+                  userState.isLoggedIn ? (
+                    <FlagFormPage type_="product" user_id={userState.userName} />
                   ) : (
-                    <>
-                      <Route path="/image-moderation" element={<NonModeratorPage />} />
-                      <Route path="/moderation" element={<NonModeratorPage />} />
-                    </>
+                    <LoginPage />
                   )
-                ) : (
-                  <>
-                    <Route path="/image-moderation" element={<LoginPage />} />
-                    <Route path="/moderation" element={<LoginPage />} />
-                  </>
-                )
-              }
+                }
+              />
+              <Route
+                path="/flag/image/"
+                element={
+                  userState.isLoggedIn ? (
+                    <FlagFormPage type_="image" user_id={userState.userName} />
+                  ) : (
+                    <LoginPage />
+                  )
+                }
+              />
+              {/* LoggedIn routes (moderator) */}
+              <Route
+                path="/image-moderation"
+                element={
+                  userState.isLoggedIn ? (
+                    isModerator ? (
+                      <ImageModerationPage />
+                    ) : (
+                      <NonModeratorPage />
+                    )
+                  ) : (
+                    <LoginPage />
+                  )
+                }
+              />
+              <Route
+                path="/moderation"
+                element={
+                  userState.isLoggedIn ? (
+                    isModerator ? (
+                      <ModerationPage />
+                    ) : (
+                      <NonModeratorPage />
+                    )
+                  ) : (
+                    <LoginPage />
+                  )
+                }
+              />
               {/* Non LoggedIn routes */}
               <Route path="/login" element={<LoginPage />} />
               <Route path="*" element={<NotFound />} />
