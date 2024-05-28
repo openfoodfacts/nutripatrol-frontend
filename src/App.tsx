@@ -104,7 +104,6 @@ export default function App() {
   return (
       <LoginContext.Provider value={{ ...userState, refresh }}>
           <LayoutMenu 
-            isLoggedIn={userState.isLoggedIn} 
             alertIsOpen={alertIsOpen} 
             setAlertIsOpen={setAlertIsOpen} 
           >
@@ -118,7 +117,7 @@ export default function App() {
                 path="/flag/product/"
                 element={
                   userState.isLoggedIn ? (
-                    <FlagFormPage type_="product" user_id={userState.userName} />
+                    <FlagFormPage type_="product" />
                   ) : (
                     <LoginPage />
                   )
@@ -128,7 +127,7 @@ export default function App() {
                 path="/flag/image/"
                 element={
                   userState.isLoggedIn ? (
-                    <FlagFormPage type_="image" user_id={userState.userName} />
+                    <FlagFormPage type_="image" />
                   ) : (
                     <LoginPage />
                   )

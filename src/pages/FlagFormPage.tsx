@@ -9,16 +9,16 @@ import {
     FormControl 
 } from '@mui/material';
 import axios from 'axios';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { reasons, sources, flavors } from '../const/flagsConst';
+import LoginContext from '../contexts/login';
 
 /**
  * Interfaces
  */
 interface FlagFormProps {
     type_: 'product' | 'image' | 'search';
-    user_id: string;
 }
 
 interface FormData {
@@ -33,9 +33,10 @@ interface FormData {
 
 }
 
-export default function FlagForm({ type_, user_id }: FlagFormProps) {
+export default function FlagForm({ type_ }: FlagFormProps) {
 
     const [searchParams] = useSearchParams();
+    const { userName } = useContext(LoginContext);
     const barcode = searchParams.get('barcode') || undefined;
     const source = searchParams.get('source') || undefined;
     const flavor = searchParams.get('flavor') || undefined;
@@ -53,7 +54,7 @@ export default function FlagForm({ type_, user_id }: FlagFormProps) {
     const [formData, setFormData] = useState<FormData>({
         barcode: barcode || "", // only for product and image
         type: type_, // product, image, search
-        user_id: user_id, // not in the form
+        user_id: userName, // not in the form
         image_id: "no_image", // only for image
         source: source || "", // not in the form
         flavor: flavor || "", // not in the form
