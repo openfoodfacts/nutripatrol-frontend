@@ -104,7 +104,6 @@ export default function App() {
   return (
       <LoginContext.Provider value={{ ...userState, refresh }}>
           <LayoutMenu 
-            isLoggedIn={userState.isLoggedIn} 
             alertIsOpen={alertIsOpen} 
             setAlertIsOpen={setAlertIsOpen} 
           >
