@@ -16,7 +16,11 @@ import OffLogo from '../assets/off-logo.png';
 import { deepOrange, lightGreen } from '@mui/material/colors';
 import off from '../off.ts';
 
-const pages = [{ label: 'Home', path: '/'}, { label: "Images", path: '/image-moderation' }, { label: "Product", path: '/moderation' }];
+const pages = [
+  { label: "Home", path: '/'}, 
+  { label: "Images", path: '/image-moderation' }, 
+  { label: "Product", path: '/moderation' },
+];
 const settings = ['Logout'];
 
 interface ResponsiveAppBarProps {
@@ -31,7 +35,13 @@ function ResponsiveAppBar({ isLoggedIn }: ResponsiveAppBarProps) {
     setAnchorElNav(event.currentTarget);
   };
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElUser(event.currentTarget);
+    if (!isLoggedIn) {
+      window.location.reload();
+      window.location.href = '/login';
+      setAnchorElUser(null);
+    } else {
+      setAnchorElUser(event.currentTarget);
+    }
   };
 
   const handleCloseNavMenu = () => {
@@ -141,7 +151,7 @@ function ResponsiveAppBar({ isLoggedIn }: ResponsiveAppBarProps) {
             variant="h5"
             noWrap
             component="a"
-            href="#"
+            href="/"
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },

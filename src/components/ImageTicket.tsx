@@ -28,7 +28,6 @@ export default function ImageTicket({ticket, setTickets, tickets}: {ticket: any,
                     <a href={ticket.url} target='_blank' >
                         <img 
                             src={imageUrl} 
-                            // src='https://images.openfoodfacts.net/images/products/327/408/000/5003/1.400.jpg'
                             alt={ticket.barcode}
                             width={100}
                             height={100}
