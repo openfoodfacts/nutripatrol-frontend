@@ -31,7 +31,13 @@ function ResponsiveAppBar({ isLoggedIn }: ResponsiveAppBarProps) {
     setAnchorElNav(event.currentTarget);
   };
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElUser(event.currentTarget);
+    if (!isLoggedIn) {
+      window.location.reload();
+      window.location.href = '/login';
+      setAnchorElUser(null);
+    } else {
+      setAnchorElUser(event.currentTarget);
+    }
   };
 
   const handleCloseNavMenu = () => {
@@ -141,7 +147,7 @@ function ResponsiveAppBar({ isLoggedIn }: ResponsiveAppBarProps) {
             variant="h5"
             noWrap
             component="a"
-            href="#"
+            href="/"
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },
