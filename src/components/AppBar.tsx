@@ -16,7 +16,11 @@ import OffLogo from '../assets/off-logo.png';
 import { deepOrange, lightGreen } from '@mui/material/colors';
 import off from '../off.ts';
 
-const pages = [{ label: 'Home', path: '/'}, { label: "Images", path: '/image-moderation' }, { label: "Product", path: '/moderation' }];
+const pages = [
+  { label: "Home", path: '/'}, 
+  { label: "Images", path: '/image-moderation' }, 
+  { label: "Product", path: '/moderation' },
+];
 const settings = ['Logout'];
 
 interface ResponsiveAppBarProps {

@@ -4,6 +4,7 @@ import {
 } from "react-router-dom";
 import { useState, useCallback, useRef, useEffect } from "react";
 import off from "./off.ts";
+import { MODERATORS } from "./const/moderators.ts";
 import axios from "axios";
 
 import HomePage from './pages/HomePage.tsx'
@@ -17,22 +18,6 @@ import NotFound from "./pages/NotFound.tsx";
 import FlagFormPage from "./pages/FlagFormPage.tsx";
 import FlagInfos from "./pages/FlagInfos.tsx";
 import Tutorial from "./pages/Tutorial.tsx";
-
-const MODERATORS = [
-  "valimp",
-  "raphael0202",
-  "alex-off",
-  "charlesnepote",
-  "gala-nafikova",
-  "manoncorneille",
-  "stephane",
-  "teolemon",
-  "segundo",
-  "tacite",
-  "october-food-facts",
-  "odinh",
-  "jusdekiwi",
-]
 
 export default function App() {
 
