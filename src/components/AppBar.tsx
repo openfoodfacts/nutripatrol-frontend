@@ -15,6 +15,8 @@ import { Link } from 'react-router-dom'
 import OffLogo from '../assets/off-logo.png';
 import { deepOrange, lightGreen } from '@mui/material/colors';
 import off from '../off.ts';
+import LoginContext from '../contexts/login.tsx';
+import { useContext } from 'react';
 
 const pages = [
   { label: "Home", path: '/'}, 
@@ -23,11 +25,9 @@ const pages = [
 ];
 const settings = ['Logout'];
 
-interface ResponsiveAppBarProps {
-  isLoggedIn: boolean;
-}
+function ResponsiveAppBar() {
 
-function ResponsiveAppBar({ isLoggedIn }: ResponsiveAppBarProps) {
+  const { isLoggedIn } = useContext(LoginContext);
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
