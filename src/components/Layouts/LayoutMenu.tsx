@@ -16,7 +16,7 @@ export default function LayoutMenu({ children, alertIsOpen, setAlertIsOpen }: La
 
   return (
     <div className='main-container'>
-        <AppBar isLoggedIn={isLoggedIn} />
+        <AppBar/>
         <AuthAlert 
           message={isLoggedIn ? 'You are now logged in.' : 'You are now logged out.'} 
           severity={isLoggedIn ? 'success' : 'info'}
