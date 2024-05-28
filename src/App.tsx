@@ -39,7 +39,7 @@ export default function App() {
   // turn in to true to test the moderation page - it will always be logged in
   const devMode = (import.meta.env.VITE_DEVELOPPEMENT_MODE === "development");
   
-
+  const [alertIsOpen, setAlertIsOpen] = useState(false);
   const [userState, setUserState] = useState(() => {
     if (devMode) {
       return {
@@ -62,6 +62,8 @@ export default function App() {
         userName: "",
         isLoggedIn: true,
       });
+      setAlertIsOpen(true);
+      return true;
     }
     // Get the session cookie
     const sessionCookie = off.getCookie("session");
@@ -75,6 +77,7 @@ export default function App() {
         userName: "",
         isLoggedIn: false,
       });
+      setAlertIsOpen(false);
       lastSeenCookie.current = sessionCookie;
       return false;
     }
@@ -90,6 +93,7 @@ export default function App() {
           userName: cookieUserName,
           isLoggedIn: true,
         })
+        setAlertIsOpen(true);
         lastSeenCookie.current = sessionCookie;
         return true;
       })
@@ -99,6 +103,7 @@ export default function App() {
           userName: "",
           isLoggedIn: false,
         })
+        setAlertIsOpen(false);
         lastSeenCookie.current = sessionCookie;
         return false;
       });
@@ -113,7 +118,11 @@ export default function App() {
 
   return (
       <LoginContext.Provider value={{ ...userState, refresh }}>
-          <LayoutMenu isLoggedIn={userState.isLoggedIn} >
+          <LayoutMenu 
+            isLoggedIn={userState.isLoggedIn} 
+            alertIsOpen={alertIsOpen} 
+            setAlertIsOpen={setAlertIsOpen} 
+          >
             <Routes>
               {/* Index */}
               <Route path="/" element={<HomePage />} />
