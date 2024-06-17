@@ -1,6 +1,11 @@
 # nutripatrol-frontend
 The front-end (React) of nutripatrol moderation tool. It is deployed @ https://nutripatrol.openfoodfacts.net/
 
+## Nutripatrol API
+
+This repository works with an other [Nutripatrol API](https://github.com/openfoodfacts/nutripatrol)
+Please check this one before running the frontend.
+
 ## Get started 🎯
 
 1. You can clone this repository :
@@ -21,3 +26,20 @@ The front-end (React) of nutripatrol moderation tool. It is deployed @ https://n
 
 5. Congratulations 🎉 ! [You can open frontend](http://localhost:5173/)
 
+## Useful routes
+
+### Report forms
+
+1. To report an image : 
+```
+http://localhost:5173/flag/image?barcode=[BARCODE]&source=[source]&flavor=[flavor]
+```
+
+2. To report a product :
+```
+http://localhost:5173/flag/product?barcode=[BARCODE]&source=[source]&flavor=[flavor]
+```
+
+> [!NOTE] 
+> Warning, source have to be 'web', 'mobile', 'robotoff'
+> flavor have to be 'off', 'obf', 'opff', 'opf', 'off_pro'
