@@ -118,6 +118,7 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
                                                     alt={key}
                                                     width={150}
                                                     height={150}
+                                                    style={{objectFit: 'contain'}}
                                                 />
                                             </a>
                                         </Grid>

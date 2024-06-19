@@ -10,7 +10,7 @@ export default function ImageTicket({ticket, setTickets, tickets}: {ticket: any,
 
     const isMobile = useMediaQuery('(max-width:700px)');
     // format url to get mini image
-    const imageUrl = ticket.url.replace(/\.jpg$/, '.100.jpg');
+    const imageUrl = ticket.url.replace(/\.jpg$/, '.100.jpg');  
     
     return (
         <TableRow
@@ -31,6 +31,7 @@ export default function ImageTicket({ticket, setTickets, tickets}: {ticket: any,
                             alt={ticket.barcode}
                             width={100}
                             height={100}
+                            style={{ objectFit: 'contain' }}
                         />
                     </a>
                 </Box>
