@@ -37,6 +37,8 @@ export default function ImageTicket({ticket, setTickets, tickets}: {ticket: any,
                 </Box>
             </TableCell>
             <Date created_at={ticket.created_at} />
+            <TableCell align="center">{ticket.reasons}</TableCell>
+            <TableCell align="center">{ticket.comments}</TableCell>
             <TableCell align="center">
                 <InfoModal barcode={ticket.barcode} />
                 <TicketsButtons barcode={ticket.barcode} id={ticket.id} setTickets={setTickets} tickets={tickets} />
