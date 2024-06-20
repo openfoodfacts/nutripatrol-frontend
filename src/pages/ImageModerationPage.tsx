@@ -31,9 +31,26 @@ export default function ImageModerationPage() {
     const isMobile = useMediaQuery('(max-width:800px)')
 
     const fetchImageTickets = (url_: string) => {
-        axios.get(url_).then((res) => {            
-            setTickets(res.data.tickets)
+        axios.get(url_).then(async (res) => {         
+            
+            const ticketsData = res.data.tickets;
+
+            setTickets(ticketsData)
             setMaxPage(res.data.max_page)
+
+            const ticketIds = ticketsData.map((ticket: any) => ticket.id);
+            const flagsResponse = await axios.post(`${import.meta.env.VITE_API_URL}/flags/batch`, {
+                ticket_ids: ticketIds
+            });
+            // update ticket by adding reasons from flags
+            const ticketIdToFlags = flagsResponse.data.ticket_id_to_flags;
+            const updatedTickets = ticketsData.map((ticket: any) => {
+                ticket.reasons = ticketIdToFlags[ticket.id].map((flag: any) => flag.reason);
+                ticket.comments = ticketIdToFlags[ticket.id].map((flag: any) => flag.comment);
+                return ticket;
+            });
+
+            setTickets(updatedTickets);
             setIsLoading(false)
         }).catch((err) => {
             console.error(err)
@@ -110,6 +127,8 @@ export default function ImageModerationPage() {
                                                 <TableRow>
                                                     <TableCell align="center">Image</TableCell>
                                                     <TableCell align="center">Date</TableCell>
+                                                    <TableCell align="center">Reasons</TableCell>
+                                                    <TableCell align="center">Comments</TableCell>
                                                     <TableCell align="center">Actions</TableCell>
                                                 </TableRow>
                                             </TableHead>

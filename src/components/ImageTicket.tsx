@@ -10,7 +10,7 @@ export default function ImageTicket({ticket, setTickets, tickets}: {ticket: any,
 
     const isMobile = useMediaQuery('(max-width:700px)');
     // format url to get mini image
-    const imageUrl = ticket.url.replace(/\.jpg$/, '.100.jpg');
+    const imageUrl = ticket.url.replace(/\.jpg$/, '.100.jpg');  
     
     return (
         <TableRow
@@ -31,11 +31,14 @@ export default function ImageTicket({ticket, setTickets, tickets}: {ticket: any,
                             alt={ticket.barcode}
                             width={100}
                             height={100}
+                            style={{ objectFit: 'contain' }}
                         />
                     </a>
                 </Box>
             </TableCell>
             <Date created_at={ticket.created_at} />
+            <TableCell align="center">{ticket.reasons}</TableCell>
+            <TableCell align="center">{ticket.comments}</TableCell>
             <TableCell align="center">
                 <InfoModal barcode={ticket.barcode} />
                 <TicketsButtons barcode={ticket.barcode} id={ticket.id} setTickets={setTickets} tickets={tickets} />

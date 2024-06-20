@@ -22,6 +22,7 @@ interface Ticket {
     created_at: string;
     id: number;
     reasons?: string;
+    comments?: string;
   // Add other properties here if needed
 }
 
@@ -51,6 +52,7 @@ export default function ImageModerationPage() {
                 const ticketIdToFlags = flagsResponse.data.ticket_id_to_flags;
                 const updatedTickets = ticketsData.map((ticket: any) => {
                     ticket.reasons = ticketIdToFlags[ticket.id].map((flag: any) => flag.reason);
+                    ticket.comments = ticketIdToFlags[ticket.id].map((flag: any) => flag.comment);
                     return ticket;
                 });
 
@@ -100,6 +102,7 @@ export default function ImageModerationPage() {
                                                     <TableCell align="center">Image ID</TableCell>
                                                     <TableCell align="center">Flavor</TableCell>
                                                     <TableCell align="center">Reasons</TableCell>
+                                                    <TableCell align="center">Comments</TableCell>
                                                     <TableCell align="center">Created at</TableCell>
                                                     <TableCell align="center">Actions</TableCell>
                                                 </TableRow>
