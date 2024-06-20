@@ -16,7 +16,7 @@ export const reasons = {
         { value: 'other', label: 'Other' },
     ],
     image: [
-        { value: 'inapropriate', label: 'Inappropriate' },
+        { value: 'inappropriate', label: 'Inappropriate' },
         { value: 'outdated', label: 'Outdated' },
         { value: 'includes_personal_infos', label: 'Includes Personal Information' },
         { value: 'duplicate', label: 'Duplicate' },
