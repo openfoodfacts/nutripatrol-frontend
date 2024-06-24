@@ -1,5 +1,43 @@
 # Changelog
 
+## [1.0.3](https://github.com/openfoodfacts/nutripatrol-frontend/compare/v1.0.2...v1.0.3) (2024-06-24)
+
+
+### Bug Fixes
+
+* add alert when you logIn or logOut ([ff6d89f](https://github.com/openfoodfacts/nutripatrol-frontend/commit/ff6d89f1295c943adbeab70881c515cf22922a28))
+* add comment ([152bb13](https://github.com/openfoodfacts/nutripatrol-frontend/commit/152bb13018b9b5c2805bc1642eea3f76b342cd78))
+* add comments and reasons to image tickets ([e01f426](https://github.com/openfoodfacts/nutripatrol-frontend/commit/e01f4262e4e8d6aebd24b9611b9fa4f44c4e08e3))
+* add moderators ([7a2f742](https://github.com/openfoodfacts/nutripatrol-frontend/commit/7a2f74215e0837840e162ae5290b9012f4fa465a))
+* add PO images url ([0dc81cd](https://github.com/openfoodfacts/nutripatrol-frontend/commit/0dc81cd9373e2231ef2aeb7822e46dd2f5c95bbd))
+* better UI for image tickets ([284926f](https://github.com/openfoodfacts/nutripatrol-frontend/commit/284926f50d26da4318a7ff0c4d922a7615ea4769))
+* button open modal ([01d483c](https://github.com/openfoodfacts/nutripatrol-frontend/commit/01d483c3ff80f08c33a935a19ff8a48a7c7bb765))
+* change moderator list ([6af792b](https://github.com/openfoodfacts/nutripatrol-frontend/commit/6af792bd7f3c70d11e83e5767a10902b581495d9))
+* comment moderators list ([42bd256](https://github.com/openfoodfacts/nutripatrol-frontend/commit/42bd25657d37cf63f3dcff37b0a4195873f77786))
+* create modal for image tickets ([75321fd](https://github.com/openfoodfacts/nutripatrol-frontend/commit/75321fd4157d16f84143d7a491ec7227939d2b82))
+* delete log ([9061a91](https://github.com/openfoodfacts/nutripatrol-frontend/commit/9061a9148f3bb6c6dcd239218ead1506cf31ff60))
+* deploy master in pre-prod ([88599ad](https://github.com/openfoodfacts/nutripatrol-frontend/commit/88599ad4d40005260880d25ad60bc7f315196bda))
+* display all images ([389a53b](https://github.com/openfoodfacts/nutripatrol-frontend/commit/389a53bcfa198ca95f209bb3f994e522867c2e30))
+* display comments in product tickets ([65dbcf9](https://github.com/openfoodfacts/nutripatrol-frontend/commit/65dbcf9ff00c79f70b9cdd04206039d6597b1c00))
+* doc for forms ([a01d071](https://github.com/openfoodfacts/nutripatrol-frontend/commit/a01d07124fac1833b2580c3cb4fde466b2f473f5))
+* image contain in display and image tickets ([07d6cb2](https://github.com/openfoodfacts/nutripatrol-frontend/commit/07d6cb27c75821a8865e6f8b419e334b2a94f3f4))
+* last page remove ([3ca68da](https://github.com/openfoodfacts/nutripatrol-frontend/commit/3ca68da88c5aed17662425855d8443e2cd07e4e5))
+* move moderators in specific file ([115af20](https://github.com/openfoodfacts/nutripatrol-frontend/commit/115af20322e5cee2fec040b7a640ca33d1b87591))
+* off orthograph ([e7022b5](https://github.com/openfoodfacts/nutripatrol-frontend/commit/e7022b5794484c682f8fcd9f3609754c5b33f7e6))
+* reasons ([f4bba6d](https://github.com/openfoodfacts/nutripatrol-frontend/commit/f4bba6d5a458b343e548780af5439d771cf84d19))
+* refactor imports ([47b1182](https://github.com/openfoodfacts/nutripatrol-frontend/commit/47b11828031dfab2da509672f61d83d0ff5edec0))
+* refactor routes too fix cookie auto reload ([32c8802](https://github.com/openfoodfacts/nutripatrol-frontend/commit/32c8802bf27f02b4fe107b9f950dcaf99dbdbee6))
+* reload by cliking ([9ad2b30](https://github.com/openfoodfacts/nutripatrol-frontend/commit/9ad2b3031d6b991561d2261a7b7784aa531b7364))
+* reload when page is empty ([306ecf5](https://github.com/openfoodfacts/nutripatrol-frontend/commit/306ecf5816a1a54c770b114633fdffb3215cbfd0))
+* remove log ([6d5b146](https://github.com/openfoodfacts/nutripatrol-frontend/commit/6d5b1469113f9711877a5821b1f7f11de4b67cf4))
+* Remove logs and add key to grid ([9685528](https://github.com/openfoodfacts/nutripatrol-frontend/commit/96855280a8a183904dcbef6cf95b47346186f4f5))
+* remove useless comment ([a345893](https://github.com/openfoodfacts/nutripatrol-frontend/commit/a3458933648b0959270f7aaefce85ee3ea6b432d))
+* tutorial page ([98da729](https://github.com/openfoodfacts/nutripatrol-frontend/commit/98da729fc2da785731bec2a7f15372a3df48e0ed))
+* unique keyword filter ([605b313](https://github.com/openfoodfacts/nutripatrol-frontend/commit/605b313e673f37aa4ef10c4f1a54f5b9b962df0c))
+* use context to provide isLoggedIn ([4089e94](https://github.com/openfoodfacts/nutripatrol-frontend/commit/4089e94ef1ed0203b50b04f4623e9de533e9c357))
+* use context to provide isLoggedIn ([d8adf90](https://github.com/openfoodfacts/nutripatrol-frontend/commit/d8adf907becdcde8d76922d2fafe9d6708c7a3b4))
+* use context to provide userName ([fabb321](https://github.com/openfoodfacts/nutripatrol-frontend/commit/fabb3217a1b53fb2654a504ea8e55e23831a9b1e))
+
 ## [1.0.2](https://github.com/openfoodfacts/nutripatrol-frontend/compare/v1.0.1...v1.0.2) (2024-05-16)
 
 
