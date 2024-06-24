@@ -74,3 +74,19 @@ jobs:
         target: "/home/${{ env.SSH_USERNAME }}/${{ matrix.env }}/static"
         rm: true
         strip_components: 1
+
+
+    - name: Restart nginx
+      uses: appleboy/ssh-action@master
+      if: ${{ always() }}
+      with:
+        host: ${{ env.SSH_HOST }}
+        username: ${{ env.SSH_USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        proxy_host: ${{ env.SSH_PROXY_HOST }}
+        proxy_username: ${{ env.SSH_USERNAME }}
+        proxy_key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script_stop: false
+        script: |
+          cd ${{ matrix.env }}
+          docker-compose restart nginx
