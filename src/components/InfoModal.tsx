@@ -45,7 +45,8 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
                 name: res.data.product.product_name || null,
                 barcode: res.data.code || null,
                 images: {},
-                selectedImages: {},
+                selectedImages: [],
+                brands: res.data.product.brands || null,
             }
             // loop through the images and build the url
             if (res.data.product.images) {
@@ -58,10 +59,13 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
                 });
             }
             // loop through the selected images and keep only the url
-            if (res.data.product.selected_images) {
-                Object.keys(res.data.product.selected_images).forEach((key) => {
-                    usedData.selectedImages[key] = res.data.product.selected_images[key].small;
-                });
+            const selectedImages = res.data.product.selected_images;
+            if (selectedImages) {
+                for (const key in selectedImages) {
+                    if (selectedImages[key].thumb && selectedImages[key].thumb.en) {
+                      usedData.selectedImages.push(selectedImages[key].thumb.en);
+                    }
+                }
             }
             setTicketInfo(usedData);
             setIsLoaded(true);
@@ -105,6 +109,9 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
                             Barcode : {ticketInfo?.barcode}
                         </Typography>
                         <Typography id="modal-modal-description" variant="h6" sx={{ mt: 2 }}>
+                            Brands : {ticketInfo?.brands}
+                        </Typography>
+                        <Typography id="modal-modal-description" variant="h6" sx={{ mt: 2 }}>
                             Images :
                         </Typography>
                         {ticketInfo?.images ? (
@@ -128,6 +135,32 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
                         ) : (
                             <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                                 No images found
+                            </Typography>
+                        )}
+                        <Typography id="modal-modal-description" variant="h6" sx={{ mt: 2 }}>
+                            Selected Images :
+                        </Typography>
+                        {ticketInfo?.selectedImages ? (
+                            <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center', justifyContent: 'center', mt:2}}>
+                                <Grid container spacing={2}>
+                                    {ticketInfo.selectedImages.map((image: string, index: number) => (
+                                        <Grid key={index}>
+                                            <a href={image} target='_blank' key={index}>
+                                                <img 
+                                                    src={image} 
+                                                    alt={index.toString()}
+                                                    width={150}
+                                                    height={150}
+                                                    style={{objectFit: 'contain'}}
+                                                />
+                                            </a>
+                                        </Grid>
+                                    ))}
+                                </Grid>
+                            </Box>
+                        ) : (
+                            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                                No selected images found
                             </Typography>
                         )}
                     </>

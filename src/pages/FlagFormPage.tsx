@@ -40,6 +40,7 @@ export default function FlagForm({ type_ }: FlagFormProps) {
     const barcode = searchParams.get('barcode') || undefined;
     const source = searchParams.get('source') || undefined;
     const flavor = searchParams.get('flavor') || undefined;
+    const image_id = searchParams.get('image_id') || undefined;
 
     if ( source === undefined || !sources.includes(source) || flavor === undefined || !flavors.includes(flavor) ){
         return (
@@ -55,7 +56,7 @@ export default function FlagForm({ type_ }: FlagFormProps) {
         barcode: barcode || "", // only for product and image
         type: type_, // product, image, search
         user_id: userName, // not in the form
-        image_id: "no_image", // only for image
+        image_id: image_id, // only for image
         source: source || "", // not in the form
         flavor: flavor || "", // not in the form
         reason: "",
@@ -98,19 +99,6 @@ export default function FlagForm({ type_ }: FlagFormProps) {
                     margin="normal"
                     required
                 />
-                {
-                    type_==='image' && (
-                        <TextField
-                            name="image_id"
-                            label="Image ID"
-                            value={formData.image_id}
-                            onChange={handleChange}
-                            fullWidth
-                            margin="normal"
-                            required
-                        />
-                    )
-                }
                 <FormControl fullWidth margin="normal">
                     <InputLabel id="reason">Reason *</InputLabel>
                     <Select
