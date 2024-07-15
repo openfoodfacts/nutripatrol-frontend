@@ -1,6 +1,4 @@
 import { Box, Button, Typography } from "@mui/material"
-import { Link } from "react-router-dom"
-
 
 const ThanksPage = () => {
   return (
@@ -12,7 +10,7 @@ const ThanksPage = () => {
                 We will review your feedback as soon as possible
             </Typography>
             <Button variant="outlined" sx={{margin: '1rem 0'}}>
-                <Link to="/">Back to home</Link>
+                <a href="https://world.openfoodfacts.org">Back to Open Food Facts</a>
             </Button>
         </Box>
   )

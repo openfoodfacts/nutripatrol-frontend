@@ -9,7 +9,7 @@ import {
     FormControl 
 } from '@mui/material';
 import axios from 'axios';
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { reasons, sources, flavors } from '../const/flagsConst';
 import LoginContext from '../contexts/login';
@@ -62,6 +62,32 @@ export default function FlagForm({ type_ }: FlagFormProps) {
         reason: "",
         comment: ""
     });
+    const [image, setImage] = useState<string | null>(null);
+
+    useEffect(() => {
+        const buildUrl = (barcode: string, imageId: string, def: string, rev?: string) => {
+            // split the barcode into 4 parts
+            const part1 = barcode.slice(0, 3);
+            const part2 = barcode.slice(3, 6);
+            const part3 = barcode.slice(6, 9);
+            const part4 = barcode.slice(9);
+            // if rev is defined, return the url with rev
+            if (rev) {
+                return `${import.meta.env.VITE_PO_IMAGE_URL}/images/products/${part1}/${part2}/${part3}/${part4}/${imageId}.${rev}.${def}.jpg`;
+            }
+            // else return the url without rev
+            return `${import.meta.env.VITE_PO_IMAGE_URL}/images/products/${part1}/${part2}/${part3}/${part4}/${imageId}.${def}.jpg`;
+        }
+        if (type_ === 'image') {
+            const url = buildUrl(formData.barcode, formData.image_id as string, '400');
+            axios.get(url).then(() => {
+                setImage(url);
+            }
+            ).catch((err) => {
+                console.error(err);
+            })
+        }
+    }, [formData.type]);
 
     const handleChange = (e: any) => {
         const { name, value } = e.target;
@@ -85,17 +111,19 @@ export default function FlagForm({ type_ }: FlagFormProps) {
 
     /* FORM FOR PRODUCT */
     return (
-        <Container sx={{ marginTop: '2rem' }} >
+        <Container sx={{ marginTop: '2rem', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }} >
             <Typography variant='h4'>
-                Flag Form
+                {type_ === 'product' ? 'Flag a product' : 'Flag an image'}
             </Typography>
-            <form onSubmit={handleSubmit}>
+            {image && <img src={image} alt="product" style={{ width: '250px', margin: '2rem 0' }} />}
+            <form onSubmit={handleSubmit} style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '70%'}}>
                 <TextField
                     name="barcode"
                     label="Barcode"
                     value={formData.barcode}
                     onChange={handleChange}
                     fullWidth
+                    disabled
                     margin="normal"
                     required
                 />
@@ -125,9 +153,8 @@ export default function FlagForm({ type_ }: FlagFormProps) {
                     onChange={handleChange}
                     fullWidth
                     margin="normal"
-                    required
                 />
-                <Button type="submit" variant="contained" color="success">
+                <Button type="submit" variant="contained" color="success" sx={{margin: '1rem 0', width: '15rem'}}>
                     Flag {type_}
                 </Button>
             </form>
