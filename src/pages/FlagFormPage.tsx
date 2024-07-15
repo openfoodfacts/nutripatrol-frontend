@@ -76,7 +76,7 @@ export default function FlagForm({ type_ }: FlagFormProps) {
         try {
             axios.post(`${import.meta.env.VITE_API_URL}/flags`, formData)
             .then(() => {
-                window.location.replace('/');
+                window.location.replace('/thanks');
             })
         } catch (err) {
             console.error(err)
