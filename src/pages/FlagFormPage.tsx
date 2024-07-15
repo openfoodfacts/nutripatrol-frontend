@@ -111,18 +111,19 @@ export default function FlagForm({ type_ }: FlagFormProps) {
 
     /* FORM FOR PRODUCT */
     return (
-        <Container sx={{ marginTop: '2rem' }} >
+        <Container sx={{ marginTop: '2rem', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }} >
             <Typography variant='h4'>
-                Flag Form
+                {type_ === 'product' ? 'Flag a product' : 'Flag an image'}
             </Typography>
-            {image && <img src={image} alt="product" style={{ width: '250px' }} />}
-            <form onSubmit={handleSubmit}>
+            {image && <img src={image} alt="product" style={{ width: '250px', margin: '2rem 0' }} />}
+            <form onSubmit={handleSubmit} style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '70%'}}>
                 <TextField
                     name="barcode"
                     label="Barcode"
                     value={formData.barcode}
                     onChange={handleChange}
                     fullWidth
+                    disabled
                     margin="normal"
                     required
                 />
@@ -152,9 +153,8 @@ export default function FlagForm({ type_ }: FlagFormProps) {
                     onChange={handleChange}
                     fullWidth
                     margin="normal"
-                    required
                 />
-                <Button type="submit" variant="contained" color="success">
+                <Button type="submit" variant="contained" color="success" sx={{margin: '1rem 0', width: '15rem'}}>
                     Flag {type_}
                 </Button>
             </form>
