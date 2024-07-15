@@ -18,6 +18,7 @@ import NotFound from "./pages/NotFound.tsx";
 import FlagFormPage from "./pages/FlagFormPage.tsx";
 import FlagInfos from "./pages/FlagInfos.tsx";
 import Tutorial from "./pages/Tutorial.tsx";
+import ThanksPage from "./pages/ThanksPage.tsx";
 
 export default function App() {
 
@@ -164,6 +165,7 @@ export default function App() {
               />
               {/* Non LoggedIn routes */}
               <Route path="/login" element={<LoginPage />} />
+              <Route path="/thanks" element={<ThanksPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </LayoutMenu>
