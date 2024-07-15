@@ -12,9 +12,9 @@ const style = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: '90%',
+    width: '80%',
     bgcolor: 'background.paper',
-    border: '2px solid #000',
+    border: '1px solid #000',
     boxShadow: 24,
     p: 4,
   };
@@ -41,12 +41,15 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
     }
     const handleTicketInfo = () => {
         axios.get(`${import.meta.env.VITE_PO_URL}/api/v2/product/${barcode}.json`).then((res) => {
+            console.log(res.data.product);
+            
             const usedData: any = {
                 name: res.data.product.product_name || null,
                 barcode: res.data.code || null,
                 images: {},
                 selectedImages: [],
                 brands: res.data.product.brands || null,
+                editors_tags: res.data.product.editors_tags || null,
             }
             // loop through the images and build the url
             if (res.data.product.images) {
@@ -102,16 +105,38 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
                 <Box sx={style}>
                 {isLoaded ? (
                     <>
-                        <Typography id="modal-modal-title" variant="h5" component="h2">
+                        <Typography id="modal-modal-title" variant="h5" component="h3">
                             {ticketInfo?.name}
                         </Typography>
-                        <Typography id="modal-modal-description" variant="h6" sx={{ mt: 2 }}>
+                        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                             Barcode : {ticketInfo?.barcode}
                         </Typography>
-                        <Typography id="modal-modal-description" variant="h6" sx={{ mt: 2 }}>
+                        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                             Brands : {ticketInfo?.brands}
                         </Typography>
-                        <Typography id="modal-modal-description" variant="h6" sx={{ mt: 2 }}>
+                        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                            Editors tags :
+                        </Typography>
+                        {ticketInfo?.editors_tags ? (
+                            <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center', justifyContent: 'center', mt:2}}>
+                                <Grid container spacing={2}>
+                                    {ticketInfo.editors_tags.map((tag: string, index: number) => (
+                                        <Grid key={index} sx={{border: 'solid 1px black'}}>
+                                            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                                                {tag}
+                                            </Typography>
+                                        </Grid>
+                                    ))}
+                                </Grid>
+                            </Box>
+                        ) : (
+                            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                                No editors tags found
+                            </Typography>
+                        )
+
+                        }
+                        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                             Images :
                         </Typography>
                         {ticketInfo?.images ? (
@@ -123,8 +148,8 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
                                                 <img 
                                                     src={ticketInfo.images[key]} 
                                                     alt={key}
-                                                    width={150}
-                                                    height={150}
+                                                    width={120}
+                                                    height={120}
                                                     style={{objectFit: 'contain'}}
                                                 />
                                             </a>
@@ -137,7 +162,7 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
                                 No images found
                             </Typography>
                         )}
-                        <Typography id="modal-modal-description" variant="h6" sx={{ mt: 2 }}>
+                        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                             Selected Images :
                         </Typography>
                         {ticketInfo?.selectedImages ? (
@@ -149,8 +174,8 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
                                                 <img 
                                                     src={image} 
                                                     alt={index.toString()}
-                                                    width={150}
-                                                    height={150}
+                                                    width={120}
+                                                    height={120}
                                                     style={{objectFit: 'contain'}}
                                                 />
                                             </a>

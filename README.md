@@ -32,12 +32,12 @@ Please check this one before running the frontend.
 
 1. To report an image : 
 ```
-http://localhost:5173/flag/image?barcode=[BARCODE]&source=[source]&flavor=[flavor]
+http://localhost:5173/flag/image?barcode=[BARCODE]&source=[SOURCE]&flavor=[FLACOR]&image_id=[IMAGE_ID]
 ```
 
 2. To report a product :
 ```
-http://localhost:5173/flag/product?barcode=[BARCODE]&source=[source]&flavor=[flavor]
+http://localhost:5173/flag/product?barcode=[BARCODE]&source=[SOURCE]&flavor=[FLAVOR]
 ```
 
 > [!NOTE] 
