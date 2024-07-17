@@ -8,14 +8,14 @@ import PreviewOutlinedIcon from '@mui/icons-material/PreviewOutlined';
 import Grid from '@mui/material/Unstable_Grid2';
 
 const style = {
-    position: 'absolute' as 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: '80%',
-    bgcolor: 'background.paper',
-    border: '1px solid #000',
-    boxShadow: 24,
+    position:'absolute',
+    top:'10%',
+    left:'10%',
+    right:'10%',
+    overflow:'scroll',
+    height:'90%',
+    display:'block',
+    backgroundColor:'white',
     p: 4,
   };
 
