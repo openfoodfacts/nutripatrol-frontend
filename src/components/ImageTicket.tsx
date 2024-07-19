@@ -24,14 +24,27 @@ export default function ImageTicket({ticket, setTickets, tickets}: {ticket: any,
             }}
         >
             <TableCell align="center">
-                <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center', justifyContent: 'center'}}>
+                <Box 
+                    sx={{
+                        display: 'flex',
+                        gap: '10px',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        '& img': {
+                            transition: 'transform 0.3s ease-in-out',
+                        },
+                        '&:hover img': {
+                            transform: 'scale(2)',
+                        },
+                    }}
+                >
                     <a href={ticket.url} target='_blank' >
                         <img 
                             src={imageUrl} 
                             alt={ticket.barcode}
                             width={100}
                             height={100}
-                            style={{ objectFit: 'contain' }}
+                            style={{ objectFit: 'contain'}}
                         />
                     </a>
                 </Box>
