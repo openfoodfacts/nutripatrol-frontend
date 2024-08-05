@@ -115,27 +115,31 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
                             Brands : {ticketInfo?.brands}
                         </Typography>
                         <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                            Editors tags :
+                            Selected Images :
                         </Typography>
-                        {ticketInfo?.editors_tags ? (
+                        {ticketInfo?.selectedImages ? (
                             <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center', justifyContent: 'center', mt:2}}>
                                 <Grid container spacing={2}>
-                                    {ticketInfo.editors_tags.map((tag: string, index: number) => (
-                                        <Grid key={index} sx={{border: 'solid 1px black'}}>
-                                            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                                                {tag}
-                                            </Typography>
+                                    {ticketInfo.selectedImages.map((image: string, index: number) => (
+                                        <Grid key={index}>
+                                            <a href={image} target='_blank' key={index}>
+                                                <img 
+                                                    src={image} 
+                                                    alt={index.toString()}
+                                                    width={120}
+                                                    height={120}
+                                                    style={{objectFit: 'contain'}}
+                                                />
+                                            </a>
                                         </Grid>
                                     ))}
                                 </Grid>
                             </Box>
                         ) : (
                             <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                                No editors tags found
+                                No selected images found
                             </Typography>
-                        )
-
-                        }
+                        )}
                         <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                             Images :
                         </Typography>
@@ -163,31 +167,27 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
                             </Typography>
                         )}
                         <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                            Selected Images :
+                            Editors tags :
                         </Typography>
-                        {ticketInfo?.selectedImages ? (
+                        {ticketInfo?.editors_tags ? (
                             <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center', justifyContent: 'center', mt:2}}>
                                 <Grid container spacing={2}>
-                                    {ticketInfo.selectedImages.map((image: string, index: number) => (
-                                        <Grid key={index}>
-                                            <a href={image} target='_blank' key={index}>
-                                                <img 
-                                                    src={image} 
-                                                    alt={index.toString()}
-                                                    width={120}
-                                                    height={120}
-                                                    style={{objectFit: 'contain'}}
-                                                />
-                                            </a>
+                                    {ticketInfo.editors_tags.map((tag: string, index: number) => (
+                                        <Grid key={index} sx={{border: 'solid 1px black'}}>
+                                            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                                                {tag}
+                                            </Typography>
                                         </Grid>
                                     ))}
                                 </Grid>
                             </Box>
                         ) : (
                             <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                                No selected images found
+                                No editors tags found
                             </Typography>
-                        )}
+                        )
+
+                        }
                     </>
                 ) : (
                     <Typography id="modal-modal-title" variant="h6" component="h2">
