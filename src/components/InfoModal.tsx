@@ -50,6 +50,8 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
                 selectedImages: [],
                 brands: res.data.product.brands || null,
                 editors_tags: res.data.product.editors_tags || null,
+                categories: res.data.product.categories || null,
+                ingrediants: [],
             }
             // loop through the images and build the url
             if (res.data.product.images) {
@@ -67,6 +69,15 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
                 for (const key in selectedImages) {
                     if (selectedImages[key].thumb && selectedImages[key].thumb.en) {
                       usedData.selectedImages.push(selectedImages[key].thumb.en);
+                    }
+                }
+            }
+            // loop through the ingrediants and keep only the text
+            const ingrediants = res.data.product.ingredients;
+            if (ingrediants) {
+                for (const key in ingrediants) {
+                    if (ingrediants[key].text) {
+                        usedData.ingrediants.push(ingrediants[key].id);
                     }
                 }
             }
@@ -114,6 +125,9 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
                         <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                             Brands : {ticketInfo?.brands}
                         </Typography>
+                        <Typography>
+                            Categories : {ticketInfo?.categories}
+                        </Typography>
                         <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                             Selected Images :
                         </Typography>
@@ -138,6 +152,26 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
                         ) : (
                             <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                                 No selected images found
+                            </Typography>
+                        )}
+                        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                            Ingrediants :
+                        </Typography>
+                        {ticketInfo?.ingrediants ? (
+                            <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center', justifyContent: 'center', mt:2}}>
+                                <Grid container spacing={2}>
+                                    {ticketInfo.ingrediants.map((ingrediant: string, index: number) => (
+                                        <Grid key={index}>
+                                            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                                                {ingrediant}
+                                            </Typography>
+                                        </Grid>
+                                    ))}
+                                </Grid>
+                            </Box>
+                        ) : (
+                            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                                No ingrediants found
                             </Typography>
                         )}
                         <Typography id="modal-modal-description" sx={{ mt: 2 }}>
