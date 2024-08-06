@@ -10,7 +10,7 @@ export default function ImageTicket({ticket, setTickets, tickets}: {ticket: any,
 
     const isMobile = useMediaQuery('(max-width:700px)');
     // format url to get mini image
-    const imageUrl = ticket.url.replace(/\.jpg$/, '.100.jpg');  
+    const imageUrl = ticket.url.replace(/\.jpg$/, '.400.jpg');  
     
     return (
         <TableRow
@@ -34,7 +34,7 @@ export default function ImageTicket({ticket, setTickets, tickets}: {ticket: any,
                             transition: 'transform 0.3s ease-in-out',
                         },
                         '&:hover img': {
-                            transform: 'scale(2)',
+                            transform: 'scale(1.1)',
                         },
                     }}
                 >
@@ -42,8 +42,8 @@ export default function ImageTicket({ticket, setTickets, tickets}: {ticket: any,
                         <img 
                             src={imageUrl} 
                             alt={ticket.barcode}
-                            width={100}
-                            height={100}
+                            width={250}
+                            height={250}
                             style={{ objectFit: 'contain'}}
                         />
                     </a>
