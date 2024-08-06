@@ -55,6 +55,7 @@ export default function App() {
     const sessionCookie = off.getCookie("session");
     // If the session cookie is the same as the last seen cookie, return the current login state
     if (sessionCookie === lastSeenCookie.current) {
+      setAlertIsOpen(false);
       return userState.isLoggedIn;
     }
     // If the session cookie is null, the user is not logged in    
