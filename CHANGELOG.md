@@ -1,5 +1,29 @@
 # Changelog
 
+## [1.1.0](https://github.com/openfoodfacts/nutripatrol-frontend/compare/v1.0.3...v1.1.0) (2024-08-06)
+
+
+### Features
+
+* display flagged images on form ([047d7a3](https://github.com/openfoodfacts/nutripatrol-frontend/commit/047d7a39cde44340e6842cd7ce046939a025314e))
+* thanks page after flag form ([cc1d420](https://github.com/openfoodfacts/nutripatrol-frontend/commit/cc1d4202d1f48f7bf36fe7e35f5a584b0c77cb54))
+
+
+### Bug Fixes
+
+* add ingrediants ([5a86be6](https://github.com/openfoodfacts/nutripatrol-frontend/commit/5a86be677dfeb0fe8a558e33c1ecc060d4c18fe3))
+* better resolution of thumbnails in tickets ([d3b4838](https://github.com/openfoodfacts/nutripatrol-frontend/commit/d3b483891440e8de66703c8cfb1bebb8bb87dd90))
+* border ([735cbf6](https://github.com/openfoodfacts/nutripatrol-frontend/commit/735cbf617922eb2476308e86bab2aa153c0f334c))
+* change button redirect ([6042315](https://github.com/openfoodfacts/nutripatrol-frontend/commit/604231507bfedf19723cfba384998d98bb71730f))
+* change order of infos ([f5f52cd](https://github.com/openfoodfacts/nutripatrol-frontend/commit/f5f52cdf0f7279a246bbc9828927e363858654ef))
+* green flag fix ([4912b32](https://github.com/openfoodfacts/nutripatrol-frontend/commit/4912b32a6fd81d99c375164cd64b532881266ce8))
+* make modal scrollable ([39f5a58](https://github.com/openfoodfacts/nutripatrol-frontend/commit/39f5a58a12f327c3cf9e5836efd700f5b30288e5))
+* resize modal infos ([cb2219d](https://github.com/openfoodfacts/nutripatrol-frontend/commit/cb2219dd671b991438a40bbe435cb01d69cb070c))
+* scale one thumbnail of tickets ([03e0ad8](https://github.com/openfoodfacts/nutripatrol-frontend/commit/03e0ad83c214d24243148944a8275e6cc6015c41))
+* selected images and image id ([b176aa2](https://github.com/openfoodfacts/nutripatrol-frontend/commit/b176aa23934568351c20b8d4c61eb1b8f243a7c5))
+* update read me ([14fac34](https://github.com/openfoodfacts/nutripatrol-frontend/commit/14fac34310605ea1ad4b127724892d208e2cefe0))
+* ux fixes on flag form ([7b1a3d1](https://github.com/openfoodfacts/nutripatrol-frontend/commit/7b1a3d1fced8ac588c73b99f23037a4b3f7d6d4e))
+
 ## [1.0.3](https://github.com/openfoodfacts/nutripatrol-frontend/compare/v1.0.2...v1.0.3) (2024-06-24)
 
 
