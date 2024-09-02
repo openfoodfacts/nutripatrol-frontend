@@ -7,7 +7,6 @@ import axios from 'axios';
 import PreviewOutlinedIcon from '@mui/icons-material/PreviewOutlined';
 import Grid from '@mui/material/Unstable_Grid2';
 import Accordion from '@mui/material/Accordion';
-import AccordionActions from '@mui/material/AccordionActions';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -72,8 +71,12 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
             const selectedImages = res.data.product.selected_images;
             if (selectedImages) {
                 for (const key in selectedImages) {
-                    if (selectedImages[key].thumb && selectedImages[key].thumb.en) {
-                      usedData.selectedImages.push(selectedImages[key].thumb.en);
+                    if (selectedImages[key].thumb ) {
+                      for (const lang in selectedImages[key].thumb) {
+                            if (selectedImages[key].thumb[lang]) {
+                                usedData.selectedImages.push(selectedImages[key].thumb[lang]);
+                            }
+                        }
                     }
                 }
             }
