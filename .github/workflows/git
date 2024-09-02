@@ -3,7 +3,8 @@ name: 🎨 Add mockup-required and mockup-available issues to the openfoodfacts-
 on:
   issues:
     types:
-      - labeled, opened
+      - opened
+      - labeled
 
 jobs:
   add-to-design-project:
