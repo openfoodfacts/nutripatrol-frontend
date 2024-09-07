@@ -6,6 +6,10 @@ import { useState } from 'react';
 import axios from 'axios';
 import PreviewOutlinedIcon from '@mui/icons-material/PreviewOutlined';
 import Grid from '@mui/material/Unstable_Grid2';
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const style = {
     position:'absolute',
@@ -67,8 +71,12 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
             const selectedImages = res.data.product.selected_images;
             if (selectedImages) {
                 for (const key in selectedImages) {
-                    if (selectedImages[key].thumb && selectedImages[key].thumb.en) {
-                      usedData.selectedImages.push(selectedImages[key].thumb.en);
+                    if (selectedImages[key].thumb ) {
+                      for (const lang in selectedImages[key].thumb) {
+                            if (selectedImages[key].thumb[lang]) {
+                                usedData.selectedImages.push(selectedImages[key].thumb[lang]);
+                            }
+                        }
                     }
                 }
             }
@@ -230,28 +238,38 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
                                 No images found
                             </Typography>
                         )}
-                        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                            Editors tags :
-                        </Typography>
-                        {ticketInfo?.editors_tags ? (
-                            <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center', justifyContent: 'center', mt:2}}>
-                                <Grid container spacing={2}>
-                                    {ticketInfo.editors_tags.map((tag: string, index: number) => (
-                                        <Grid key={index} sx={{border: 'solid 1px black'}}>
-                                            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                                                {tag}
-                                            </Typography>
-                                        </Grid>
-                                    ))}
-                                </Grid>
-                            </Box>
-                        ) : (
-                            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                                No editors tags found
-                            </Typography>
-                        )
+                        <Accordion>
+                            <AccordionSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            aria-controls="panel1-content"
+                            id="panel1-header"
+                            >
+                                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                                    Editors tags :
+                                </Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                            {ticketInfo?.editors_tags ? (
+                                <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center', justifyContent: 'center', mt:2}}>
+                                    <Grid container spacing={2}>
+                                        {ticketInfo.editors_tags.map((tag: string, index: number) => (
+                                            <Grid key={index} sx={{border: 'solid 1px black'}}>
+                                                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                                                    {tag}
+                                                </Typography>
+                                            </Grid>
+                                        ))}
+                                    </Grid>
+                                </Box>
+                            ) : (
+                                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                                    No editors tags found
+                                </Typography>
+                            )
 
-                        }
+                            }
+                            </AccordionDetails>
+                        </Accordion>
                     </>
                 ) : (
                     <Typography id="modal-modal-title" variant="h6" component="h2">
