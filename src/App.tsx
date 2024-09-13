@@ -4,7 +4,7 @@ import {
 } from "react-router-dom";
 import { useState, useCallback, useRef, useEffect } from "react";
 import off from "./off.ts";
-import { MODERATORS } from "./const/moderators.ts";
+//import { MODERATORS } from "./const/moderators.ts";
 import axios from "axios";
 
 import HomePage from './pages/HomePage.tsx'
@@ -31,11 +31,13 @@ export default function App() {
       return {
         userName: "DEVMODE_USER",
         isLoggedIn: true,
+        isModerator: true,
       };
     }
     return {
       userName: "",
       isLoggedIn: false,
+      isModerator: false,
     };
   });
   
@@ -47,6 +49,7 @@ export default function App() {
       setUserState({
         userName: "",
         isLoggedIn: true,
+        isModerator: true,
       });
       setAlertIsOpen(true);
       return true;
@@ -63,6 +66,7 @@ export default function App() {
       setUserState({
         userName: "",
         isLoggedIn: false,
+        isModerator: false,
       });
       setAlertIsOpen(false);
       lastSeenCookie.current = sessionCookie;
@@ -75,28 +79,23 @@ export default function App() {
       })
       // If the request is successful, set the user state to logged in
       .then(response => {
-        if (response.status == 200) {
-          const cookieUserName = off.getUsername();
-          const userData = response.data.user;
-          if (userData.moderator === 1) {
-            console.log('L\'utilisateur est modérateur.');
-          } else {
-            console.log('L\'utilisateur n\'est pas modérateur.');
-          }
-          setUserState({
-            userName: cookieUserName,
-            isLoggedIn: true,
-          })
-          setAlertIsOpen(true);
-          lastSeenCookie.current = sessionCookie;
-          return true;
-        }
+        const cookieUserName = off.getUsername();
+        const userData = response.data.user;
+        setUserState({
+          userName: cookieUserName,
+          isLoggedIn: true,
+          isModerator: userData.moderator === 1,
+        })
+        setAlertIsOpen(true);
+        lastSeenCookie.current = sessionCookie;
+        return true;
       })
       // If the request is not successful, set the user state to logged out
       .catch(() => {
         setUserState({
           userName: "",
           isLoggedIn: false,
+          isModerator: false,
         })
         setAlertIsOpen(false);
         lastSeenCookie.current = sessionCookie;
@@ -108,8 +107,6 @@ export default function App() {
   useEffect(() => {
     refresh(); 
   }, [refresh]);
-
-  const isModerator =  devMode ? true : MODERATORS.includes(userState.userName);
 
   return (
       <LoginContext.Provider value={{ ...userState, refresh }}>
@@ -148,7 +145,7 @@ export default function App() {
                 path="/image-moderation"
                 element={
                   userState.isLoggedIn ? (
-                    isModerator ? (
+                    userState.isModerator ? (
                       <ImageModerationPage />
                     ) : (
                       <NonModeratorPage />
@@ -162,7 +159,7 @@ export default function App() {
                 path="/moderation"
                 element={
                   userState.isLoggedIn ? (
-                    isModerator ? (
+                    userState.isModerator ? (
                       <ModerationPage />
                     ) : (
                       <NonModeratorPage />
