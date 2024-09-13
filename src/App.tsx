@@ -74,15 +74,23 @@ export default function App() {
         withCredentials: true,
       })
       // If the request is successful, set the user state to logged in
-      .then(() => {
-        const cookieUserName = off.getUsername();
-        setUserState({
-          userName: cookieUserName,
-          isLoggedIn: true,
-        })
-        setAlertIsOpen(true);
-        lastSeenCookie.current = sessionCookie;
-        return true;
+      .then(response => {
+        if (response.status == 200) {
+          const cookieUserName = off.getUsername();
+          const userData = response.data.user;
+          if (userData.moderator === 1) {
+            console.log('L\'utilisateur est modérateur.');
+          } else {
+            console.log('L\'utilisateur n\'est pas modérateur.');
+          }
+          setUserState({
+            userName: cookieUserName,
+            isLoggedIn: true,
+          })
+          setAlertIsOpen(true);
+          lastSeenCookie.current = sessionCookie;
+          return true;
+        }
       })
       // If the request is not successful, set the user state to logged out
       .catch(() => {
