@@ -81,12 +81,13 @@ export default function App() {
       .then(response => {
         const cookieUserName = off.getUsername();
         const userData = response.data.user;
-        setUserState((prevState) => ({
-          ...prevState,
+        setUserState({
           userName: cookieUserName,
           isLoggedIn: true,
-          isModerator: userData.moderator === 1,
-        }))
+          isModerator: true,
+        })
+        console.log(userData);
+        
         console.log(userState);
         
         setAlertIsOpen(true);
