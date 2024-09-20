@@ -81,19 +81,27 @@ export default function App() {
       .then(response => {
         const cookieUserName = off.getUsername();
         const userData = response.data.user;
-        console.log("cookieUserName: ", cookieUserName);
-        console.log("userData: ", userData);
-        
-        setUserState({
-          userName: cookieUserName,
-          isLoggedIn: true,
-          isModerator: userData.moderator === 1,
-        })
-        console.log("userState: ", userState);
-        
-        setAlertIsOpen(true);
-        lastSeenCookie.current = sessionCookie;
-        return true;
+        if (userData && typeof userData.moderator !== 'undefined') {
+          setUserState({
+            userName: cookieUserName,
+            isLoggedIn: true,
+            isModerator: userData.moderator === 1,
+          })
+          setAlertIsOpen(true);
+          lastSeenCookie.current = sessionCookie;
+          console.log("userState",userState);
+          
+          return true;
+        } else {
+          setUserState({
+            userName: "",
+            isLoggedIn: false,
+            isModerator: false,
+          })
+          setAlertIsOpen(false);
+          lastSeenCookie.current = sessionCookie;
+          return false;
+        }
       })
       // If the request is not successful, set the user state to logged out
       .catch(() => {
