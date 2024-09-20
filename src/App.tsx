@@ -87,6 +87,8 @@ export default function App() {
           isLoggedIn: true,
           isModerator: userData.moderator === 1,
         }))
+        console.log(userState);
+        
         setAlertIsOpen(true);
         lastSeenCookie.current = sessionCookie;
         return true;
