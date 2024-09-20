@@ -74,14 +74,14 @@ export default function App() {
     }
     // If the session cookie is not null, send a request to the server to check if the user is logged in
     const isLoggedIn = axios
-      .get(`${import.meta.env.VITE_PO_URL}/cgi/auth.pl`, {
+      .get(`${import.meta.env.VITE_PO_URL}/cgi/auth.pl?body=1`, {
         withCredentials: true,
       })
       // If the request is successful, set the user state to logged in
       .then(response => {
         const cookieUserName = off.getUsername();
         const userData = response.data.user;
-        console.log("userData: ", response.data);
+        console.log("userData: ", response);
         setUserState({
           userName: cookieUserName,
           isLoggedIn: true,
