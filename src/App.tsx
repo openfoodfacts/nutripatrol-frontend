@@ -81,6 +81,8 @@ export default function App() {
       .then(response => {
         const cookieUserName = off.getUsername();
         const userData = response.data.user;
+        console.log("userData: ", userData);
+        
         setUserState({
           userName: cookieUserName,
           isLoggedIn: true,
