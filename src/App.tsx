@@ -81,6 +81,7 @@ export default function App() {
       .then(response => {
         const cookieUserName = off.getUsername();
         const userData = response.data.user;
+        console.log("cookieUserName: ", cookieUserName);
         console.log("userData: ", userData);
         
         setUserState({
@@ -101,8 +102,6 @@ export default function App() {
           isLoggedIn: false,
           isModerator: false,
         })
-        console.log("check failed");
-        
         setAlertIsOpen(false);
         lastSeenCookie.current = sessionCookie;
         return false;
