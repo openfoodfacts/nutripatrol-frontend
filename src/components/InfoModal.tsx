@@ -55,7 +55,7 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
                 brands: res.data.product.brands || null,
                 editors_tags: res.data.product.editors_tags || null,
                 categories: [],
-                ingrediants: [],
+                ingredients: [],
             }
             // loop through the images and build the url
             if (res.data.product.images) {
@@ -80,12 +80,12 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
                     }
                 }
             }
-            // loop through the ingrediants and keep only the text
-            const ingrediants = res.data.product.ingredients;
-            if (ingrediants) {
-                for (const key in ingrediants) {
-                    if (ingrediants[key].text) {
-                        usedData.ingrediants.push(ingrediants[key].id);
+            // loop through the ingredients and keep only the text
+            const ingredients = res.data.product.ingredients;
+            if (ingredients) {
+                for (const key in ingredients) {
+                    if (ingredients[key].text) {
+                        usedData.ingredients.push(ingredients[key].id);
                     }
                 }
             }
@@ -192,12 +192,12 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
                         )}
                         <Box sx={{ border: 'solid 1px black', p: 2 }}>
                             <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                                Ingrediants :
+                                Ingredients :
                             </Typography>
-                            {ticketInfo?.ingrediants ? (
+                            {ticketInfo?.ingredients ? (
                                 <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center', justifyContent: 'center', mt:2}}>
                                     <Grid container spacing={2}>
-                                        {ticketInfo.ingrediants.map((ingrediant: string, index: number) => (
+                                        {ticketInfo.ingredients.map((ingrediant: string, index: number) => (
                                             <Grid key={index}>
                                                 <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                                                     {ingrediant}
@@ -208,7 +208,7 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
                                 </Box>
                             ) : (
                                 <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                                    No ingrediants found
+                                    No ingredients found
                                 </Typography>
                             )}
                         </Box>
