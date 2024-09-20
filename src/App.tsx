@@ -81,7 +81,7 @@ export default function App() {
       .then(response => {
         const cookieUserName = off.getUsername();
         const userData = response.data.user;
-        console.log("userData: ", response);
+        console.log("user is moderator ?: ", userData.moderator === 1);
         setUserState({
           userName: cookieUserName,
           isLoggedIn: true,
