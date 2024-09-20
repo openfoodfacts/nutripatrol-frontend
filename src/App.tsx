@@ -81,11 +81,14 @@ export default function App() {
       .then(response => {
         const cookieUserName = off.getUsername();
         const userData = response.data.user;
+        console.log(userData);
         setUserState({
           userName: cookieUserName,
           isLoggedIn: true,
           isModerator: userData.moderator === 1,
         })
+        console.log(userState);
+        
         setAlertIsOpen(true);
         lastSeenCookie.current = sessionCookie;
         return true;
