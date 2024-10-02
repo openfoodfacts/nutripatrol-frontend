@@ -4,7 +4,6 @@ import {
 } from "react-router-dom";
 import { useState, useCallback, useRef, useEffect } from "react";
 import off from "./off.ts";
-//import { MODERATORS } from "./const/moderators.ts";
 import axios from "axios";
 
 import HomePage from './pages/HomePage.tsx'
@@ -74,18 +73,20 @@ export default function App() {
     }
     // If the session cookie is not null, send a request to the server to check if the user is logged in
     const isLoggedIn = axios
-      .get(`${import.meta.env.VITE_PO_URL}/cgi/auth.pl`, {
+      .get(`${import.meta.env.VITE_PO_URL}/cgi/auth.pl?body=1`, {
         withCredentials: true,
       })
       // If the request is successful, set the user state to logged in
       .then(response => {
         const cookieUserName = off.getUsername();
         const userData = response.data.user;
-        setUserState({
+        setUserState(prevState => ({
+          ...prevState,
           userName: cookieUserName,
           isLoggedIn: true,
           isModerator: userData.moderator === 1,
-        })
+        }))
+        
         setAlertIsOpen(true);
         lastSeenCookie.current = sessionCookie;
         return true;
@@ -102,7 +103,11 @@ export default function App() {
         return false;
       });
     return isLoggedIn;
-  }, [userState.isLoggedIn]);
+  }, [userState]);
+
+  useEffect(() => {
+    console.log("User state changed");
+  }, [userState]);
 
   useEffect(() => {
     refresh(); 
