@@ -4,7 +4,6 @@ import {
 } from "react-router-dom";
 import { useState, useCallback, useRef, useEffect } from "react";
 import off from "./off.ts";
-//import { MODERATORS } from "./const/moderators.ts";
 import axios from "axios";
 
 import HomePage from './pages/HomePage.tsx'
