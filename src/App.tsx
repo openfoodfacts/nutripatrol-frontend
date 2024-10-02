@@ -81,14 +81,13 @@ export default function App() {
       .then(response => {
         const cookieUserName = off.getUsername();
         const userData = response.data.user;
+        console.log("before",userData);
         setUserState({
           userName: cookieUserName,
           isLoggedIn: true,
-          isModerator: true,
+          isModerator: userData.moderator === 1,
         })
-        console.log(userData);
-        
-        console.log(userState);
+        console.log("after",userState);
         
         setAlertIsOpen(true);
         lastSeenCookie.current = sessionCookie;
@@ -106,7 +105,7 @@ export default function App() {
         return false;
       });
     return isLoggedIn;
-  }, [userState.isLoggedIn]);
+  }, [userState]);
 
   useEffect(() => {
     refresh(); 
