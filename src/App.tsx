@@ -109,6 +109,10 @@ export default function App() {
   }, [userState]);
 
   useEffect(() => {
+    console.log("User state changed", userState);
+  }, [userState]);
+
+  useEffect(() => {
     refresh(); 
   }, [refresh]);
 
