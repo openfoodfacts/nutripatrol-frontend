@@ -67,6 +67,23 @@ export default function ImageModerationPage() {
         fetchTickets()
     }, [currentPage])
 
+    if (Tickets.length === 0 || Tickets === undefined || Tickets === null) { 
+        return (
+            <>
+                <Box sx={{width: "100vw", zIndex: "-10", color: '#281900', display: 'flex',flexDirection: "column", alignItems: "center", justifyContent:"center", padding: 2}}>
+                    <Typography variant="h4" sx={{fontSize: {xs: '1.2rem', md: '1.7rem'}}}>
+                        Ticket Moderation
+                    </Typography>
+                </Box>
+                <Box sx={{position: "absolute", width: "100vw", height: "100vh", zIndex: "-10", color: '#281900', display: 'flex',flexDirection: "column", alignItems: "center", justifyContent:"center"}}>
+                    <Typography variant="h4" sx={{fontSize: {xs: '1.2rem', md: '1.7rem'}}}>
+                        No tickets to moderate
+                    </Typography>
+                </Box>
+            </>
+        )
+    }
+
     return (
         <>
             <Box sx={{width: "100vw", zIndex: "-10", color: '#281900', display: 'flex',flexDirection: "column", alignItems: "center", justifyContent:"center", padding: 2}}>
