@@ -57,6 +57,8 @@ export default function ImageModerationPage() {
                 });
 
                 setTickets(updatedTickets);
+                console.log(updatedTickets);
+                
                 setIsLoading(false);
             } catch (err) {
                 console.error(err)

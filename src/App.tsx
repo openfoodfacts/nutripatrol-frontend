@@ -103,7 +103,7 @@ export default function App() {
         return false;
       });
     return isLoggedIn;
-  }, [userState]);
+  }, [userState.isLoggedIn]);
 
   useEffect(() => {
     console.log("User state changed");
