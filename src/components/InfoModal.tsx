@@ -44,9 +44,7 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
         return `${import.meta.env.VITE_PO_IMAGE_URL}/images/products/${part1}/${part2}/${part3}/${part4}/${imageId}.${def}.jpg`;
     }
     const handleTicketInfo = () => {
-        axios.get(`${import.meta.env.VITE_PO_URL}/api/v2/product/${barcode}.json`).then((res) => {
-            console.log(res.data.product);
-            
+        axios.get(`${import.meta.env.VITE_PO_URL}/api/v2/product/${barcode}.json`).then((res) => {            
             const usedData: any = {
                 name: res.data.product.product_name || null,
                 barcode: res.data.code || null,
@@ -140,79 +138,6 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
                             Barcode : {ticketInfo?.barcode}
                         </Typography>
                         <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                            Brands : {ticketInfo?.brands}
-                        </Typography>
-                        <Box sx={{ border: 'solid 1px black', p: 2 }}>
-                            <Typography sx={{ mt: 2 }}>
-                                Categories :
-                            </Typography>
-                            {ticketInfo?.categories ? (
-                                <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center', justifyContent: 'center', mt:2}}>
-                                    <Grid container spacing={2}>
-                                        {ticketInfo.categories.map((category: string, index: number) => (
-                                            <Grid key={index}>
-                                                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                                                    {category}
-                                                </Typography>
-                                            </Grid>
-                                        ))}
-                                    </Grid>
-                                </Box>
-                            ) : (
-                                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                                    No categories found
-                                </Typography>
-                            )}
-                        </Box>
-                        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                            Selected Images :
-                        </Typography>
-                        {ticketInfo?.selectedImages ? (
-                            <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center', justifyContent: 'center', mt:2}}>
-                                <Grid container spacing={2}>
-                                    {ticketInfo.selectedImages.map((image: string, index: number) => (
-                                        <Grid key={index}>
-                                            <a href={image} target='_blank' key={index}>
-                                                <img 
-                                                    src={image} 
-                                                    alt={index.toString()}
-                                                    width={120}
-                                                    height={120}
-                                                    style={{objectFit: 'contain'}}
-                                                />
-                                            </a>
-                                        </Grid>
-                                    ))}
-                                </Grid>
-                            </Box>
-                        ) : (
-                            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                                No selected images found
-                            </Typography>
-                        )}
-                        <Box sx={{ border: 'solid 1px black', p: 2 }}>
-                            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                                Ingredients :
-                            </Typography>
-                            {ticketInfo?.ingredients ? (
-                                <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center', justifyContent: 'center', mt:2}}>
-                                    <Grid container spacing={2}>
-                                        {ticketInfo.ingredients.map((ingrediant: string, index: number) => (
-                                            <Grid key={index}>
-                                                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                                                    {ingrediant}
-                                                </Typography>
-                                            </Grid>
-                                        ))}
-                                    </Grid>
-                                </Box>
-                            ) : (
-                                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                                    No ingredients found
-                                </Typography>
-                            )}
-                        </Box>
-                        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                             Images :
                         </Typography>
                         {ticketInfo?.images ? (
@@ -238,6 +163,53 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
                                 No images found
                             </Typography>
                         )}
+                        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                            Brands : {ticketInfo?.brands}
+                        </Typography>
+                        <Box sx={{ border: 'solid 1px black', p: 2 }}>
+                            <Typography sx={{ mt: 2 }}>
+                                Categories :
+                            </Typography>
+                            {ticketInfo?.categories ? (
+                                <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center', justifyContent: 'center', mt:2}}>
+                                    <Grid container spacing={2}>
+                                        {ticketInfo.categories.map((category: string, index: number) => (
+                                            <Grid key={index}>
+                                                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                                                    {category}
+                                                </Typography>
+                                            </Grid>
+                                        ))}
+                                    </Grid>
+                                </Box>
+                            ) : (
+                                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                                    No categories found
+                                </Typography>
+                            )}
+                        </Box>
+                        <Box sx={{ border: 'solid 1px black', p: 2 }}>
+                            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                                Ingredients :
+                            </Typography>
+                            {ticketInfo?.ingredients ? (
+                                <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center', justifyContent: 'center', mt:2}}>
+                                    <Grid container spacing={2}>
+                                        {ticketInfo.ingredients.map((ingrediant: string, index: number) => (
+                                            <Grid key={index}>
+                                                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                                                    {ingrediant}
+                                                </Typography>
+                                            </Grid>
+                                        ))}
+                                    </Grid>
+                                </Box>
+                            ) : (
+                                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                                    No ingredients found
+                                </Typography>
+                            )}
+                        </Box>
                         <Accordion>
                             <AccordionSummary
                             expandIcon={<ExpandMoreIcon />}
