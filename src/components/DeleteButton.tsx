@@ -2,7 +2,7 @@ import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CheckIcon from '@mui/icons-material/Check';
 import { useState } from 'react';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
 interface DeleteButtonProps {
     barcode: string;
@@ -18,8 +18,20 @@ const DeleteButton = ({ barcode, imgids }: DeleteButtonProps) => {
         if (!isConfirmed) {
             setIsConfirmed(true)
         } else {
+            const data = new URLSearchParams()
+            data.append('code', barcode)
+            data.append('imgids', imgids)
+            data.append('move_to_override', 'trash')
             try {
-                axios.delete(deleteUrl)
+                axios.post(
+                    deleteUrl,
+                    data,
+                    {
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        }
+                    }
+                )
             } catch (err) {
                 console.error(err)
             }

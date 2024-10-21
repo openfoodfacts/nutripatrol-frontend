@@ -45,12 +45,12 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
         return `${import.meta.env.VITE_PO_IMAGE_URL}/images/products/${part1}/${part2}/${part3}/${part4}/${imageId}.${def}.jpg`;
     }
     const handleTicketInfo = () => {
-        axios.get(`${import.meta.env.VITE_PO_URL}/api/v2/product/${barcode}.json`).then((res) => {            
+        axios.get(`${import.meta.env.VITE_PO_URL}/api/v2/product/${barcode}.json`).then((res) => {    
+            console.log(res.data)        
             const usedData: any = {
                 name: res.data.product.product_name || null,
                 barcode: res.data.code || null,
                 images: {},
-                selectedImages: [],
                 brands: res.data.product.brands || null,
                 editors_tags: res.data.product.editors_tags || null,
                 categories: [],
@@ -65,19 +65,6 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
                         usedData.images[key] = buildUrl(barcode, key, '100');
                     }
                 });
-            }
-            // loop through the selected images and keep only the url
-            const selectedImages = res.data.product.selected_images;
-            if (selectedImages) {
-                for (const key in selectedImages) {
-                    if (selectedImages[key].thumb ) {
-                      for (const lang in selectedImages[key].thumb) {
-                            if (selectedImages[key].thumb[lang]) {
-                                usedData.selectedImages.push(selectedImages[key].thumb[lang]);
-                            }
-                        }
-                    }
-                }
             }
             // loop through the ingredients and keep only the text
             const ingredients = res.data.product.ingredients;
@@ -97,6 +84,7 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
                     }
                 }
             }
+            console.log(usedData)
             setTicketInfo(usedData);
             setIsLoaded(true);
         }).catch((err) => {
@@ -154,7 +142,7 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
                                                 style={{objectFit: 'contain'}}
                                             />
                                             
-                                            <DeleteButton barcode={ticketInfo.barcode} imgids={ticketInfo.image_id} />
+                                            <DeleteButton barcode={ticketInfo.barcode} imgids={ticketInfo.key} />
 
                                         </Grid>
                                     ))}
