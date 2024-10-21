@@ -1,4 +1,4 @@
-import IconButton from '@mui/material/IconButton';
+import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CheckIcon from '@mui/icons-material/Check';
 import { useState } from 'react';
@@ -27,13 +27,24 @@ const DeleteButton = ({ barcode, imgids }: DeleteButtonProps) => {
     }
 
   return (
-    <IconButton aria-label="delete" color='error' onClick={handleDelete}>
-        { isConfirmed ? 
-        <CheckIcon /> 
-            : 
-        <DeleteIcon />
+    <Button 
+        aria-label="delete"
+        color='error'
+        startIcon={
+            isConfirmed ? 
+            <CheckIcon />
+            :
+            <DeleteIcon />
         }
-    </IconButton>
+        onClick={handleDelete}
+        variant='contained'
+    >
+        { isConfirmed ? 
+            "confirm"
+            :
+            "delete"
+        }
+    </Button>
   )
 }
 

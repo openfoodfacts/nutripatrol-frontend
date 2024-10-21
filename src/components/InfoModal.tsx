@@ -145,7 +145,7 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
                             <Box sx={{ display: 'flex', gap: '20px', alignItems: 'center', justifyContent: 'center', mt:2}}>
                                 <Grid container spacing={2}>
                                     {Object.keys(ticketInfo.images).map((key) => (
-                                        <Grid key={key}>
+                                        <Grid key={key} sx={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
                                             <img 
                                                 src={ticketInfo.images[key]} 
                                                 alt={key}
