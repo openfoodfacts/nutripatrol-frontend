@@ -10,6 +10,7 @@ import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import DeleteButton from './DeleteButton';
 
 const style = {
     position:'absolute',
@@ -141,19 +142,20 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
                             Images :
                         </Typography>
                         {ticketInfo?.images ? (
-                            <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center', justifyContent: 'center', mt:2}}>
+                            <Box sx={{ display: 'flex', gap: '20px', alignItems: 'center', justifyContent: 'center', mt:2}}>
                                 <Grid container spacing={2}>
                                     {Object.keys(ticketInfo.images).map((key) => (
                                         <Grid key={key}>
-                                            <a href={ticketInfo.images[key]} target='_blank' key={key}>
-                                                <img 
-                                                    src={ticketInfo.images[key]} 
-                                                    alt={key}
-                                                    width={120}
-                                                    height={120}
-                                                    style={{objectFit: 'contain'}}
-                                                />
-                                            </a>
+                                            <img 
+                                                src={ticketInfo.images[key]} 
+                                                alt={key}
+                                                width={160}
+                                                height={160}
+                                                style={{objectFit: 'contain'}}
+                                            />
+                                            
+                                            <DeleteButton barcode={ticketInfo.barcode} imgids={ticketInfo.image_id} />
+
                                         </Grid>
                                     ))}
                                 </Grid>
