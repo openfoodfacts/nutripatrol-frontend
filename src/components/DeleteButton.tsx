@@ -2,7 +2,7 @@ import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CheckIcon from '@mui/icons-material/Check';
 import { useState } from 'react';
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 
 interface DeleteButtonProps {
     barcode: string;

@@ -45,8 +45,7 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
         return `${import.meta.env.VITE_PO_IMAGE_URL}/images/products/${part1}/${part2}/${part3}/${part4}/${imageId}.${def}.jpg`;
     }
     const handleTicketInfo = () => {
-        axios.get(`${import.meta.env.VITE_PO_URL}/api/v2/product/${barcode}.json`).then((res) => {    
-            console.log(res.data)        
+        axios.get(`${import.meta.env.VITE_PO_URL}/api/v2/product/${barcode}.json`).then((res) => {          
             const usedData: any = {
                 name: res.data.product.product_name || null,
                 barcode: res.data.code || null,
@@ -84,7 +83,6 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
                     }
                 }
             }
-            console.log(usedData)
             setTicketInfo(usedData);
             setIsLoaded(true);
         }).catch((err) => {
