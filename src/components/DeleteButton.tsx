@@ -41,7 +41,12 @@ const DeleteButton = ({ barcode, imgids }: DeleteButtonProps) => {
   return (
     <Button 
         aria-label="delete"
-        color='error'
+        color={
+            isConfirmed ? 
+            'info'
+            :
+            'error'
+        }
         startIcon={
             isConfirmed ? 
             <CheckIcon />
