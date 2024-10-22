@@ -16,6 +16,7 @@ const DeleteButton = ({ barcode, imgids }: DeleteButtonProps) => {
 
     const handleDelete = () => {
         if (!isConfirmed) {
+            console.log(imgids)
             setIsConfirmed(true)
         } else {
             const data = new URLSearchParams()
