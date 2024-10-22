@@ -8,9 +8,10 @@ import axios from 'axios';
 interface DeleteButtonProps {
     barcode: string;
     imgids: string;
+    handleImageDeleted: () => void;
 }
 
-const DeleteButton = ({ barcode, imgids }: DeleteButtonProps) => {
+const DeleteButton = ({ barcode, imgids, handleImageDeleted }: DeleteButtonProps) => {
 
     const [isConfirmed, setIsConfirmed] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
@@ -38,6 +39,7 @@ const DeleteButton = ({ barcode, imgids }: DeleteButtonProps) => {
                 .then(response => {
                     console.log(response)
                     setIsLoading(false)
+                    handleImageDeleted()
                 })
             } catch (err) {
                 console.error(err)

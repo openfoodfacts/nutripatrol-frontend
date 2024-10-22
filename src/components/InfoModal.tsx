@@ -90,6 +90,9 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
             setIsLoaded(true);
         })
     }
+    const handleImageDeleted = () => {
+        handleTicketInfo();
+    };
     const handleOpen = () => {
         handleTicketInfo();
         setOpen(true);
@@ -140,7 +143,7 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
                                                 style={{objectFit: 'contain'}}
                                             />
                                             
-                                            <DeleteButton barcode={ticketInfo.barcode} imgids={key} />
+                                            <DeleteButton barcode={ticketInfo.barcode} imgids={key} handleImageDeleted={handleImageDeleted} />
 
                                         </Grid>
                                     ))}
