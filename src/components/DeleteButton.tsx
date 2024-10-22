@@ -1,6 +1,7 @@
 import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CheckIcon from '@mui/icons-material/Check';
+import LoopIcon from '@mui/icons-material/Loop';
 import { useState } from 'react';
 import axios from 'axios';
 
@@ -12,12 +13,14 @@ interface DeleteButtonProps {
 const DeleteButton = ({ barcode, imgids }: DeleteButtonProps) => {
 
     const [isConfirmed, setIsConfirmed] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
     const deleteUrl = `${import.meta.env.VITE_PO_DELETE_IMAGES_URL}?code=${barcode}&imgids=${imgids}&move_to_override=trash`
 
     const handleDelete = () => {
         if (!isConfirmed) {
             setIsConfirmed(true)
         } else {
+            setIsLoading(true)
             const data = new URLSearchParams()
             data.append('code', barcode)
             data.append('imgids', imgids)
@@ -32,8 +35,13 @@ const DeleteButton = ({ barcode, imgids }: DeleteButtonProps) => {
                         }
                     }
                 )
+                .then(response => {
+                    console.log(response)
+                    setIsLoading(false)
+                })
             } catch (err) {
                 console.error(err)
+                setIsLoading(false)
             }
         }
     }
@@ -42,24 +50,35 @@ const DeleteButton = ({ barcode, imgids }: DeleteButtonProps) => {
     <Button 
         aria-label="delete"
         color={
-            isConfirmed ? 
-            'info'
-            :
-            'error'
+            isLoading ?
+                'warning'
+                :
+                (isConfirmed ? 
+                    'info'
+                    :
+                    'error')
         }
         startIcon={
-            isConfirmed ? 
-            <CheckIcon />
-            :
-            <DeleteIcon />
+            isLoading ?
+                <LoopIcon />
+                :
+                (isConfirmed ? 
+                    <CheckIcon />
+                    :
+                    <DeleteIcon />
+                )
         }
         onClick={handleDelete}
         variant='contained'
     >
-        { isConfirmed ? 
-            "confirm"
-            :
-            "delete"
+        { isLoading ?
+                'Loading'
+                :
+                (isConfirmed ? 
+                    'Confirm'
+                    :
+                    'Delete'
+                )
         }
     </Button>
   )
