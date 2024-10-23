@@ -53,13 +53,10 @@ const DeleteButton = ({ barcode, imgids, handleImageDeleted }: DeleteButtonProps
     <Button 
         aria-label="delete"
         color={
-            isLoading ?
-                'warning'
+            isConfirmed ?
+                'info'
                 :
-                (isConfirmed ? 
-                    'info'
-                    :
-                    'error')
+                'error'
         }
         startIcon={
             isLoading ?
