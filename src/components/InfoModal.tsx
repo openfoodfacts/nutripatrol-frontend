@@ -10,6 +10,7 @@ import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import DeleteButton from './DeleteButton';
 
 const style = {
     position:'absolute',
@@ -45,13 +46,10 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
     }
     const handleTicketInfo = () => {
         axios.get(`${import.meta.env.VITE_PO_URL}/api/v2/product/${barcode}.json`).then((res) => {
-            console.log(res.data.product);
-            
             const usedData: any = {
                 name: res.data.product.product_name || null,
                 barcode: res.data.code || null,
                 images: {},
-                selectedImages: [],
                 brands: res.data.product.brands || null,
                 editors_tags: res.data.product.editors_tags || null,
                 categories: [],
@@ -60,25 +58,13 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
             // loop through the images and build the url
             if (res.data.product.images) {
                 Object.keys(res.data.product.images).forEach((key) => {
+                    // if the key is not a number do nothing
                     if (isNaN(parseInt(key))) {
-                        usedData.images[key] = buildUrl(barcode, key, '100', res.data.product.images[key].rev);
+                        return;
                     } else {
                         usedData.images[key] = buildUrl(barcode, key, '100');
                     }
                 });
-            }
-            // loop through the selected images and keep only the url
-            const selectedImages = res.data.product.selected_images;
-            if (selectedImages) {
-                for (const key in selectedImages) {
-                    if (selectedImages[key].thumb ) {
-                      for (const lang in selectedImages[key].thumb) {
-                            if (selectedImages[key].thumb[lang]) {
-                                usedData.selectedImages.push(selectedImages[key].thumb[lang]);
-                            }
-                        }
-                    }
-                }
             }
             // loop through the ingredients and keep only the text
             const ingredients = res.data.product.ingredients;
@@ -105,6 +91,9 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
             setIsLoaded(true);
         })
     }
+    const handleImageDeleted = () => {
+        handleTicketInfo();
+    };
     const handleOpen = () => {
         handleTicketInfo();
         setOpen(true);
@@ -140,6 +129,33 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
                             Barcode : {ticketInfo?.barcode}
                         </Typography>
                         <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                            Images :
+                        </Typography>
+                        {ticketInfo?.images ? (
+                            <Box sx={{ display: 'flex', gap: '20px', alignItems: 'center', justifyContent: 'center', mt:2}}>
+                                <Grid container spacing={2}>
+                                    {Object.keys(ticketInfo.images).map((key) => (
+                                        <Grid key={key} sx={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                                            <img 
+                                                src={ticketInfo.images[key]} 
+                                                alt={key}
+                                                width={160}
+                                                height={160}
+                                                style={{objectFit: 'contain'}}
+                                            />
+                                            
+                                            <DeleteButton barcode={ticketInfo.barcode} imgids={key} handleImageDeleted={handleImageDeleted} />
+
+                                        </Grid>
+                                    ))}
+                                </Grid>
+                            </Box>
+                        ) : (
+                            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                                No images found
+                            </Typography>
+                        )}
+                        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                             Brands : {ticketInfo?.brands}
                         </Typography>
                         <Box sx={{ border: 'solid 1px black', p: 2 }}>
@@ -164,32 +180,6 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
                                 </Typography>
                             )}
                         </Box>
-                        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                            Selected Images :
-                        </Typography>
-                        {ticketInfo?.selectedImages ? (
-                            <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center', justifyContent: 'center', mt:2}}>
-                                <Grid container spacing={2}>
-                                    {ticketInfo.selectedImages.map((image: string, index: number) => (
-                                        <Grid key={index}>
-                                            <a href={image} target='_blank' key={index}>
-                                                <img 
-                                                    src={image} 
-                                                    alt={index.toString()}
-                                                    width={120}
-                                                    height={120}
-                                                    style={{objectFit: 'contain'}}
-                                                />
-                                            </a>
-                                        </Grid>
-                                    ))}
-                                </Grid>
-                            </Box>
-                        ) : (
-                            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                                No selected images found
-                            </Typography>
-                        )}
                         <Box sx={{ border: 'solid 1px black', p: 2 }}>
                             <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                                 Ingredients :
@@ -212,32 +202,6 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
                                 </Typography>
                             )}
                         </Box>
-                        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                            Images :
-                        </Typography>
-                        {ticketInfo?.images ? (
-                            <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center', justifyContent: 'center', mt:2}}>
-                                <Grid container spacing={2}>
-                                    {Object.keys(ticketInfo.images).map((key) => (
-                                        <Grid key={key}>
-                                            <a href={ticketInfo.images[key]} target='_blank' key={key}>
-                                                <img 
-                                                    src={ticketInfo.images[key]} 
-                                                    alt={key}
-                                                    width={120}
-                                                    height={120}
-                                                    style={{objectFit: 'contain'}}
-                                                />
-                                            </a>
-                                        </Grid>
-                                    ))}
-                                </Grid>
-                            </Box>
-                        ) : (
-                            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                                No images found
-                            </Typography>
-                        )}
                         <Accordion>
                             <AccordionSummary
                             expandIcon={<ExpandMoreIcon />}
