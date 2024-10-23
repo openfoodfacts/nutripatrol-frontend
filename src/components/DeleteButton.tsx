@@ -4,6 +4,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import LoopIcon from '@mui/icons-material/Loop';
 import { useState } from 'react';
 import axios from 'axios';
+import off from '../off';
 
 interface DeleteButtonProps {
     barcode: string;
@@ -33,7 +34,8 @@ const DeleteButton = ({ barcode, imgids, handleImageDeleted }: DeleteButtonProps
                     {
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded'
-                        }
+                        },
+                        withCredentials: true
                     }
                 )
                 .then(response => {
