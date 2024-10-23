@@ -45,7 +45,7 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
         return `${import.meta.env.VITE_PO_IMAGE_URL}/images/products/${part1}/${part2}/${part3}/${part4}/${imageId}.${def}.jpg`;
     }
     const handleTicketInfo = () => {
-        axios.get(`${import.meta.env.VITE_PO_URL}/api/v2/product/${barcode}.json`).then((res) => {          
+        axios.get(`${import.meta.env.VITE_PO_URL}/api/v2/product/${barcode}.json`).then((res) => {
             const usedData: any = {
                 name: res.data.product.product_name || null,
                 barcode: res.data.code || null,
@@ -58,8 +58,9 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
             // loop through the images and build the url
             if (res.data.product.images) {
                 Object.keys(res.data.product.images).forEach((key) => {
+                    // if the key is not a number do nothing
                     if (isNaN(parseInt(key))) {
-                        usedData.images[key] = buildUrl(barcode, key, '100', res.data.product.images[key].rev);
+                        return;
                     } else {
                         usedData.images[key] = buildUrl(barcode, key, '100');
                     }
