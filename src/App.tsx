@@ -105,13 +105,15 @@ export default function App() {
     return isLoggedIn;
   }, [userState]);
 
-  useEffect(() => {
-    console.log("User state changed");
-  }, [userState]);
+  if(!devMode) {
+    useEffect(() => {
+      console.log("User state changed");
+    }, [userState]);
 
-  useEffect(() => {
-    refresh(); 
-  }, [refresh]);
+    useEffect(() => {
+      refresh(); 
+    }, [refresh]);
+  }
 
   return (
       <LoginContext.Provider value={{ ...userState, refresh }}>
