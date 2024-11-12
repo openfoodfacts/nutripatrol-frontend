@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/openfoodfacts/nutripatrol-frontend/compare/v1.1.0...v1.1.1) (2024-11-12)
+
+
+### Bug Fixes
+
+* fix invalid image URL generation ([#128](https://github.com/openfoodfacts/nutripatrol-frontend/issues/128)) ([2db3b3f](https://github.com/openfoodfacts/nutripatrol-frontend/commit/2db3b3f0fb8c55f527da355bd2019d4e6359451c))
+
 ## [1.1.0](https://github.com/openfoodfacts/nutripatrol-frontend/compare/v1.0.3...v1.1.0) (2024-10-23)
 
 
