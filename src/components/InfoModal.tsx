@@ -1,15 +1,15 @@
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import PreviewOutlinedIcon from '@mui/icons-material/PreviewOutlined';
+import Accordion from '@mui/material/Accordion';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import AccordionSummary from '@mui/material/AccordionSummary';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
-import { useState } from 'react';
-import axios from 'axios';
-import PreviewOutlinedIcon from '@mui/icons-material/PreviewOutlined';
+import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
-import Accordion from '@mui/material/Accordion';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import axios from 'axios';
+import { useState } from 'react';
 import DeleteButton from './DeleteButton';
 
 const style = {
@@ -32,6 +32,10 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
 
     const [open, setOpen] = useState(false);
     const buildUrl = (barcode: string, imageId: string, def: string, rev?: string) => {
+        // fill the barcode with 0 if it's not 13 characters long
+        if (barcode.length < 13) {
+            barcode = barcode.padStart(13, '0');
+        }
         // split the barcode into 4 parts
         const part1 = barcode.slice(0, 3);
         const part2 = barcode.slice(3, 6);
