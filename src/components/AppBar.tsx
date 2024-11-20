@@ -21,15 +21,15 @@ import LoginContext from '../contexts/login.tsx';
 
 
 const pages = [
-  { label: "Home", path: '/'}, 
-  { label: "Images", path: '/image-moderation' }, 
-  { label: "Product", path: '/moderation' },
+  { label: "Home", path: '/', showtoUsers: ['moderator', 'user'] }, 
+  { label: "Images", path: '/image-moderation', showtoUsers: ['moderator'] }, 
+  { label: "Product", path: '/moderation', showtoUsers: ['moderator'] },
 ];
 const settings = ['Logout'];
 
 function ResponsiveAppBar() {
 
-  const { isLoggedIn } = useContext(LoginContext);
+  const { isLoggedIn, isModerator } = useContext(LoginContext);
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
@@ -59,6 +59,13 @@ function ResponsiveAppBar() {
     handleCloseUserMenu();
     window.location.reload();
   }
+
+  const filteredPages = isLoggedIn
+    ? pages.filter((page) =>
+        isModerator ? page.showtoUsers.includes('moderator') : page.showtoUsers.includes('user')
+      )
+    : 
+    pages.filter((page) => page.showtoUsers.includes('user'));
 
   return (
     <AppBar position="static" sx={{backgroundColor: '#f2e9e4'}}>
@@ -121,7 +128,7 @@ function ResponsiveAppBar() {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {pages.map((page) => (
+              {filteredPages.map((page) => (
                 <Link to={page.path} key={page.label}>
                   <MenuItem onClick={handleCloseNavMenu}>                  
                     <Typography 
@@ -169,7 +176,7 @@ function ResponsiveAppBar() {
             NUTRIPATROL
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
+            {filteredPages.map((page) => (
               <Link to={page.path} key={page.label}>
                 <Button
                   onClick={handleCloseNavMenu}
