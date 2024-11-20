@@ -30,7 +30,6 @@ const settings = ['Logout'];
 function ResponsiveAppBar() {
 
   const { isLoggedIn, isModerator } = useContext(LoginContext);
-  console.log(isLoggedIn, isModerator);
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
@@ -67,9 +66,6 @@ function ResponsiveAppBar() {
       )
     : 
     pages.filter((page) => page.showtoUsers.includes('user'));
-
-  console.log(filteredPages);
-  
 
   return (
     <AppBar position="static" sx={{backgroundColor: '#f2e9e4'}}>
