@@ -27,9 +27,10 @@ export default function HomePage() {
                 </Typography>
                 <Typography variant="body1" sx={{margin: '1rem 0', fontSize: {xs: '0.8rem', md: '1.2rem'}}}>
                     Becoming a moderator is a rewarding way to deepen your involvement with OpenFoodFacts.
-                    Start by contributing to the database: scan products, complete their details, and help categorize them.
+                    Start by <a href="https://wiki.openfoodfacts.org/Database_Team">contributing to the database</a>: scan products, complete their details, and help categorize them.
                     With consistent participation and as you gain experience in the community, you can request to become a moderator.
                     Moderators are selected based on their dedication, understanding of the platform, and commitment to OpenFoodFacts’ mission.
+                    See also <a href="https://wiki.openfoodfacts.org/Moderation">Moderation topic on our wiki</a>.
                 </Typography>
             </Container>
         </>
