@@ -28,3 +28,10 @@ a {
   align-items: center;
   gap: 8rem;
 }
+
+/* makes link visible in content */
+.MuiTypography-root a {
+  color: rgb(52, 17, 0);
+  text-decoration: underline;
+}
+  
