@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.2.0](https://github.com/openfoodfacts/nutripatrol-frontend/compare/v1.1.1...v1.2.0) (2025-04-12)
+
+
+### Features
+
+* new content for the home page ([#131](https://github.com/openfoodfacts/nutripatrol-frontend/issues/131)) ([99fb468](https://github.com/openfoodfacts/nutripatrol-frontend/commit/99fb468bb79a8f013afef4941ebe248332a351a8))
+* open a modal on thumbnail clic ([#116](https://github.com/openfoodfacts/nutripatrol-frontend/issues/116)) ([41e39d1](https://github.com/openfoodfacts/nutripatrol-frontend/commit/41e39d12f337fd0ad32d36749fca1be84419bcd4))
+
+
+### Bug Fixes
+
+* Hide moderator pages for casual users ([#130](https://github.com/openfoodfacts/nutripatrol-frontend/issues/130)) ([5818b51](https://github.com/openfoodfacts/nutripatrol-frontend/commit/5818b51c2f70b5ef2f065b37b77bce3e993d7f38))
+
 ## [1.1.1](https://github.com/openfoodfacts/nutripatrol-frontend/compare/v1.1.0...v1.1.1) (2024-11-12)
 
 
