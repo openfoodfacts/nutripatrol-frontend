@@ -8,7 +8,7 @@ Please check this one before running the frontend.
 
 ## 🎨 Design
 - [![Figma](https://img.shields.io/badge/figma-%23F24E1E.svg?logo=figma&logoColor=white) Mockups & Benchmarks](https://www.figma.com/design/SRU9iQ5DIpKNa6izKEiqyo/NutriPatrol--quality-?node-id=48-36&p=f&t=Ly2rYxJgs4fcTane-0)
-
+- Are you a designer ? [Join the design team](https://github.com/openfoodfacts/openfoodfacts-design)
 ## Features
 - Image reporting
 - List of reported images
