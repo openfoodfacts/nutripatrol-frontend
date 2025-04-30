@@ -51,8 +51,10 @@ export default function ImageModerationPage() {
                 // update ticket by adding reasons from flags
                 const ticketIdToFlags = flagsResponse.data.ticket_id_to_flags;
                 const updatedTickets = ticketsData.map((ticket: any) => {
+                    console.log(ticketIdToFlags[ticket.id])
                     ticket.reasons = ticketIdToFlags[ticket.id].map((flag: any) => flag.reason);
                     ticket.comments = ticketIdToFlags[ticket.id].map((flag: any) => flag.comment);
+                    ticket.flagger = ticketIdToFlags[ticket.id].map((flag: any) => flag.user_id);
                     return ticket;
                 });
 
@@ -103,6 +105,7 @@ export default function ImageModerationPage() {
                                                     <TableCell align="center">Flavor</TableCell>
                                                     <TableCell align="center">Reasons</TableCell>
                                                     <TableCell align="center">Comments</TableCell>
+                                                    <TableCell align="center">Flagger</TableCell>
                                                     <TableCell align="center">Created at</TableCell>
                                                     <TableCell align="center">Actions</TableCell>
                                                 </TableRow>
