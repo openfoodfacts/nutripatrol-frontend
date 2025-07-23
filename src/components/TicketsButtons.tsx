@@ -30,14 +30,13 @@ export default function BasicButtonGroup({id, barcode, setTickets, tickets}: Bas
     const linkUrl = `${import.meta.env.VITE_PO_URL}/cgi/product.pl?type=edit&code=${barcode}`;
 
     return (
-        <ButtonGroup variant="contained" aria-label="ticket_actions">
+        <ButtonGroup variant="contained" aria-label="ticket_actions" >
             <Button 
                 component={Link} 
                 to={linkUrl} 
                 variant='contained'
                 color="inherit"
                 endIcon={<EditIcon />}
-                sx={{ maxHeight: '40px' }}
                 target="_blank" >
                 Edit
             </Button>
@@ -45,7 +44,6 @@ export default function BasicButtonGroup({id, barcode, setTickets, tickets}: Bas
                 variant="contained"
                 color="error"
                 endIcon={<NotInterestedIcon />}
-                sx={{ maxHeight: '40px' }}
                 onClick={() => handleStatus(id, 'closed')}
             >
                 No problem
@@ -54,7 +52,6 @@ export default function BasicButtonGroup({id, barcode, setTickets, tickets}: Bas
                 variant="contained"
                 color="success"
                 endIcon={<CheckIcon />}
-                sx={{ maxHeight: '40px' }}
                 onClick={() => handleStatus(id, 'closed')}
             >
                 I fixed it!
