@@ -6,6 +6,12 @@ The front-end (React) of our Nutri-Patrol moderation tool. It is deployed @ http
 This repository works with the backend of Nutri-Patrol: [Nutri-Patrol API](https://github.com/openfoodfacts/nutripatrol)
 Please check this one before running the frontend.
 
+
+## Current sources of reports for Nutri-Patrol
+- Automatic population by Robotoff, based on Cloud Vision flagging (NSFW flags)
+- Manual user reports from the Classic web app, as well as our next generation frontend, Open Food Facts Explorer
+- The mobile app is currently not wired to send reports. An open PR awaits your help (Flutter)
+
 ## 🎨 Design
 - [![Figma](https://img.shields.io/badge/figma-%23F24E1E.svg?logo=figma&logoColor=white) Mockups & Benchmarks](https://www.figma.com/design/SRU9iQ5DIpKNa6izKEiqyo/NutriPatrol--quality-?node-id=48-36&p=f&t=Ly2rYxJgs4fcTane-0)
 - Are you a designer ? [Join the design team](https://github.com/openfoodfacts/openfoodfacts-design)
@@ -13,6 +19,7 @@ Please check this one before running the frontend.
 - Image reporting
 - List of reported images
 ## Roadmap
+- [ ] Improving usability of the tickets dashboard (more tickets per page, filtering tickets based on keyword, seeing the username of the reporter)
 - [ ] Insert main roadmap items here
 ## Weekly meetings (Frontend meeting)
 
