@@ -23,6 +23,8 @@ interface Ticket {
     id: number;
     reasons?: string;
     comments?: string;
+    flagger?: string;
+    moderator_username?: string;
   // Add other properties here if needed
 }
 
@@ -106,6 +108,7 @@ export default function ImageModerationPage() {
                                                     <TableCell align="center">Reasons</TableCell>
                                                     <TableCell align="center">Comments</TableCell>
                                                     <TableCell align="center">Flagger</TableCell>
+                                                    <TableCell align="center">Moderated by</TableCell>
                                                     <TableCell align="center">Created at</TableCell>
                                                     <TableCell align="center">Actions</TableCell>
                                                 </TableRow>
