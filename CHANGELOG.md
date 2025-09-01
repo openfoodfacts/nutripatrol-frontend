@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.2.0](https://github.com/openfoodfacts/nutripatrol-frontend/compare/v1.1.1...v1.2.0) (2025-09-01)
+
+
+### Features
+
+* display user_id on moderation tickets ([#156](https://github.com/openfoodfacts/nutripatrol-frontend/issues/156)) ([f057908](https://github.com/openfoodfacts/nutripatrol-frontend/commit/f057908526f505a62d488812492cceb967875ae7))
+* make links visible on home-page and texts ([#140](https://github.com/openfoodfacts/nutripatrol-frontend/issues/140)) ([3a25450](https://github.com/openfoodfacts/nutripatrol-frontend/commit/3a2545006cd68ba5f1183e3b4e2cc91b04a0018c))
+* new content for the home page ([#131](https://github.com/openfoodfacts/nutripatrol-frontend/issues/131)) ([99fb468](https://github.com/openfoodfacts/nutripatrol-frontend/commit/99fb468bb79a8f013afef4941ebe248332a351a8))
+* open a modal on thumbnail clic ([#116](https://github.com/openfoodfacts/nutripatrol-frontend/issues/116)) ([41e39d1](https://github.com/openfoodfacts/nutripatrol-frontend/commit/41e39d12f337fd0ad32d36749fca1be84419bcd4))
+
+
+### Bug Fixes
+
+* button padding issue on small screens ([#163](https://github.com/openfoodfacts/nutripatrol-frontend/issues/163)) ([4c34b73](https://github.com/openfoodfacts/nutripatrol-frontend/commit/4c34b73b2636a38481864924aaa758aa1bd0063a))
+* design promo ([5fe2400](https://github.com/openfoodfacts/nutripatrol-frontend/commit/5fe2400e3a1eeb9b11d5323756089657ac285d63))
+* Hide moderator pages for casual users ([#130](https://github.com/openfoodfacts/nutripatrol-frontend/issues/130)) ([5818b51](https://github.com/openfoodfacts/nutripatrol-frontend/commit/5818b51c2f70b5ef2f065b37b77bce3e993d7f38))
+* Potential fix for code scanning alert no. 7: Workflow does not contain permissions ([#171](https://github.com/openfoodfacts/nutripatrol-frontend/issues/171)) ([5d33776](https://github.com/openfoodfacts/nutripatrol-frontend/commit/5d337768c1f395c4a6b8f31063439733d618bb85))
+
 ## [1.1.1](https://github.com/openfoodfacts/nutripatrol-frontend/compare/v1.1.0...v1.1.1) (2024-11-12)
 
 
