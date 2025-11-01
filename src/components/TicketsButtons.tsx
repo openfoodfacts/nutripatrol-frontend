@@ -18,7 +18,6 @@ interface BasicButtonGroup {
 }
 
 export default function BasicButtonGroup({id, barcode, setTickets, tickets}: BasicButtonGroup) {
-
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [isMoving, setIsMoving] = useState(false);
     const open = Boolean(anchorEl);
@@ -60,7 +59,7 @@ export default function BasicButtonGroup({id, barcode, setTickets, tickets}: Bas
             handleStatus(id, 'closed');
             setIsMoving(false);
         } catch (error) {
-            console.error(`Error moving product to ${projectName}:`, error);
+            console.error(`Error moving product ${barcode} to ${projectName} (type: ${productType}):`, error);
             setIsMoving(false);
         }
     }
