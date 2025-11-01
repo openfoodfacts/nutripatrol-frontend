@@ -41,6 +41,7 @@ export default function FlagForm({ type_ }: FlagFormProps) {
     const source = searchParams.get('source') || undefined;
     const flavor = searchParams.get('flavor') || undefined;
     const image_id = searchParams.get('image_id') || undefined;
+    const comment = searchParams.get('comment') || undefined;
 
     if ( source === undefined || !sources.includes(source) || flavor === undefined || !flavors.includes(flavor) ){
         return (
@@ -60,7 +61,7 @@ export default function FlagForm({ type_ }: FlagFormProps) {
         source: source || "", // not in the form
         flavor: flavor || "", // not in the form
         reason: "",
-        comment: ""
+        comment: comment || ""
     });
     const [image, setImage] = useState<string | null>(null);
 
