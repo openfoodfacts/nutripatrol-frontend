@@ -180,7 +180,22 @@ function ResponsiveAppBar() {
               <Link to={page.path} key={page.label}>
                 <Button
                   onClick={handleCloseNavMenu}
-                  sx={{ my: 2, color: 'white', display: 'block' }}
+                  sx={{ my: 2, color: 'white', display: 'block',position:'relative',
+                    '&::after': {
+                        content: '""',
+                        position: 'absolute',
+                        left: 0,
+                        bottom: 0,
+                        width: '100%',
+                        height: '2px',
+                        backgroundColor: '#4CAF50',
+                        transform: 'scaleX(0)',
+                        transition: 'transform 0.3s ease-in-out',
+                      },
+                '&:hover::after': {
+                  transform: 'scaleX(1)',
+                },
+                   }}
                 >
                   <Typography 
                     textAlign="center"
@@ -190,6 +205,21 @@ function ResponsiveAppBar() {
                       fontWeight: 400,
                       letterSpacing: '.3rem',
                       textDecoration: 'none',
+                      position: 'relative',
+                      '&::after': {
+                        content: '""',
+                        position: 'absolute',
+                        left: 0,
+                        bottom: 0,
+                        width: '100%',
+                        height: '2px',
+                        backgroundColor: '#4CAF50',
+                        transform: 'scaleX(0)',
+                        transition: 'transform 0.3s ease-in-out',
+                      },
+                '&:hover::after': {
+                  transform: 'scaleX(1)',
+                },
                     }}
                   >
                     {page.label}
