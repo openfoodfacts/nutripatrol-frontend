@@ -31,6 +31,7 @@ export default function Ticket({ticket, setTickets, tickets}: TicketProps) {
             <TableCell align="center">{ticket.flavor}</TableCell>
             <TableCell align="center">{ticket.reasons}</TableCell>
             <TableCell align="center">{ticket.comments}</TableCell>
+            <TableCell align="center">{ticket.flagger}</TableCell>
             <Date created_at={ticket.created_at} />
             <TableCell align="center"><TicketsButtons barcode={ticket.barcode} id={ticket.id} setTickets={setTickets} tickets={tickets} /></TableCell>
         </TableRow>
