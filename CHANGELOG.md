@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.2.0](https://github.com/openfoodfacts/nutripatrol-frontend/compare/v1.1.1...v1.2.0) (2025-11-06)
+
+
+### Features
+
+* Add support for prefilling comment field via URL parameter ([#199](https://github.com/openfoodfacts/nutripatrol-frontend/issues/199)) ([27d92b5](https://github.com/openfoodfacts/nutripatrol-frontend/commit/27d92b5b478d8c5f0435435d20727d6a6cef3434))
+* display user_id on moderation tickets ([#156](https://github.com/openfoodfacts/nutripatrol-frontend/issues/156)) ([f057908](https://github.com/openfoodfacts/nutripatrol-frontend/commit/f057908526f505a62d488812492cceb967875ae7))
+* make links visible on home-page and texts ([#140](https://github.com/openfoodfacts/nutripatrol-frontend/issues/140)) ([3a25450](https://github.com/openfoodfacts/nutripatrol-frontend/commit/3a2545006cd68ba5f1183e3b4e2cc91b04a0018c))
+* new content for the home page ([#131](https://github.com/openfoodfacts/nutripatrol-frontend/issues/131)) ([99fb468](https://github.com/openfoodfacts/nutripatrol-frontend/commit/99fb468bb79a8f013afef4941ebe248332a351a8))
+* open a modal on thumbnail clic ([#116](https://github.com/openfoodfacts/nutripatrol-frontend/issues/116)) ([41e39d1](https://github.com/openfoodfacts/nutripatrol-frontend/commit/41e39d12f337fd0ad32d36749fca1be84419bcd4))
+
+
+### Bug Fixes
+
+* button padding issue on small screens ([#163](https://github.com/openfoodfacts/nutripatrol-frontend/issues/163)) ([4c34b73](https://github.com/openfoodfacts/nutripatrol-frontend/commit/4c34b73b2636a38481864924aaa758aa1bd0063a))
+* design promo ([5fe2400](https://github.com/openfoodfacts/nutripatrol-frontend/commit/5fe2400e3a1eeb9b11d5323756089657ac285d63))
+* Hide moderator pages for casual users ([#130](https://github.com/openfoodfacts/nutripatrol-frontend/issues/130)) ([5818b51](https://github.com/openfoodfacts/nutripatrol-frontend/commit/5818b51c2f70b5ef2f065b37b77bce3e993d7f38))
+* Potential fix for code scanning alert no. 4: Workflow does not contain permissions ([#172](https://github.com/openfoodfacts/nutripatrol-frontend/issues/172)) ([4bbc087](https://github.com/openfoodfacts/nutripatrol-frontend/commit/4bbc087675279f22845579baa9797f9bc1d526c2))
+* Potential fix for code scanning alert no. 6: Workflow does not contain permissions ([#174](https://github.com/openfoodfacts/nutripatrol-frontend/issues/174)) ([993b38c](https://github.com/openfoodfacts/nutripatrol-frontend/commit/993b38c6dc74c4b8b5f67fc7025ea799864546ca))
+* Potential fix for code scanning alert no. 7: Workflow does not contain permissions ([#171](https://github.com/openfoodfacts/nutripatrol-frontend/issues/171)) ([5d33776](https://github.com/openfoodfacts/nutripatrol-frontend/commit/5d337768c1f395c4a6b8f31063439733d618bb85))
+
 ## [1.1.1](https://github.com/openfoodfacts/nutripatrol-frontend/compare/v1.1.0...v1.1.1) (2024-11-12)
 
 
