@@ -13,17 +13,17 @@ declare global {
   }
 }
 
-function push(...args: unknown[]) {
+function pushCommand(command: unknown[]) {
   window._paq = window._paq || [];
-  window._paq.push(args);
+  window._paq.push(command);
 }
 
 /**
  * Track a virtual page view (useful for SPA route changes).
  */
 export function trackPageView(url: string) {
-  push("setCustomUrl", url);
-  push("trackPageView");
+  pushCommand(["setCustomUrl", url]);
+  pushCommand(["trackPageView"]);
 }
 
 /**
@@ -40,9 +40,8 @@ export function trackEvent(
   name?: string,
   value?: number,
 ) {
-  const args: unknown[] = ["trackEvent", category, action];
-  if (name !== undefined) args.push(name);
-  if (value !== undefined) args.push(value);
-  window._paq = window._paq || [];
-  window._paq.push(args);
+  const command: unknown[] = ["trackEvent", category, action];
+  if (name !== undefined) command.push(name);
+  if (value !== undefined) command.push(value);
+  pushCommand(command);
 }
