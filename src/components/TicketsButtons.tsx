@@ -5,6 +5,7 @@ import axios from 'axios';
 import EditIcon from '@mui/icons-material/Edit';
 import NotInterestedIcon from '@mui/icons-material/NotInterested';
 import CheckIcon from '@mui/icons-material/Check';
+import { trackEvent } from '../analytics';
 
 interface BasicButtonGroup {
     id: number;
@@ -37,14 +38,19 @@ export default function BasicButtonGroup({id, barcode, setTickets, tickets}: Bas
                 variant='contained'
                 color="inherit"
                 endIcon={<EditIcon />}
-                target="_blank" >
+                target="_blank"
+                onClick={() => trackEvent("Moderation", "click_edit", barcode)}
+            >
                 Edit
             </Button>
             <Button
                 variant="contained"
                 color="error"
                 endIcon={<NotInterestedIcon />}
-                onClick={() => handleStatus(id, 'closed')}
+                onClick={() => {
+                    trackEvent("Moderation", "click_no_problem", barcode);
+                    handleStatus(id, 'closed');
+                }}
             >
                 No problem
             </Button>
@@ -52,7 +58,10 @@ export default function BasicButtonGroup({id, barcode, setTickets, tickets}: Bas
                 variant="contained"
                 color="success"
                 endIcon={<CheckIcon />}
-                onClick={() => handleStatus(id, 'closed')}
+                onClick={() => {
+                    trackEvent("Moderation", "click_i_fixed_it", barcode);
+                    handleStatus(id, 'closed');
+                }}
             >
                 I fixed it!
             </Button>
