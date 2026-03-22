@@ -3,6 +3,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import CheckIcon from '@mui/icons-material/Check';
 import LoopIcon from '@mui/icons-material/Loop';
 import { useState } from 'react';
+// @ts-ignore
+import { offClient } from '../api';
 import axios from 'axios';
 
 interface DeleteButtonProps {
@@ -27,6 +29,9 @@ const DeleteButton = ({ barcode, imgids, handleImageDeleted }: DeleteButtonProps
             data.append('imgids', imgids)
             data.append('move_to_override', 'trash')
             try {
+                // TODO(sdk-bump): Switch to SDK's offClient.deleteProductImage() once SDK version is bumped
+                // await offClient.deleteProductImage(barcode, parseInt(imgids));
+
                 axios.post(
                     deleteUrl,
                     data,

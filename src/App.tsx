@@ -4,6 +4,8 @@ import {
 } from "react-router-dom";
 import { useState, useCallback, useRef, useEffect } from "react";
 import off from "./off.ts";
+// @ts-ignore
+import { offClient } from "./api.ts";
 import axios from "axios";
 
 import HomePage from './pages/HomePage.tsx'
@@ -79,6 +81,11 @@ export default function App() {
       // If the request is successful, set the user state to logged in
       .then(response => {
         const cookieUserName = off.getUsername();
+        
+        // TODO(sdk-bump): Switch to SDK's offClient.getLoginStatus() once SDK version is bumped
+        // const { data, error } = await offClient.getLoginStatus();
+        // const userData = data?.user;
+        
         const userData = response.data.user;
         setUserState(prevState => ({
           ...prevState,
