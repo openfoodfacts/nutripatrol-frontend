@@ -4,6 +4,7 @@ import {
 } from "react-router-dom";
 import { useState, useCallback, useRef, useEffect } from "react";
 import off from "./off.ts";
+import { saveReturnUrl } from "./utils/url";
 import axios from "axios";
 
 import HomePage from './pages/HomePage.tsx'
@@ -111,6 +112,7 @@ export default function App() {
 
   useEffect(() => {
     refresh(); 
+    saveReturnUrl();
   }, [refresh]);
 
   return (
