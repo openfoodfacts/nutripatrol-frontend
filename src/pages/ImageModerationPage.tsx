@@ -7,6 +7,8 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { useEffect, useState } from 'react'
+// @ts-ignore
+import { npClient } from '../api'
 import axios from 'axios'
 import ImageTicket from '../components/ImageTicket';
 import Paginate from '../components/Paginate'
@@ -31,6 +33,11 @@ export default function ImageModerationPage() {
     const isMobile = useMediaQuery('(max-width:800px)')
 
     const fetchImageTickets = (url_: string) => {
+        // TODO(sdk-bump): Switch to SDK's npClient.getTickets() once SDK version is bumped
+        // Replace 'as any' with imported FlagReason type from the SDK
+        // const { data, error } = await npClient.getTickets({ type: "image", status: "open", page: currentPage, page_size: 10, reason: reason ? [reason as any] : undefined });
+        // const ticketsData = data?.tickets;
+
         axios.get(url_).then(async (res) => {         
             
             const ticketsData = res.data.tickets;
@@ -39,6 +46,11 @@ export default function ImageModerationPage() {
             setMaxPage(res.data.max_page)
 
             const ticketIds = ticketsData.map((ticket: any) => ticket.id);
+
+            // TODO(sdk-bump): Switch to SDK's npClient.getFlagsByTicketBatch() once SDK version is bumped
+            // const { data: flagsData } = await npClient.getFlagsByTicketBatch(ticketIds);
+            // const ticketIdToFlags = flagsData?.ticket_id_to_flags;
+
             const flagsResponse = await axios.post(`${import.meta.env.VITE_API_URL}/flags/batch`, {
                 ticket_ids: ticketIds
             });

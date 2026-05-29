@@ -707,6 +707,13 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@openfoodfacts/openfoodfacts-nodejs@2.0.0-alpha.29":
+  version "2.0.0-alpha.29"
+  resolved "https://registry.yarnpkg.com/@openfoodfacts/openfoodfacts-nodejs/-/openfoodfacts-nodejs-2.0.0-alpha.29.tgz#bda7ae1b07b7bb6ba57c280892853ff1450f1d97"
+  integrity sha512-063EZyqR7rc51X7LusdbkEIc0CK4KLE0uMKi5Ee7K72H9nAFlo3OGByreAK/7eryzCNVuAHSy2uLjNjhmbyJ4w==
+  dependencies:
+    openapi-fetch "^0.15.0"
+
 "@popperjs/core@^2.11.8":
   version "2.11.8"
   resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.11.8.tgz#6b79032e760a0899cd4204710beede972a3a185f"
@@ -1824,6 +1831,18 @@ object-assign@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-4.1.1.tgz#2109adc7965887cfc05cbbd442cac8bfbb360863"
   integrity sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg==
+
+openapi-fetch@^0.15.0:
+  version "0.15.2"
+  resolved "https://registry.yarnpkg.com/openapi-fetch/-/openapi-fetch-0.15.2.tgz#f3d0ede1ef8e1bf883af3e020a9eda20ee9bd999"
+  integrity sha512-rdYTzUmSsJevmNqg7fwUVGuKc2Gfb9h6ph74EVPkPfIGJaZTfqdIbJahtbJ3qg1LKinln30hqZniLnKpH0RJBg==
+  dependencies:
+    openapi-typescript-helpers "^0.0.15"
+
+openapi-typescript-helpers@^0.0.15:
+  version "0.0.15"
+  resolved "https://registry.yarnpkg.com/openapi-typescript-helpers/-/openapi-typescript-helpers-0.0.15.tgz#96ffa762a5e01ef66a661b163d5f1109ed1967ed"
+  integrity sha512-opyTPaunsklCBpTK8JGef6mfPhLSnyy5a0IN9vKtx3+4aExf+KxEqYwIy3hqkedXIB97u357uLMJsOnm3GVjsw==
 
 optionator@^0.9.3:
   version "0.9.3"

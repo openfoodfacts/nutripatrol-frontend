@@ -10,6 +10,8 @@ import {
 } from '@mui/material';
 import axios from 'axios';
 import { useState, useContext, useEffect } from 'react';
+// @ts-ignore
+import { npClient, offClient } from '../api';
 import { useSearchParams } from 'react-router-dom';
 import { reasons, sources, flavors } from '../const/flagsConst';
 import LoginContext from '../contexts/login';
@@ -81,6 +83,10 @@ export default function FlagForm({ type_ }: FlagFormProps) {
         }
         if (type_ === 'image') {
             const url = buildUrl(formData.barcode, formData.image_id as string, '400');
+            
+            // TODO(sdk-bump): Switch to SDK's offClient.getProductV2() once SDK version is bumped
+            // const { data } = await offClient.getProductV2(formData.barcode);
+            
             axios.get(url).then(() => {
                 setImage(url);
             }
@@ -101,6 +107,10 @@ export default function FlagForm({ type_ }: FlagFormProps) {
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
+            // TODO(sdk-bump): Switch to SDK's npClient.createFlag() once SDK version is bumped
+            // Replace 'as any' with imported FlagRequestBody type from the SDK
+            // await npClient.createFlag(formData as any);
+
             axios.post(`${import.meta.env.VITE_API_URL}/flags`, formData)
             .then(() => {
                 window.location.replace('/thanks');

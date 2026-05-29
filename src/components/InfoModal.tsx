@@ -10,6 +10,8 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
 import axios from 'axios';
 import { useState } from 'react';
+// @ts-ignore
+import { offClient } from '../api';
 import DeleteButton from './DeleteButton';
 
 const style = {
@@ -49,6 +51,9 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
         return `${import.meta.env.VITE_PO_IMAGE_URL}/images/products/${part1}/${part2}/${part3}/${part4}/${imageId}.${def}.jpg`;
     }
     const handleTicketInfo = () => {
+        // TODO(sdk-bump): Switch to SDK's offClient.getProductV2() once SDK version is bumped
+        // const { data } = await offClient.getProductV2(barcode);
+
         axios.get(`${import.meta.env.VITE_PO_URL}/api/v2/product/${barcode}.json`).then((res) => {
             const usedData: any = {
                 name: res.data.product.product_name || null,
