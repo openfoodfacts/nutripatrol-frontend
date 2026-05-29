@@ -20,9 +20,12 @@ export default function BasicButtonGroup({id, barcode, setTickets, tickets}: Bas
     // Change status of ticket to archived
     async function handleStatus(id: number, status: string) {
         try {
-            const moderatorUsername = userData?.username ?? '';
+            const params = new URLSearchParams({ status });
+            if (userData?.username) {
+                params.set('moderator_username', userData.username);
+            }
             await axios.put(
-                `${import.meta.env.VITE_API_URL}/tickets/${id}/status?status=${status}&moderator_username=${encodeURIComponent(moderatorUsername)}`,
+                `${import.meta.env.VITE_API_URL}/tickets/${id}/status?${params.toString()}`,
             );
             // remove ticket from tickets
             const updatedTickets = tickets.filter((ticket: any) => ticket.id !== id);
