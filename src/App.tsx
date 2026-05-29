@@ -103,7 +103,7 @@ export default function App() {
         return false;
       });
     return isLoggedIn;
-  }, [devMode]); // Only depend on devMode, not userState
+  }, [userState]);
 
   useEffect(() => {
     console.log("User state changed");

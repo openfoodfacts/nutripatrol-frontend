@@ -18,7 +18,6 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 interface Ticket {
   barcode: string;
   status: string;
-  moderator_username?: string;
   // Add other properties here if needed
 }
 
