@@ -1,4 +1,6 @@
 name: Deploy project
+permissions:
+  contents: read
 
 on:
   push:
