@@ -65,6 +65,12 @@ export default function FlagForm({ type_ }: FlagFormProps) {
     });
     const [image, setImage] = useState<string | null>(null);
 
+    // Helper function to validate imageId and barcode
+    const isValidId = (value: string | undefined) => {
+        // Only allow alphanumeric, underscore, hyphen
+        return typeof value === 'string' && /^[a-zA-Z0-9_-]+$/.test(value);
+    };
+
     useEffect(() => {
         const buildUrl = (barcode: string, imageId: string, def: string, rev?: string) => {
             // split the barcode into 4 parts
@@ -80,13 +86,18 @@ export default function FlagForm({ type_ }: FlagFormProps) {
             return `${import.meta.env.VITE_PO_IMAGE_URL}/images/products/${part1}/${part2}/${part3}/${part4}/${imageId}.${def}.jpg`;
         }
         if (type_ === 'image') {
-            const url = buildUrl(formData.barcode, formData.image_id as string, '400');
-            axios.get(url).then(() => {
-                setImage(url);
+            // Validate barcode and image_id before using them
+            if (isValidId(formData.barcode) && isValidId(formData.image_id as string)) {
+                const url = buildUrl(formData.barcode, formData.image_id as string, '400');
+                axios.get(url).then(() => {
+                    setImage(url);
+                }
+                ).catch((err) => {
+                    console.error(err);
+                })
+            } else {
+                setImage(null);
             }
-            ).catch((err) => {
-                console.error(err);
-            })
         }
     }, [formData.type]);
 
