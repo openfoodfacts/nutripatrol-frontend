@@ -129,6 +129,7 @@ export default function ImageModerationPage() {
                                                     <TableCell align="center">Date</TableCell>
                                                     <TableCell align="center">Reasons</TableCell>
                                                     <TableCell align="center">Comments</TableCell>
+                                                    <TableCell align="center">Moderated by</TableCell>
                                                     <TableCell align="center">Actions</TableCell>
                                                 </TableRow>
                                             </TableHead>

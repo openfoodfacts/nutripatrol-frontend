@@ -107,6 +107,7 @@ export default function ImageModerationPage() {
                                                     <TableCell align="center">Comments</TableCell>
                                                     <TableCell align="center">Flagger</TableCell>
                                                     <TableCell align="center">Created at</TableCell>
+                                                    <TableCell align="center">Moderated by</TableCell>
                                                     <TableCell align="center">Actions</TableCell>
                                                 </TableRow>
                                             </TableHead>
