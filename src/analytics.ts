@@ -41,7 +41,12 @@ export function trackEvent(
   value?: number,
 ) {
   const command: unknown[] = ["trackEvent", category, action];
-  if (name !== undefined) command.push(name);
+  if (name !== undefined) {
+    command.push(name);
+  } else if (value !== undefined) {
+    // Ensure Matomo argument order: name slot must exist if value is provided
+    command.push("");
+  }
   if (value !== undefined) command.push(value);
   pushCommand(command);
 }
