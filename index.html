@@ -13,13 +13,14 @@
         if (!u || !id || u.charAt(0) === "%" || id.charAt(0) === "%") return;
         _paq.push(["setTrackerUrl", u + "matomo.php"]);
         _paq.push(["setSiteId", id]);
-        _paq.push(["trackPageView"]);
-        _paq.push(["enableLinkTracking"]);
+        var baseUrl = u.replace(/\/+$/, "") + "/";
+        _paq.push(["setTrackerUrl", baseUrl + "matomo.php"]);
+        _paq.push(["setSiteId", id]);
         var d = document,
           g = d.createElement("script"),
           s = d.getElementsByTagName("script")[0];
         g.async = true;
-        g.src = u + "matomo.js";
+        g.src = baseUrl + "matomo.js";
         s.parentNode.insertBefore(g, s);
       })();
     </script>
