@@ -118,6 +118,19 @@ export default function FlagForm({ type_ }: FlagFormProps) {
             <Typography variant='h4'>
                 {type_ === 'product' ? 'Flag a product' : 'Flag an image'}
             </Typography>
+            <Typography variant="body1" sx={{margin: '2rem 0', fontSize: {xs: '0.8rem', md: '1.2rem'}}}>
+                Use Nutripatrol to report inconsistencies between our website's product information or images, and data gleaned from the actual packaging. For any other concern or question please use the <a href="https://slack.openfoodfacts.org/">Slack forums</a>.
+            </Typography>
+            <Typography variant="body1" sx={{margin: '2rem 0', fontSize: {xs: '0.8rem', md: '1.2rem'}}}>
+                Note that moderators will never contact you so please provide all the relevant details in your report. In particular:
+                <ul>
+                  {type_ === 'product' ? <li>For barcode errors, please specify the correct barcode value. It is also very useful if you can upload a full photo of the product that includes the barcode.</li> }
+                  {type_ === 'product' ? <li>In case of incorrect information, please specify some examples of field names and their expected value.</li> }
+                  {type_ === 'product' ? <li>Invalid product scores (Nutriscore, Nova, ...) should be reported on the forums.</li> }
+                  {type_ === 'product' ? <li>Concerns about the quality of a product or its health impacts should be discussed on the forums.</li> }
+                  {type_ === 'image' ? <li>For image copyright violations it is useful if you can provide a link to the original image.</li> }
+                </ul>
+            </Typography>
             {image && <img src={image} alt="product" style={{ width: '250px', margin: '2rem 0' }} />}
             <form onSubmit={handleSubmit} style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '70%'}}>
                 <TextField
