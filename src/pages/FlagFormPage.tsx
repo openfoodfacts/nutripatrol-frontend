@@ -13,6 +13,7 @@ import { useState, useContext, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { reasons, sources, flavors } from '../const/flagsConst';
 import LoginContext from '../contexts/login';
+import { trackEvent } from '../analytics';
 
 /**
  * Interfaces
@@ -103,6 +104,7 @@ export default function FlagForm({ type_ }: FlagFormProps) {
         try {
             axios.post(`${import.meta.env.VITE_API_URL}/flags`, formData)
             .then(() => {
+                trackEvent("Flag", "submit_flag", formData.barcode);
                 window.location.replace('/thanks');
             })
         } catch (err) {

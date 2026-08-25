@@ -5,6 +5,25 @@
     <link rel="icon" type="image/svg+xml" href="/off-logo.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Nutripatrol</title>
+    <script>
+      var _paq = (window._paq = window._paq || []);
+      (function () {
+        var u = "%VITE_MATOMO_URL%";
+        var id = "%VITE_MATOMO_SITE_ID%";
+        if (!u || !id || u.charAt(0) === "%" || id.charAt(0) === "%") return;
+        _paq.push(["setTrackerUrl", u + "matomo.php"]);
+        _paq.push(["setSiteId", id]);
+        var baseUrl = u.replace(/\/+$/, "") + "/";
+        _paq.push(["setTrackerUrl", baseUrl + "matomo.php"]);
+        _paq.push(["setSiteId", id]);
+        var d = document,
+          g = d.createElement("script"),
+          s = d.getElementsByTagName("script")[0];
+        g.async = true;
+        g.src = baseUrl + "matomo.js";
+        s.parentNode.insertBefore(g, s);
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

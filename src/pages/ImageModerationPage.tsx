@@ -14,6 +14,7 @@ import { Box } from '@mui/material';
 import { useMediaQuery } from '@mui/material';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import { trackEvent } from '../analytics';
 
 interface Ticket {
   barcode: string;
@@ -89,6 +90,9 @@ export default function ImageModerationPage() {
                     exclusive
                     onChange={(_, newReasons) => {
                         setReason(newReasons)
+                        if (newReasons) {
+                            trackEvent("Moderation", `click_filter_${newReasons}`, newReasons);
+                        }
                     }}
                     aria-label="text alignment"
                     size='small'
