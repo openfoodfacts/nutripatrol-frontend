@@ -1,12 +1,15 @@
 import {
   Route,
-  Routes
+  Routes,
+  useLocation
 } from "react-router-dom";
 import { useState, useCallback, useRef, useEffect } from "react";
 import off from "./off.ts";
 // @ts-ignore
 import { offClient } from "./api.ts";
+import { saveReturnUrl } from "./utils/url";
 import axios from "axios";
+import { trackPageView } from "./analytics.ts";
 
 import HomePage from './pages/HomePage.tsx'
 import ImageModerationPage from './pages/ImageModerationPage.tsx'
@@ -25,6 +28,13 @@ export default function App() {
 
   // turn in to true to test the moderation page - it will always be logged in
   const devMode = (import.meta.env.VITE_DEVELOPPEMENT_MODE === "development");
+
+  const location = useLocation();
+
+  // Track page views on route changes
+  useEffect(() => {
+    trackPageView(location.pathname + location.search);
+  }, [location]);
   
   const [alertIsOpen, setAlertIsOpen] = useState(false);
   const [userState, setUserState] = useState(() => {
@@ -118,6 +128,7 @@ export default function App() {
 
   useEffect(() => {
     refresh(); 
+    saveReturnUrl();
   }, [refresh]);
 
   return (

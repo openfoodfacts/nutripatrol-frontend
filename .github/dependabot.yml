@@ -7,7 +7,7 @@ updates:
     commit-message:
       prefix: "chore"
       include: "scope"
-    open-pull-requests-limit: 20
+    open-pull-requests-limit: 100
     groups:
       mui-packages:
         # Define patterns to include dependencies in the group (based on dependency name)
@@ -47,4 +47,4 @@ updates:
     commit-message:
       prefix: "chore"
       include: "scope"
-    open-pull-requests-limit: 20
+    open-pull-requests-limit: 100

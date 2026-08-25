@@ -16,7 +16,6 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import { deepOrange, lightGreen } from '@mui/material/colors';
 import OffLogo from '../assets/off-logo.png';
-import off from '../off.ts';
 import LoginContext from '../contexts/login.tsx';
 
 
@@ -25,40 +24,24 @@ const pages = [
   { label: "Images", path: '/image-moderation', showtoUsers: ['moderator'] }, 
   { label: "Product", path: '/moderation', showtoUsers: ['moderator'] },
 ];
-const settings = ['Logout'];
-
 function ResponsiveAppBar() {
 
   const { isLoggedIn, isModerator } = useContext(LoginContext);
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
-  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
   };
-  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+  const handleOpenUserMenu = () => {
     if (!isLoggedIn) {
       window.location.reload();
       window.location.href = '/login';
-      setAnchorElUser(null);
-    } else {
-      setAnchorElUser(event.currentTarget);
     }
   };
 
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
-
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
-
-  const handleLogout = () => {
-    off.deleteCookie('session');
-    handleCloseUserMenu();
-    window.location.reload();
-  }
 
   const filteredPages = isLoggedIn
     ? pages.filter((page) =>
