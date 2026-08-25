@@ -15,8 +15,13 @@ export const offClient = new OpenFoodFacts(customFetch, {
 
 // Initialize the Nutri-Patrol specific client
 // TODO(sdk-bump): Use offClient.nutriPatrol directly once SDK version is bumped
+const nutriPatrolApiUrl = (
+    import.meta.env.VITE_API_URL || "https://nutripatrol.openfoodfacts.org"
+).replace(/\/api\/v1\/?$/, "");
+
 export const npClient = new NutriPatrol(customFetch, { 
-    baseUrl: import.meta.env.VITE_API_URL || "https://nutripatrol.openfoodfacts.org" 
+    // The SDK appends /api/v1 to its base URL.
+    baseUrl: nutriPatrolApiUrl
 });
 
 // For convenience, also expose the integrated client
