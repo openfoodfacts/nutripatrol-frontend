@@ -40,6 +40,10 @@ on:
     - auto_merge_enabled
     - auto_merge_disabled
 
+permissions:
+  contents: read
+  pull-requests: read
+
 jobs:
   add-to-github-project:
     name: 🎨 Add issue to the openfoodfacts-design project
