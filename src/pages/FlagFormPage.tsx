@@ -10,6 +10,9 @@ import {
 } from '@mui/material';
 import axios from 'axios';
 import { useState, useContext, useEffect } from 'react';
+import type { FlagCreate } from '@openfoodfacts/openfoodfacts-nodejs';
+// @ts-ignore
+import { npClient } from '../api';
 import { useSearchParams } from 'react-router-dom';
 import { reasons, sources, flavors } from '../const/flagsConst';
 import LoginContext from '../contexts/login';
@@ -33,6 +36,25 @@ interface FormData {
     comment: string;
 
 }
+
+const buildImageUrl = (barcode: string, imageId: string, def: string, rev?: string) => {
+    const part1 = barcode.slice(0, 3);
+    const part2 = barcode.slice(3, 6);
+    const part3 = barcode.slice(6, 9);
+    const part4 = barcode.slice(9);
+
+    if (rev) {
+        return `${import.meta.env.VITE_PO_IMAGE_URL}/images/products/${part1}/${part2}/${part3}/${part4}/${imageId}.${rev}.${def}.jpg`;
+    }
+    return `${import.meta.env.VITE_PO_IMAGE_URL}/images/products/${part1}/${part2}/${part3}/${part4}/${imageId}.${def}.jpg`;
+};
+
+const buildFlagUrl = (formData: FormData) => {
+    if (formData.type === 'image' && formData.image_id) {
+        return buildImageUrl(formData.barcode, formData.image_id, '400');
+    }
+    return `${import.meta.env.VITE_PO_URL}/product/${formData.barcode}`;
+};
 
 export default function FlagForm({ type_ }: FlagFormProps) {
 
@@ -67,21 +89,9 @@ export default function FlagForm({ type_ }: FlagFormProps) {
     const [image, setImage] = useState<string | null>(null);
 
     useEffect(() => {
-        const buildUrl = (barcode: string, imageId: string, def: string, rev?: string) => {
-            // split the barcode into 4 parts
-            const part1 = barcode.slice(0, 3);
-            const part2 = barcode.slice(3, 6);
-            const part3 = barcode.slice(6, 9);
-            const part4 = barcode.slice(9);
-            // if rev is defined, return the url with rev
-            if (rev) {
-                return `${import.meta.env.VITE_PO_IMAGE_URL}/images/products/${part1}/${part2}/${part3}/${part4}/${imageId}.${rev}.${def}.jpg`;
-            }
-            // else return the url without rev
-            return `${import.meta.env.VITE_PO_IMAGE_URL}/images/products/${part1}/${part2}/${part3}/${part4}/${imageId}.${def}.jpg`;
-        }
-        if (type_ === 'image') {
-            const url = buildUrl(formData.barcode, formData.image_id as string, '400');
+        if (type_ === 'image' && formData.image_id) {
+            const url = buildImageUrl(formData.barcode, formData.image_id, '400');
+
             axios.get(url).then(() => {
                 setImage(url);
             }
@@ -99,14 +109,29 @@ export default function FlagForm({ type_ }: FlagFormProps) {
         }));
     };   
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            axios.post(`${import.meta.env.VITE_API_URL}/flags`, formData)
-            .then(() => {
-                trackEvent("Flag", "submit_flag", formData.barcode);
-                window.location.replace('/thanks');
-            })
+            const flag: FlagCreate = {
+                barcode: formData.barcode || null,
+                type: formData.type,
+                url: buildFlagUrl(formData),
+                user_id: formData.user_id,
+                source: formData.source as FlagCreate['source'],
+                image_id: formData.image_id || null,
+                flavor: formData.flavor as FlagCreate['flavor'],
+                reason: formData.reason || null,
+                comment: formData.comment || null,
+            };
+
+            const { error } = await npClient.createFlag(flag);
+            if (error) {
+                console.error(error);
+                return;
+            }
+
+            trackEvent("Flag", "submit_flag", formData.barcode);
+            window.location.replace('/thanks');
         } catch (err) {
             console.error(err)
         }
