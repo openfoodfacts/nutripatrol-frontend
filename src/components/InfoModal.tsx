@@ -20,7 +20,7 @@ const style = {
     overflow:'scroll',
     height:'90%',
     display:'block',
-    backgroundColor:'white',
+    bgcolor:'background.paper',
     p: 4,
   };
 
@@ -162,7 +162,7 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
                         <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                             Brands : {ticketInfo?.brands}
                         </Typography>
-                        <Box sx={{ border: 'solid 1px black', p: 2 }}>
+                        <Box sx={{ border: 'solid 1px', borderColor: 'divider', p: 2 }}>
                             <Typography sx={{ mt: 2 }}>
                                 Categories :
                             </Typography>
@@ -184,7 +184,7 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
                                 </Typography>
                             )}
                         </Box>
-                        <Box sx={{ border: 'solid 1px black', p: 2 }}>
+                        <Box sx={{ border: 'solid 1px', borderColor: 'divider', p: 2 }}>
                             <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                                 Ingredients :
                             </Typography>
@@ -221,7 +221,7 @@ export default function ModalInfo({barcode}: ModalInfoProps) {
                                 <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center', justifyContent: 'center', mt:2}}>
                                     <Grid container spacing={2}>
                                         {ticketInfo.editors_tags.map((tag: string, index: number) => (
-                                            <Grid key={index} sx={{border: 'solid 1px black'}}>
+                                            <Grid key={index} sx={{border: 'solid 1px', borderColor: 'divider'}}>
                                                 <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                                                     {tag}
                                                 </Typography>

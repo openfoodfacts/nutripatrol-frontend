@@ -9,6 +9,8 @@ import { saveReturnUrl } from "./utils/url";
 import axios from "axios";
 import { trackPageView } from "./analytics.ts";
 
+import { useMediaQuery, ThemeProvider, createTheme, CssBaseline } from '@mui/material';
+import { useMemo } from 'react';
 import HomePage from './pages/HomePage.tsx'
 import ImageModerationPage from './pages/ImageModerationPage.tsx'
 import ModerationPage from './pages/ModerationPage.tsx'
@@ -23,6 +25,36 @@ import Tutorial from "./pages/Tutorial.tsx";
 import ThanksPage from "./pages/ThanksPage.tsx";
 
 export default function App() {
+
+  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+  const theme = useMemo(
+    () =>
+      createTheme({
+        palette: {
+          mode: prefersDarkMode ? 'dark' : 'light',
+          ...(prefersDarkMode
+            ? {} // Dark mode palette
+            : {
+                background: {
+                  default: '#fff8f0',
+                },
+              }),
+        },
+        components: {
+          MuiTypography: {
+            styleOverrides: {
+              root: {
+                '& a': {
+                  color: prefersDarkMode ? '#90caf9' : 'rgb(52, 17, 0)',
+                  textDecoration: 'underline',
+                },
+              },
+            },
+          },
+        },
+      }),
+    [prefersDarkMode],
+  );
 
   // turn in to true to test the moderation page - it will always be logged in
   const devMode = (import.meta.env.VITE_DEVELOPPEMENT_MODE === "development");
@@ -125,6 +157,8 @@ export default function App() {
   }, [refresh]);
 
   return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
       <LoginContext.Provider value={{ ...userState, refresh }}>
           <LayoutMenu 
             alertIsOpen={alertIsOpen} 
@@ -192,5 +226,6 @@ export default function App() {
             </Routes>
           </LayoutMenu>
       </LoginContext.Provider>
-    )
+    </ThemeProvider>
+  )
 }

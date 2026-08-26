@@ -68,7 +68,7 @@ function ResponsiveAppBar() {
     pages.filter((page) => page.showtoUsers.includes('user'));
 
   return (
-    <AppBar position="static" sx={{backgroundColor: '#f2e9e4'}}>
+    <AppBar position="static" sx={{backgroundColor: theme => theme.palette.mode === 'dark' ? 'background.paper' : '#f2e9e4', color: 'text.primary'}}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Box sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}>
@@ -90,7 +90,7 @@ function ResponsiveAppBar() {
               fontFamily: 'monospace',
               fontWeight: 700,
               letterSpacing: '.3rem',
-              color: 'black',
+              color: 'text.primary',
               textDecoration: 'none',
             }}
           >
@@ -105,7 +105,7 @@ function ResponsiveAppBar() {
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
               sx={{
-                color: 'black',
+                color: 'text.primary',
               }}
             >
               <MenuIcon />
@@ -134,7 +134,7 @@ function ResponsiveAppBar() {
                     <Typography 
                       textAlign="center"
                       sx={{
-                        color: 'black',
+                        color: 'text.primary',
                         fontFamily: 'monospace',
                         fontWeight: 400,
                         letterSpacing: '.3rem',
@@ -169,7 +169,7 @@ function ResponsiveAppBar() {
               fontWeight: 700,
               fontSize: '1rem',
               letterSpacing: '.3rem',
-              color: 'black',
+              color: 'text.primary',
               textDecoration: 'none',
             }}
           >
@@ -180,12 +180,12 @@ function ResponsiveAppBar() {
               <Link to={page.path} key={page.label}>
                 <Button
                   onClick={handleCloseNavMenu}
-                  sx={{ my: 2, color: 'white', display: 'block' }}
+                  sx={{ my: 2, color: 'text.primary', display: 'block' }}
                 >
                   <Typography 
                     textAlign="center"
                     sx={{
-                      color: 'black',
+                      color: 'text.primary',
                       fontFamily: 'monospace',
                       fontWeight: 400,
                       letterSpacing: '.3rem',
