@@ -4,7 +4,7 @@ import { Typography, Box } from '@mui/material';
 
 export default function LoginPage() {
     return (
-        <Box sx={{position: "absolute", width: "100vw", height: "100vh", zIndex: "-10", color: '#281900', display: 'flex',flexDirection: "column", alignItems: "center", justifyContent:"center"}}>
+        <Box sx={{position: "absolute", width: "100vw", height: "100vh", zIndex: "-10", color: 'text.primary', display: 'flex',flexDirection: "column", alignItems: "center", justifyContent:"center"}}>
             <Typography variant="h4" style={{margin: '2rem 0'}}>
                 Login with your OpenFoodFacts account
             </Typography>
