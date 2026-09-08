@@ -145,11 +145,8 @@ export default function App() {
         return false;
       });
     return isLoggedIn;
-  }, [userState]);
+  }, []);
 
-  useEffect(() => {
-    console.log("User state changed");
-  }, [userState]);
 
   useEffect(() => {
     refresh(); 
