@@ -20,6 +20,7 @@ export const reasons = {
         { value: 'outdated', label: 'Outdated' },
         { value: 'includes_personal_infos', label: 'Includes Personal Information' },
         { value: 'duplicate', label: 'Duplicate' },
+        { value: 'copyright', label: 'Copyright (Proprietary Image)' },
         { value: 'other', label: 'Other' },
     ],
     search: [
