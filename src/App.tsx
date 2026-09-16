@@ -6,6 +6,7 @@ import HistoryIcon from "@mui/icons-material/History";
 import FlagIcon from "@mui/icons-material/Flag";
 import { dataProvider } from "./admin/dataProvider";
 import { authProvider } from "./admin/authProvider";
+import AdminAppBar from "./admin/AdminAppBar";
 import { TicketList } from "./admin/tickets/TicketList";
 import { ReasonTicketList, reasonPath } from "./admin/tickets/ReasonTicketList";
 import { InappropriateTicketList } from "./admin/tickets/InappropriateTicketList";
@@ -53,7 +54,7 @@ function AdminMenu() {
 
 function AdminLayout(props: LayoutProps) {
 
-  return <Layout {...props} menu={AdminMenu} />;
+  return <Layout {...props} menu={AdminMenu} appBar={AdminAppBar} />;
 }
 
 export default function AdminApp() {
