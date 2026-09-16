@@ -8,6 +8,7 @@ import { dataProvider } from "./admin/dataProvider";
 import { authProvider } from "./admin/authProvider";
 import { TicketList } from "./admin/tickets/TicketList";
 import { ReasonTicketList, reasonPath } from "./admin/tickets/ReasonTicketList";
+import { InappropriateTicketList } from "./admin/tickets/InappropriateTicketList";
 import { reasonChoices } from "./admin/tickets/choices";
 import { ActionList } from "./admin/actions/ActionList";
 import {
@@ -95,7 +96,13 @@ export default function AdminApp() {
               <Route
                 key={reason.id}
                 path={reasonPath(reason.id)}
-                element={<ReasonTicketList reason={reason.id} />}
+                element={
+                  reason.id === "inappropriate" ? (
+                    <InappropriateTicketList />
+                  ) : (
+                    <ReasonTicketList reason={reason.id} />
+                  )
+                }
               />
             ))}
           </CustomRoutes>

@@ -20,6 +20,11 @@ export function productEditUrl(flavor: string, barcode: string) {
   return `${flavorSiteUrl(flavor)}/cgi/product.pl?type=edit&code=${encodeURIComponent(barcode)}`;
 }
 
+/** The product's public page - where a moderator checks what was flagged. */
+export function productUrl(flavor: string, barcode: string) {
+  return `${flavorSiteUrl(flavor)}/product/${encodeURIComponent(barcode)}`;
+}
+
 export function userUrl(flavor: string, userId: string) {
   return `${flavorSiteUrl(flavor)}/facets/editors/${userId}`;
 }
