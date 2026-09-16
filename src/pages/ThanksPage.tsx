@@ -21,7 +21,7 @@ const ThanksPage = () => {
         Back to Open Food Facts
       </Button>
       {authState.authenticated ?
-        <Button variant="contained" href={getSafeReturnUrl()}>
+        <Button variant="contained" href={"/tickets"}>
           See my other tickets
         </Button> : null}
     </StandalonePage>

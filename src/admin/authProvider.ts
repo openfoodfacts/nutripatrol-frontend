@@ -2,17 +2,13 @@ import type { AuthProvider } from "react-admin";
 import axios from "axios";
 import off from "../off.ts";
 import { NOT_MODERATOR_ROUTE } from "./routes";
+import { devMode, getDevRole, setDevRole } from "./devAuth";
 
 /** What the OFF session cookie, once validated, tells us about the user. */
 interface Account {
   username: string;
   isModerator: boolean;
 }
-
-// Same escape hatch as App.tsx's `devMode`: the OFF session cookie is set on
-// an openfoodfacts host, so a front end served from localhost never sees one
-// and would otherwise be locked out of its own admin.
-const devMode = import.meta.env.VITE_DEVELOPPEMENT_MODE === "development";
 
 // The cookie alone says who the user claims to be; only /cgi/auth.pl says
 // whether the session is still valid and whether the account moderates. That
@@ -22,11 +18,23 @@ const devMode = import.meta.env.VITE_DEVELOPPEMENT_MODE === "development";
 // on its own.
 let cached: { cookie: string; account: Promise<Account | null> } | null = null;
 
+/** The account dev mode is currently pretending to be signed in as. */
+function devAccount(): Account | null {
+  const role = getDevRole();
+  if (role === "anonymous") return null;
+  return {
+    username: `DEVMODE_${role.toUpperCase()}`,
+    isModerator: role === "moderator",
+  };
+}
+
 /** The signed-in moderator, or null when nobody is signed in. */
 function loadAccount(): Promise<Account | null> {
-  if (devMode) {
-    return Promise.resolve({ username: "DEVMODE_USER", isModerator: true });
-  }
+  // The OFF session cookie is set on an openfoodfacts host, so a front end
+  // served from localhost never sees one and would otherwise be locked out of
+  // its own admin. Dev mode plays whichever account the login page's switcher
+  // last picked - including no account at all.
+  if (devMode) return Promise.resolve(devAccount());
 
   const cookie = off.getCookie("session");
   if (!cookie) {
@@ -71,7 +79,7 @@ export const authProvider: AuthProvider = {
     // Rejecting triggers react-admin's logout + redirect, which defaults
     // to "/login" - already this app's real login route.
     if (!account) return Promise.reject();
-    if (params?.moderatorOnly === false) return;
+    if (!params?.moderatorOnly) return;
     if (!account.isModerator) {
       // Signed in, just not allowed - which is a different answer from "log
       // in", so it gets its own page rather than the login form. `redirectTo`
@@ -103,7 +111,13 @@ export const authProvider: AuthProvider = {
     // only drop the cookie for a session this app itself signed in, or one
     // OFF has already stopped recognising.
     const account = await loadAccount();
-    if (!account || account.isModerator) off.deleteCookie("session");
+    if (!account || account.isModerator) {
+      // In dev mode there is no cookie to drop - the session is whatever the
+      // login page's switcher last picked, so signing out means going back to
+      // the signed-out role.
+      if (devMode) setDevRole("anonymous");
+      else off.deleteCookie("session");
+    }
     cached = null;
     return "/login";
   },

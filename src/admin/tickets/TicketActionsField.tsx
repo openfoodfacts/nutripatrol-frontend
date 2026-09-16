@@ -9,6 +9,7 @@ import {
   useUpdate,
   useNotify,
   type FieldProps,
+  usePermissions,
 } from "react-admin";
 import { productEditUrl } from "./flavorUrls";
 
@@ -31,10 +32,8 @@ export function TicketActionsField(_props: Omit<FieldProps, "source">) {
   const record = useRecordContext<Ticket>();
   const notify = useNotify();
   const [update, { isPending }] = useUpdate();
-
+  const { permissions } = usePermissions();
   if (!record) return null;
-
-
 
   const updateStatus = (newStatus: "closed-no-issue" | "closed-fixed" | "open") =>
     update(
@@ -70,7 +69,7 @@ export function TicketActionsField(_props: Omit<FieldProps, "source">) {
         Edit
       </Button>
 
-      {open ? <React.Fragment>
+      {permissions !== 'moderator' ? null : open ? <React.Fragment>
         <Button
           size="small"
           variant="outlined"

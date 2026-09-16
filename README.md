@@ -43,6 +43,30 @@ Please check this one before running the frontend.
 
 5. Congratulations 🎉 ! [You can open frontend](http://localhost:5173/)
 
+## Signing in during local dev
+
+Open Food Facts sets its session cookie on an `openfoodfacts` host, so a front
+end served from `localhost` can never obtain one: there is no real account to
+sign into here. With `VITE_DEVELOPPEMENT_MODE=development` (the default in
+`.env.local`), `/login` therefore offers a choice of account instead of the
+hand-off to Open Food Facts:
+
+| Choice | What the app does |
+|---|---|
+| **Signed out** | No session: the moderation screens and the flag form both send you back to `/login` |
+| **Contributor** | Signed in without moderator rights: the flag form works, the moderation screens land on the "not a moderator" page |
+| **Moderator** | Signed in with moderator rights: the whole app is open |
+
+The choice is remembered across reloads, and `/login` is reachable at any time
+to change it - the user menu's "Logout" goes back to signed out.
+
+It reaches the API too: each call names the chosen account with the
+`X-Dev-User-Id` / `X-Dev-Moderator` headers, so the API filters as it would for
+a real one - a contributor lists only the tickets their own flags opened, a
+moderator lists every one of them, and signed out gets 401. This needs
+`AUTH_DEV_USERS=1` in the API's `.env` (on by default there); see the
+[API README](https://github.com/openfoodfacts/nutripatrol#switching-between-users-in-local-dev).
+
 ## Useful routes
 
 ### Report forms

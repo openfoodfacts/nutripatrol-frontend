@@ -3,7 +3,6 @@ import { HttpError } from "react-admin";
 import type { DataProvider } from "react-admin";
 
 const apiUrl = import.meta.env.VITE_API_URL;
-axios.defaults.headers.common["Authorization"] = "Bearer local-dev-token"; // TEMP: local browser verification only, revert before commit
 
 // The API's GET /tickets filter param for the issue type is `type_` (a
 // reserved-word workaround), while the field on the returned record - and
