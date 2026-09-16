@@ -9,53 +9,22 @@ import { saveReturnUrl } from "./utils/url";
 import axios from "axios";
 import { trackPageView } from "./analytics.ts";
 
-import { useMediaQuery, ThemeProvider, createTheme, CssBaseline } from '@mui/material';
-import { useMemo } from 'react';
+import { CssBaseline } from '@mui/material';
+
 import HomePage from './pages/HomePage.tsx'
 import ImageModerationPage from './pages/ImageModerationPage.tsx'
 import ModerationPage from './pages/ModerationPage.tsx'
 import NonModeratorPage from './pages/NonModeratorPage.tsx'
 import LoginPage from './pages/LoginPage.tsx'
-import LayoutMenu from "./components/Layouts/LayoutMenu.tsx";
-import LoginContext from "./contexts/login.tsx";
+
 import NotFound from "./pages/NotFound.tsx";
 import FlagFormPage from "./pages/FlagFormPage.tsx";
 import FlagInfos from "./pages/FlagInfos.tsx";
 import Tutorial from "./pages/Tutorial.tsx";
 import ThanksPage from "./pages/ThanksPage.tsx";
+import { AdminApp } from "./admin/AdminApp.tsx";
 
 export default function App() {
-
-  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-  const theme = useMemo(
-    () =>
-      createTheme({
-        palette: {
-          mode: prefersDarkMode ? 'dark' : 'light',
-          ...(prefersDarkMode
-            ? {} // Dark mode palette
-            : {
-                background: {
-                  default: '#fff8f0',
-                },
-              }),
-        },
-        components: {
-          MuiTypography: {
-            styleOverrides: {
-              root: {
-                '& a': {
-                  color: prefersDarkMode ? '#90caf9' : 'rgb(52, 17, 0)',
-                  textDecoration: 'underline',
-                },
-              },
-            },
-          },
-        },
-      }),
-    [prefersDarkMode],
-  );
-
   // turn in to true to test the moderation page - it will always be logged in
   const devMode = (import.meta.env.VITE_DEVELOPPEMENT_MODE === "development");
 
@@ -65,7 +34,7 @@ export default function App() {
   useEffect(() => {
     trackPageView(location.pathname + location.search);
   }, [location]);
-  
+
   const [alertIsOpen, setAlertIsOpen] = useState(false);
   const [userState, setUserState] = useState(() => {
     if (devMode) {
@@ -81,7 +50,7 @@ export default function App() {
       isModerator: false,
     };
   });
-  
+
 
   const lastSeenCookie = useRef<string | null>(null);
 
@@ -128,7 +97,7 @@ export default function App() {
           isLoggedIn: true,
           isModerator: userData.moderator === 1,
         }))
-        
+
         setAlertIsOpen(true);
         lastSeenCookie.current = sessionCookie;
         return true;
@@ -145,87 +114,48 @@ export default function App() {
         return false;
       });
     return isLoggedIn;
-  }, [userState]);
+  }, []);
 
   useEffect(() => {
     console.log("User state changed");
   }, [userState]);
 
   useEffect(() => {
-    refresh(); 
+    refresh();
     saveReturnUrl();
   }, [refresh]);
 
   return (
-    <ThemeProvider theme={theme}>
+    <div>
       <CssBaseline />
-      <LoginContext.Provider value={{ ...userState, refresh }}>
-          <LayoutMenu 
-            alertIsOpen={alertIsOpen} 
-            setAlertIsOpen={setAlertIsOpen} 
-          >
-            <Routes>
-              {/* Index */}
-              <Route path="/" element={<HomePage />} />
-              <Route path="/flag" element={<FlagInfos />} />
-              <Route path="/tutorial" element={<Tutorial />} />
-              {/* LoggedIn routes (user) */}
-              <Route
-                path="/flag/product/"
-                element={
-                  userState.isLoggedIn ? (
-                    <FlagFormPage type_="product" />
-                  ) : (
-                    <LoginPage />
-                  )
-                }
-              />
-              <Route
-                path="/flag/image/"
-                element={
-                  userState.isLoggedIn ? (
-                    <FlagFormPage type_="image" />
-                  ) : (
-                    <LoginPage />
-                  )
-                }
-              />
-              {/* LoggedIn routes (moderator) */}
-              <Route
-                path="/image-moderation"
-                element={
-                  userState.isLoggedIn ? (
-                    userState.isModerator ? (
-                      <ImageModerationPage />
-                    ) : (
-                      <NonModeratorPage />
-                    )
-                  ) : (
-                    <LoginPage />
-                  )
-                }
-              />
-              <Route
-                path="/moderation"
-                element={
-                  userState.isLoggedIn ? (
-                    userState.isModerator ? (
-                      <ModerationPage />
-                    ) : (
-                      <NonModeratorPage />
-                    )
-                  ) : (
-                    <LoginPage />
-                  )
-                }
-              />
-              {/* Non LoggedIn routes */}
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/thanks" element={<ThanksPage />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </LayoutMenu>
-      </LoginContext.Provider>
-    </ThemeProvider>
+
+      {/* <Routes> */}
+        {/* Index */}
+        {/* <Route path="/" element={<HomePage />} />
+        <Route path="/flag" element={<FlagInfos />} />
+        <Route path="/tutorial" element={<Tutorial />} /> */}
+        {/* LoggedIn routes (user) */}
+        
+          <AdminApp />
+
+        {/* <Route
+          element={
+            userState.isLoggedIn ? (
+              userState.isModerator ? (
+              
+              ) : (
+                <NonModeratorPage />
+              )
+            ) : (
+              <LoginPage />
+            )
+          }
+        /> */}
+        {/* Non LoggedIn routes */}
+        {/* <Route path="/login" element={<LoginPage />} />
+        <Route path="/thanks" element={<ThanksPage />} />
+        <Route path="*" element={<NotFound />} /> */}
+      {/* </Routes> */}
+    </div>
   )
 }
