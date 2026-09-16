@@ -8,6 +8,7 @@ import { dataProvider } from "./admin/dataProvider";
 import { authProvider } from "./admin/authProvider";
 import AdminAppBar from "./admin/AdminAppBar";
 import { TicketList } from "./admin/tickets/TicketList";
+import { TicketShow } from "./admin/tickets/TicketShow";
 import { ReasonTicketList, reasonPath } from "./admin/tickets/ReasonTicketList";
 import { InappropriateTicketList } from "./admin/tickets/InappropriateTicketList";
 import { reasonChoices } from "./admin/tickets/choices";
@@ -80,6 +81,7 @@ export default function AdminApp() {
           <Resource
             name="tickets"
             list={TicketList}
+            show={TicketShow}
             icon={ConfirmationNumberIcon}
           />
           {/* Labelled "My actions" because the backing route
