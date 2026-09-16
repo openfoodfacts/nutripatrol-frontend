@@ -109,32 +109,21 @@ export const authProvider: AuthProvider = {
       });
     }
   },
-  checkError: (error) => {
+  checkError: async (error) => {
     const status = error?.status;
-    if (status === 401 || status === 403) {
-      // The API disagrees with our cached verdict, so throw it away: the next
-      // checkAuth re-asks OFF instead of replaying the stale "yes".
+    // 401 means wrong auth tokens.
+    // For other 400 errors we just ignore it
+    if (status !== 401) return;
+
+    const account = await loadAccount()
+    if (!account) {
       cached = null;
-      // Rejecting triggers react-admin's logout + redirect, which defaults
-      // to "/login" - already this app's real login route.
       return Promise.reject();
     }
-    return Promise.resolve();
   },
   logout: async (params?: { userInitiated?: boolean }) => {
-    // react-admin runs logout() on every checkAuth rejection, including the
-    // one that bounces a signed-in non-moderator. Their OFF session is valid
-    // and shared with the rest of the OFF sites, so it is not ours to end on
-    // their behalf - that one only drops a session OFF has already stopped
-    // recognising, or a moderator's.
-    //
-    // Asking to be signed out is a different matter, and it is the user menu's
-    // "Logout" that says so by passing `userInitiated` (see SignOut in
-    // admin/AdminAppBar): it drops the session whoever it belongs to, which is
-    // the whole point of the button. Without this the guard above also caught
-    // a contributor clicking Logout, and left them signed in.
-    const account = await loadAccount();
-    if (params?.userInitiated || !account || account.isModerator) {
+    if (params?.userInitiated) {
+      // Only an explicit "Logout" ends delete the cookie
       // In dev mode there is no cookie to drop - the session is whatever the
       // login page's switcher last picked, so signing out means going back to
       // the signed-out role.
