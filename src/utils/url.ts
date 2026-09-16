@@ -42,18 +42,12 @@ export function saveReturnUrl(): void {
 }
 
 /**
- * Returns a robust fallback redirect URL, prioritizing session storage.
- * If all else fails, rewrites "nutripatrol" to "world" based on environment.
+ * Returns a trusted return URL.
+ * Uses an application-controlled fallback and does not consume user-influenced storage.
  */
 export function getSafeReturnUrl(): string {
   const origin = window.location.origin;
-  
-  // Get stored URL if it exists
-  const storedUrl = sessionStorage.getItem("returnTo");
-  if (storedUrl && isValidReturnUrl(storedUrl)) {
-    return storedUrl;
-  }
 
-  // Final fallback strategy per issue #238
+  // Trusted fallback strategy per issue #238
   return origin.replace('nutripatrol', 'world');
 }
