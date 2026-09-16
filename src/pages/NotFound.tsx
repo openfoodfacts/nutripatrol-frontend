@@ -1,14 +1,30 @@
-import { Typography, Box } from "@mui/material"
+import { Box, Button, Typography } from "@mui/material";
+import { Link } from "react-router-dom";
 
-export default function Custom404() {
-    return (
-        <Box sx={{zIndex: "-10", position: "absolute", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center",width: "100vw", height: "100vh"}}>
-            <Typography variant="h1" style={{margin: '1rem 0'}}>
-                404
-            </Typography>
-            <Typography variant="h4">
-                page not found
-            </Typography>
-        </Box>
-    )
+/**
+ * react-admin's `catchAll`, shown for any unclaimed path.
+ *
+ * It renders inside the moderation layout, so it fills the content area
+ * rather than the viewport, and leaves the menu in place as a way out.
+ */
+export default function NotFound() {
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        textAlign: "center",
+        gap: 2,
+        py: 8,
+      }}
+    >
+      <Typography variant="h1">404</Typography>
+      <Typography variant="h4">Page not found</Typography>
+      <Button component={Link} to="/" variant="outlined">
+        Back to NutriPatrol
+      </Button>
+    </Box>
+  );
 }

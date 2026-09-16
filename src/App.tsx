@@ -1,161 +1,30 @@
-import {
-  Route,
-  Routes,
-  useLocation
-} from "react-router-dom";
-import { useState, useCallback, useRef, useEffect } from "react";
-import off from "./off.ts";
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
+
 import { saveReturnUrl } from "./utils/url";
-import axios from "axios";
 import { trackPageView } from "./analytics.ts";
-
-import { CssBaseline } from '@mui/material';
-
-import HomePage from './pages/HomePage.tsx'
-import ImageModerationPage from './pages/ImageModerationPage.tsx'
-import ModerationPage from './pages/ModerationPage.tsx'
-import NonModeratorPage from './pages/NonModeratorPage.tsx'
-import LoginPage from './pages/LoginPage.tsx'
-
-import NotFound from "./pages/NotFound.tsx";
-import FlagFormPage from "./pages/FlagFormPage.tsx";
-import FlagInfos from "./pages/FlagInfos.tsx";
-import Tutorial from "./pages/Tutorial.tsx";
-import ThanksPage from "./pages/ThanksPage.tsx";
 import { AdminApp } from "./admin/AdminApp.tsx";
 
+/**
+ * Everything below this point is routed by react-admin - see AdminApp for the
+ * route table. What is left here is the two things that have to happen once,
+ * above the router, for the whole app.
+ */
 export default function App() {
-  // turn in to true to test the moderation page - it will always be logged in
-  const devMode = (import.meta.env.VITE_DEVELOPPEMENT_MODE === "development");
-
   const location = useLocation();
 
-  // Track page views on route changes
+  // Matomo only counts full page loads on its own, so client-side navigation
+  // has to be reported by hand.
   useEffect(() => {
     trackPageView(location.pathname + location.search);
   }, [location]);
 
-  const [alertIsOpen, setAlertIsOpen] = useState(false);
-  const [userState, setUserState] = useState(() => {
-    if (devMode) {
-      return {
-        userName: "DEVMODE_USER",
-        isLoggedIn: true,
-        isModerator: true,
-      };
-    }
-    return {
-      userName: "",
-      isLoggedIn: false,
-      isModerator: false,
-    };
-  });
-
-
-  const lastSeenCookie = useRef<string | null>(null);
-
-  const refresh = useCallback(async () => {
-    if (devMode) {
-      setUserState({
-        userName: "",
-        isLoggedIn: true,
-        isModerator: true,
-      });
-      setAlertIsOpen(true);
-      return true;
-    }
-    // Get the session cookie
-    const sessionCookie = off.getCookie("session");
-    // If the session cookie is the same as the last seen cookie, return the current login state
-    if (sessionCookie === lastSeenCookie.current) {
-      setAlertIsOpen(false);
-      return userState.isLoggedIn;
-    }
-    // If the session cookie is null, the user is not logged in    
-    if (!sessionCookie) {
-      setUserState({
-        userName: "",
-        isLoggedIn: false,
-        isModerator: false,
-      });
-      setAlertIsOpen(false);
-      lastSeenCookie.current = sessionCookie;
-      return false;
-    }
-    // If the session cookie is not null, send a request to the server to check if the user is logged in
-    const isLoggedIn = axios
-      .get(`${import.meta.env.VITE_PO_URL}/cgi/auth.pl?body=1`, {
-        withCredentials: true,
-      })
-      // If the request is successful, set the user state to logged in
-      .then(response => {
-        const cookieUserName = off.getUsername();
-        const userData = response.data.user;
-        setUserState(prevState => ({
-          ...prevState,
-          userName: cookieUserName,
-          isLoggedIn: true,
-          isModerator: userData.moderator === 1,
-        }))
-
-        setAlertIsOpen(true);
-        lastSeenCookie.current = sessionCookie;
-        return true;
-      })
-      // If the request is not successful, set the user state to logged out
-      .catch(() => {
-        setUserState({
-          userName: "",
-          isLoggedIn: false,
-          isModerator: false,
-        })
-        setAlertIsOpen(false);
-        lastSeenCookie.current = sessionCookie;
-        return false;
-      });
-    return isLoggedIn;
+  // Where the user came from is only knowable from the URL the app was loaded
+  // with; ThanksPage reads it back several navigations later, so it has to be
+  // captured before the first one.
+  useEffect(() => {
+    saveReturnUrl();
   }, []);
 
-  useEffect(() => {
-    console.log("User state changed");
-  }, [userState]);
-
-  useEffect(() => {
-    refresh();
-    saveReturnUrl();
-  }, [refresh]);
-
-  return (
-    <div>
-      <CssBaseline />
-
-      {/* <Routes> */}
-        {/* Index */}
-        {/* <Route path="/" element={<HomePage />} />
-        <Route path="/flag" element={<FlagInfos />} />
-        <Route path="/tutorial" element={<Tutorial />} /> */}
-        {/* LoggedIn routes (user) */}
-        
-          <AdminApp />
-
-        {/* <Route
-          element={
-            userState.isLoggedIn ? (
-              userState.isModerator ? (
-              
-              ) : (
-                <NonModeratorPage />
-              )
-            ) : (
-              <LoginPage />
-            )
-          }
-        /> */}
-        {/* Non LoggedIn routes */}
-        {/* <Route path="/login" element={<LoginPage />} />
-        <Route path="/thanks" element={<ThanksPage />} />
-        <Route path="*" element={<NotFound />} /> */}
-      {/* </Routes> */}
-    </div>
-  )
+  return <AdminApp />;
 }

@@ -1,21 +1,29 @@
-import Button from '@mui/material/Button';
-import { Link } from 'react-router-dom';
-import { Typography, Box } from '@mui/material';
+import { Button, Typography } from "@mui/material";
+import StandalonePage from "./StandalonePage";
 
+/**
+ * react-admin's `loginPage`, mounted at /login.
+ *
+ * NutriPatrol has no accounts of its own: signing in happens on Open Food
+ * Facts, which sets the shared `session` cookie the authProvider reads back.
+ * So this leaves the app instead of submitting a form - and opens a tab, so
+ * that whatever the user was trying to reach is still here when they return.
+ */
 export default function LoginPage() {
-    return (
-        <Box sx={{position: "absolute", width: "100vw", height: "100vh", zIndex: "-10", color: 'text.primary', display: 'flex',flexDirection: "column", alignItems: "center", justifyContent:"center"}}>
-            <Typography variant="h4" style={{margin: '2rem 0'}}>
-                Login with your OpenFoodFacts account
-            </Typography>
-            <Button 
-                component={Link} 
-                to={`${import.meta.env.VITE_PO_URL}/cgi/session.pl`} 
-                variant='contained'
-                color="primary"
-                target="_blank" >
-                Login
-            </Button>
-        </Box>
-    )
+  return (
+    <StandalonePage>
+      <Typography variant="h4">
+        Login with your Open Food Facts account
+      </Typography>
+      <Button
+        href={`${import.meta.env.VITE_PO_URL}/cgi/session.pl`}
+        target="_blank"
+        rel="noopener"
+        variant="contained"
+        color="primary"
+      >
+        Login
+      </Button>
+    </StandalonePage>
+  );
 }

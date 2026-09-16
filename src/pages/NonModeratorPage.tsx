@@ -1,11 +1,22 @@
-import { Typography, Box } from "@mui/material"
+import { Button, Typography } from "@mui/material";
+import { Link } from "react-router-dom";
+import StandalonePage from "./StandalonePage";
 
+/**
+ * Where authProvider.checkAuth sends a signed-in user without moderator
+ * rights. Their session is fine, so offering them the login form again would
+ * only send them round in a circle - this says what is actually wrong, and
+ * points at the part of the site they can use.
+ */
 export default function NonModeratorPage() {
-    return (
-        <Box sx={{position: "absolute", width: "100vw", height: "100vh", zIndex: "-10", color: 'text.primary', display: 'flex',flexDirection: "column", alignItems: "center", justifyContent:"center"}}>
-            <Typography variant="h4">
-                You have to be moderator to access to this page.
-            </Typography>
-        </Box>
-    )
+  return (
+    <StandalonePage>
+      <Typography variant="h4">
+        You have to be a moderator to access this page.
+      </Typography>
+      <Button component={Link} to="/" variant="outlined">
+        Back to NutriPatrol
+      </Button>
+    </StandalonePage>
+  );
 }
