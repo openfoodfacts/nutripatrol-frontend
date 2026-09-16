@@ -25,7 +25,7 @@ export function ActionList() {
         <ReferenceField
           source="ticket_id"
           reference="tickets"
-          link="edit"
+          link="show" // For now we only show tickets, We don't have editing form.
           sortable={false}
         >
           <TextField source="barcode" />

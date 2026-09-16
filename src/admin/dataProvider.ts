@@ -1,6 +1,6 @@
 import axios, { AxiosError } from "axios";
 import { HttpError } from "react-admin";
-import type { DataProvider } from "react-admin";
+import type { DataProvider, Identifier } from "react-admin";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -53,12 +53,57 @@ function notImplemented(method: string): never {
   throw new HttpError(`${method} is not supported by the nutripatrol API`, 501);
 }
 
-interface ModeratorAction {
+export interface ModeratorAction {
   id: number;
   action_type: string;
   user_id: string;
   ticket_id: number;
   created_at: string;
+}
+
+/**
+ * A report, as one person filed it.
+ *
+ * A ticket is the moderator's unit of work and gathers every report about the
+ * same product or image, so this is where the human part lives.
+ */
+export interface Flag {
+  id: number;
+  ticket_id: number;
+  barcode: string | null;
+  /**
+   * The selected type of issue. Technically could be anything, but we suggest values.
+   */
+  type: string;
+  url: string;
+  user_id: string;
+  device_id: string;
+  source: string;
+  confidence: number | null;
+  image_id: string | null;
+  flavor: string;
+  /**
+   * Free text to explain why the flag was raised
+   */
+  reason: string | null;
+  comment: string | null;
+  product_revision: number | null;
+  created_at: string;
+}
+
+/**
+ * A flag as POST /flags/batch returns it.
+ *
+ * That route serializes peewee rows as they come, so the ticket foreign key
+ * arrives under its Python attribute name, `ticket`. The other flag routes go
+ * through the API's own response model and publish it as `ticket_id`; asFlag
+ * settles on the latter, so that nothing downstream has to know which route a
+ * flag came from.
+ */
+type RawFlag = Omit<Flag, "ticket_id"> & { ticket?: number; ticket_id?: number };
+
+function asFlag({ ticket, ...flag }: RawFlag): Flag {
+  return { ...flag, ticket_id: flag.ticket_id ?? ticket ?? 0 };
 }
 
 interface Ticket {
@@ -145,4 +190,65 @@ export const dataProvider = {
   delete: async () => notImplemented("delete"),
   deleteMany: async () => notImplemented("deleteMany"),
   updateMany: async () => notImplemented("updateMany"),
-} as DataProvider;
+
+  // Flags and moderator actions hang off a ticket rather than standing on
+  // their own - neither has a route that takes a ticket filter, so neither
+  // fits getList. They are custom methods instead, called through
+  // useDataProvider so that their failures still reach authProvider.checkError
+  // like every other call here.
+
+  /**
+   * The flags of several tickets at once, keyed by ticket id (as a string -
+   * they are JSON object keys).
+   *
+   * One request for a whole page of tickets, because the alternative is one
+   * per row. A ticket the caller may not read is simply absent from the
+   * answer, and a non-moderator gets only their own flags on the tickets they
+   * did flag.
+   */
+  getFlagsByTicket: async (ticketIds: number[]) => {
+    const data = await request<{
+      ticket_id_to_flags?: Record<string, RawFlag[]>;
+    }>(
+      axios.post(
+        `${apiUrl}/flags/batch`,
+        { ticket_ids: ticketIds },
+        { withCredentials: true },
+      ),
+    );
+    // `?? {}` covers react-admin's proxy, which swallows the response and
+    // hands back `{}` when an error ended in a logout.
+    const byTicket = data.ticket_id_to_flags ?? {};
+    return Object.fromEntries(
+      Object.entries(byTicket).map(([ticketId, flags]) => [
+        ticketId,
+        flags.map(asFlag),
+      ]),
+    );
+  },
+
+  /** One ticket's moderation history, most recent first. */
+  getTicketActions: async (ticketId: Identifier, page = 1, perPage = 100) => {
+    const data = await request<{ actions?: ModeratorAction[]; total?: number }>(
+      axios.get(
+        `${apiUrl}/tickets/${ticketId}/actions?page=${page}&page_size=${perPage}`,
+        { withCredentials: true },
+      ),
+    );
+    return { actions: data.actions ?? [], total: data.total ?? 0 };
+  },
+} as NutriPatrolDataProvider;
+
+/**
+ * The react-admin provider plus the two ticket-scoped reads above. Components
+ * ask for it explicitly - `useDataProvider<NutriPatrolDataProvider>()` - since
+ * the plain DataProvider type knows nothing of them.
+ */
+export type NutriPatrolDataProvider = DataProvider & {
+  getFlagsByTicket: (ticketIds: number[]) => Promise<Record<string, Flag[]>>;
+  getTicketActions: (
+    ticketId: Identifier,
+    page?: number,
+    perPage?: number,
+  ) => Promise<{ actions: ModeratorAction[]; total: number }>;
+};
