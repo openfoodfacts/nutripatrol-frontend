@@ -1,5 +1,7 @@
 import Container from '@mui/material/Container';
-import { Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
+import { Link } from "react-router-dom";
+import { FLAG_INFOS_ROUTE, TICKETS_ROUTE, TUTORIAL_ROUTE } from "../admin/routes";
 
 export default function HomePage() {
     return (
@@ -32,6 +34,19 @@ export default function HomePage() {
                     Moderators are selected based on their dedication, understanding of the platform, and commitment to OpenFoodFacts’ mission.
                     See also <a href="https://wiki.openfoodfacts.org/Moderation">Moderation topic on our wiki</a>.
                 </Typography>
+                {/* This page sits outside the moderation layout, so it carries
+                    its own links into the rest of the app. */}
+                <Box sx={{display: 'flex', flexWrap: 'wrap', gap: 2, margin: '3rem 0'}}>
+                    <Button component={Link} to={TICKETS_ROUTE} variant="contained">
+                        Moderate tickets
+                    </Button>
+                    <Button component={Link} to={TUTORIAL_ROUTE} variant="outlined">
+                        Moderation tutorial
+                    </Button>
+                    <Button component={Link} to={FLAG_INFOS_ROUTE} variant="outlined">
+                        How to report a product
+                    </Button>
+                </Box>
             </Container>
         </>
     )

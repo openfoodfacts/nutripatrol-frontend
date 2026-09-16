@@ -1,228 +1,139 @@
+import { Admin, CustomRoutes, Layout, Menu, Resource, usePermissions } from "react-admin";
+import type { LayoutProps } from "react-admin";
+import { Route } from "react-router-dom";
+import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
+import HistoryIcon from "@mui/icons-material/History";
+import FlagIcon from "@mui/icons-material/Flag";
+import { dataProvider } from "./admin/dataProvider";
+import { authProvider } from "./admin/authProvider";
+import { TicketList } from "./admin/tickets/TicketList";
+import { ReasonTicketList, reasonPath } from "./admin/tickets/ReasonTicketList";
+import { InappropriateTicketList } from "./admin/tickets/InappropriateTicketList";
+import { reasonChoices } from "./admin/tickets/choices";
+import { ActionList } from "./admin/actions/ActionList";
 import {
-  Route,
-  Routes,
-  useLocation
-} from "react-router-dom";
-import { useState, useCallback, useRef, useEffect } from "react";
-import off from "./off.ts";
-import { saveReturnUrl } from "./utils/url";
-import axios from "axios";
-import { trackPageView } from "./analytics.ts";
+  FLAG_IMAGE_ROUTE,
+  FLAG_INFOS_ROUTE,
+  FLAG_PRODUCT_ROUTE,
+  NOT_MODERATOR_ROUTE,
+  THANKS_ROUTE,
+  TUTORIAL_ROUTE,
+} from "./admin/routes";
+import HomePage from "./pages/HomePage";
+import FlagInfos from "./pages/FlagInfos";
+import FlagFormPage from "./pages/FlagFormPage";
+import ThanksPage from "./pages/ThanksPage";
+import Tutorial from "./pages/Tutorial";
+import LoginPage from "./pages/LoginPage";
+import NonModeratorPage from "./pages/NonModeratorPage";
+import NotFound from "./pages/NotFound";
 
-import { useMediaQuery, ThemeProvider, createTheme, CssBaseline } from '@mui/material';
-import { useMemo } from 'react';
-import HomePage from './pages/HomePage.tsx'
-import ImageModerationPage from './pages/ImageModerationPage.tsx'
-import ModerationPage from './pages/ModerationPage.tsx'
-import NonModeratorPage from './pages/NonModeratorPage.tsx'
-import LoginPage from './pages/LoginPage.tsx'
-import LayoutMenu from "./components/Layouts/LayoutMenu.tsx";
-import LoginContext from "./contexts/login.tsx";
-import NotFound from "./pages/NotFound.tsx";
-import FlagFormPage from "./pages/FlagFormPage.tsx";
-import FlagInfos from "./pages/FlagInfos.tsx";
-import Tutorial from "./pages/Tutorial.tsx";
-import ThanksPage from "./pages/ThanksPage.tsx";
-
-export default function App() {
-
-  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-  const theme = useMemo(
-    () =>
-      createTheme({
-        palette: {
-          mode: prefersDarkMode ? 'dark' : 'light',
-          ...(prefersDarkMode
-            ? {} // Dark mode palette
-            : {
-                background: {
-                  default: '#fff8f0',
-                },
-              }),
-        },
-        components: {
-          MuiTypography: {
-            styleOverrides: {
-              root: {
-                '& a': {
-                  color: prefersDarkMode ? '#90caf9' : 'rgb(52, 17, 0)',
-                  textDecoration: 'underline',
-                },
-              },
-            },
-          },
-        },
-      }),
-    [prefersDarkMode],
-  );
-
-  // turn in to true to test the moderation page - it will always be logged in
-  const devMode = (import.meta.env.VITE_DEVELOPPEMENT_MODE === "development");
-
-  const location = useLocation();
-
-  // Track page views on route changes
-  useEffect(() => {
-    trackPageView(location.pathname + location.search);
-  }, [location]);
-  
-  const [alertIsOpen, setAlertIsOpen] = useState(false);
-  const [userState, setUserState] = useState(() => {
-    if (devMode) {
-      return {
-        userName: "DEVMODE_USER",
-        isLoggedIn: true,
-        isModerator: true,
-      };
-    }
-    return {
-      userName: "",
-      isLoggedIn: false,
-      isModerator: false,
-    };
-  });
-  
-
-  const lastSeenCookie = useRef<string | null>(null);
-
-  const refresh = useCallback(async () => {
-    if (devMode) {
-      setUserState({
-        userName: "",
-        isLoggedIn: true,
-        isModerator: true,
-      });
-      setAlertIsOpen(true);
-      return true;
-    }
-    // Get the session cookie
-    const sessionCookie = off.getCookie("session");
-    // If the session cookie is the same as the last seen cookie, return the current login state
-    if (sessionCookie === lastSeenCookie.current) {
-      setAlertIsOpen(false);
-      return userState.isLoggedIn;
-    }
-    // If the session cookie is null, the user is not logged in    
-    if (!sessionCookie) {
-      setUserState({
-        userName: "",
-        isLoggedIn: false,
-        isModerator: false,
-      });
-      setAlertIsOpen(false);
-      lastSeenCookie.current = sessionCookie;
-      return false;
-    }
-    // If the session cookie is not null, send a request to the server to check if the user is logged in
-    const isLoggedIn = axios
-      .get(`${import.meta.env.VITE_PO_URL}/cgi/auth.pl?body=1`, {
-        withCredentials: true,
-      })
-      // If the request is successful, set the user state to logged in
-      .then(response => {
-        const cookieUserName = off.getUsername();
-        const userData = response.data.user;
-        setUserState(prevState => ({
-          ...prevState,
-          userName: cookieUserName,
-          isLoggedIn: true,
-          isModerator: userData.moderator === 1,
-        }))
-        
-        setAlertIsOpen(true);
-        lastSeenCookie.current = sessionCookie;
-        return true;
-      })
-      // If the request is not successful, set the user state to logged out
-      .catch(() => {
-        setUserState({
-          userName: "",
-          isLoggedIn: false,
-          isModerator: false,
-        })
-        setAlertIsOpen(false);
-        lastSeenCookie.current = sessionCookie;
-        return false;
-      });
-    return isLoggedIn;
-  }, []);
-
-
-  useEffect(() => {
-    refresh(); 
-    saveReturnUrl();
-  }, [refresh]);
+// One page per flagging reason, so that a moderator working through, say,
+// inappropriate images gets a link to bookmark instead of having to set the
+// filter by hand. They are the ticket list with `reason` pinned - the routes
+// and the menu entries are both generated from reasonChoices, so adding a
+// reason there adds its page.
+function AdminMenu() {
+  const { permissions } = usePermissions();
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <LoginContext.Provider value={{ ...userState, refresh }}>
-          <LayoutMenu 
-            alertIsOpen={alertIsOpen} 
-            setAlertIsOpen={setAlertIsOpen} 
-          >
-            <Routes>
-              {/* Index */}
-              <Route path="/" element={<HomePage />} />
-              <Route path="/flag" element={<FlagInfos />} />
-              <Route path="/tutorial" element={<Tutorial />} />
-              {/* LoggedIn routes (user) */}
+    <Menu>
+      <Menu.ResourceItems />
+      {(permissions === "moderator" ? reasonChoices : []).map((reason) => (
+        <Menu.Item
+          key={reason.id}
+          to={reasonPath(reason.id)}
+          primaryText={reason.name}
+          leftIcon={<FlagIcon />}
+        />
+      ))}
+    </Menu>
+  );
+}
+
+function AdminLayout(props: LayoutProps) {
+
+  return <Layout {...props} menu={AdminMenu} />;
+}
+
+export default function AdminApp() {
+  return (
+    <Admin
+      dataProvider={dataProvider}
+      authProvider={authProvider}
+      layout={AdminLayout}
+      // NutriPatrol has no credentials of its own, so this replaces
+      // react-admin's username/password form with a hand-off to Open Food
+      // Facts. react-admin mounts it at "/login" and redirects here itself
+      // whenever checkAuth rejects.
+      loginPage={LoginPage}
+      // Rendered inside the layout for any path none of the routes below
+      // claim - including a mistyped resource name, which is why it keeps the
+      // menu around rather than filling the viewport.
+      catchAll={NotFound}
+      disableTelemetry
+      title="NutriPatrol Admin"
+    >
+      {(permissions) => (
+        <>
+          <Resource
+            name="tickets"
+            list={TicketList}
+            icon={ConfirmationNumberIcon}
+          />
+          {/* Labelled "My actions" because the backing route
+          (/moderator_actions/me) only ever returns the caller's own. */}
+          {permissions === 'moderator' ? <Resource
+            name="moderator_actions"
+            list={ActionList}
+            icon={HistoryIcon}
+            options={{ label: "My actions" }}
+
+          /> : null}
+
+          <CustomRoutes>
+            {(permissions === 'moderator' ? reasonChoices : []).map((reason) => (
               <Route
-                path="/flag/product/"
+                key={reason.id}
+                path={reasonPath(reason.id)}
                 element={
-                  userState.isLoggedIn ? (
-                    <FlagFormPage type_="product" />
+                  reason.id === "inappropriate" ? (
+                    <InappropriateTicketList />
                   ) : (
-                    <LoginPage />
+                    <ReasonTicketList reason={reason.id} />
                   )
                 }
               />
-              <Route
-                path="/flag/image/"
-                element={
-                  userState.isLoggedIn ? (
-                    <FlagFormPage type_="image" />
-                  ) : (
-                    <LoginPage />
-                  )
-                }
-              />
-              {/* LoggedIn routes (moderator) */}
-              <Route
-                path="/image-moderation"
-                element={
-                  userState.isLoggedIn ? (
-                    userState.isModerator ? (
-                      <ImageModerationPage />
-                    ) : (
-                      <NonModeratorPage />
-                    )
-                  ) : (
-                    <LoginPage />
-                  )
-                }
-              />
-              <Route
-                path="/moderation"
-                element={
-                  userState.isLoggedIn ? (
-                    userState.isModerator ? (
-                      <ModerationPage />
-                    ) : (
-                      <NonModeratorPage />
-                    )
-                  ) : (
-                    <LoginPage />
-                  )
-                }
-              />
-              {/* Non LoggedIn routes */}
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/thanks" element={<ThanksPage />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </LayoutMenu>
-      </LoginContext.Provider>
-    </ThemeProvider>
-  )
+            ))}
+          </CustomRoutes>
+
+          {/* Everything below is public-facing, and `noLayout` keeps it out of the
+          moderation shell: these pages are reached from Open Food Facts by
+          contributors who are not moderators, and the layout's menu is a list
+          of pages they are not allowed to open. It also puts them in the outer
+          router, ahead of the layout's "/*" - which is what lets "/" be the
+          home page instead of react-admin's dashboard slot. */}
+          <CustomRoutes noLayout>
+            <Route path="/" element={<HomePage />} />
+            <Route path={FLAG_INFOS_ROUTE} element={<FlagInfos />} />
+            <Route path={TUTORIAL_ROUTE} element={<Tutorial />} />
+            {/* Filing a flag records who filed it, so it needs a session - but
+            only a session, not moderator rights. */}
+            <Route
+              path={FLAG_PRODUCT_ROUTE}
+              element={<FlagFormPage type_="product" />}
+            />
+            <Route
+              path={FLAG_IMAGE_ROUTE}
+              element={<FlagFormPage type_="image" />}
+            />
+            <Route path={THANKS_ROUTE} element={<ThanksPage />} />
+            {/* Deliberately unguarded: it is where checkAuth sends a signed-in
+            non-moderator, so a check of its own would bounce them straight
+            back to it. */}
+            <Route path={NOT_MODERATOR_ROUTE} element={<NonModeratorPage />} />
+          </CustomRoutes></>)
+      }
+    </Admin>
+  );
 }

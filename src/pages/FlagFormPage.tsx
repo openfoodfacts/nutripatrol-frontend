@@ -1,19 +1,20 @@
-import { 
-    Typography, 
-    Container, 
-    TextField, 
-    Select, 
-    MenuItem, 
-    Button, 
-    InputLabel, 
-    FormControl 
+import {
+    Typography,
+    Container,
+    TextField,
+    Select,
+    MenuItem,
+    Button,
+    InputLabel,
+    FormControl
 } from '@mui/material';
 import axios from 'axios';
-import { useState, useContext, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { useGetIdentity } from 'react-admin';
 import { reasons, sources, flavors } from '../const/flagsConst';
-import LoginContext from '../contexts/login';
 import { trackEvent } from '../analytics';
+import ThanksPage from './ThanksPage';
 
 /**
  * Interfaces
@@ -26,7 +27,6 @@ interface FormData {
     barcode: string;
     type: 'product' | 'image' | 'search';
     image_id?: string;
-    user_id: string;
     source: string;
     flavor: string;
     reason: 'innapropriate' | 'duplicate' | 'other' | 'spam' | '';
@@ -37,27 +37,22 @@ interface FormData {
 export default function FlagForm({ type_ }: FlagFormProps) {
 
     const [searchParams] = useSearchParams();
-    const { userName } = useContext(LoginContext);
+    // The route is wrapped in AdminApp's <SignedIn>, so by the time the form
+    // can be submitted the authProvider has an identity to report. It still
+    // arrives asynchronously, hence reading it at submit time rather than
+    // freezing it into the initial form state.
+    const { identity } = useGetIdentity();
     const barcode = searchParams.get('barcode') || undefined;
     const source = searchParams.get('source') || undefined;
     const flavor = searchParams.get('flavor') || undefined;
     const image_id = searchParams.get('image_id') || undefined;
     const comment = searchParams.get('comment') || undefined;
 
-    if ( source === undefined || !sources.includes(source) || flavor === undefined || !flavors.includes(flavor) ){
-        return (
-            <Container maxWidth='lg'>
-                <Typography variant="h4" sx={{margin: '4rem 0', fontSize: {xs: '1.2rem', md: '1.7rem'}, fontWeight: 700}}>
-                    Error: Wrong source or flavor
-                </Typography>
-            </Container>
-        )
-    }
+    const [flagSent, setFlagSent] = useState(false)
 
     const [formData, setFormData] = useState<FormData>({
         barcode: barcode || "", // only for product and image
         type: type_, // product, image, search
-        user_id: userName, // not in the form
         image_id: image_id, // only for image
         source: source || "", // not in the form
         flavor: flavor || "", // not in the form
@@ -91,26 +86,44 @@ export default function FlagForm({ type_ }: FlagFormProps) {
         }
     }, [formData.type]);
 
+    if (source === undefined || !sources.includes(source) || flavor === undefined || !flavors.includes(flavor)) {
+        return (
+            <Container maxWidth='lg'>
+                <Typography variant="h4" sx={{ margin: '4rem 0', fontSize: { xs: '1.2rem', md: '1.7rem' }, fontWeight: 700 }}>
+                    Error: Wrong source or flavor
+                </Typography>
+            </Container>
+        )
+    }
+
     const handleChange = (e: any) => {
         const { name, value } = e.target;
         setFormData((prevData) => ({
             ...prevData,
             [name as string]: value,
         }));
-    };   
+    };
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            axios.post(`${import.meta.env.VITE_API_URL}/flags`, formData)
-            .then(() => {
-                trackEvent("Flag", "submit_flag", formData.barcode);
-                window.location.replace('/thanks');
+            axios.post(`${import.meta.env.VITE_API_URL}/flags`, {
+                ...formData,
+                user_id: String(identity?.id ?? ""), // not in the form
             })
+                .then(() => {
+                    trackEvent("Flag", "submit_flag", formData.barcode);
+                    setFlagSent(true);
+                })
         } catch (err) {
             console.error(err)
         }
     };
+
+
+    if (flagSent) {
+        return <ThanksPage />
+    }
 
     /* FORM FOR PRODUCT */
     return (
@@ -132,7 +145,7 @@ export default function FlagForm({ type_ }: FlagFormProps) {
                 </ul>
             </Typography>
             {image && <img src={image} alt="product" style={{ width: '250px', margin: '2rem 0' }} />}
-            <form onSubmit={handleSubmit} style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '70%'}}>
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '70%' }}>
                 <TextField
                     name="barcode"
                     label="Barcode"
@@ -154,11 +167,11 @@ export default function FlagForm({ type_ }: FlagFormProps) {
                         fullWidth
                         required
                     >
-                        { reasons[type_].map((reason) => (
-                                <MenuItem key={reason.value} value={reason.value}>
-                                    {reason.label}
-                                </MenuItem>
-                            ))    
+                        {reasons[type_].map((reason) => (
+                            <MenuItem key={reason.value} value={reason.value}>
+                                {reason.label}
+                            </MenuItem>
+                        ))
                         }
                     </Select>
                 </FormControl>
@@ -170,7 +183,7 @@ export default function FlagForm({ type_ }: FlagFormProps) {
                     fullWidth
                     margin="normal"
                 />
-                <Button type="submit" variant="contained" color="success" sx={{margin: '1rem 0', width: '15rem'}}>
+                <Button type="submit" variant="contained" color="success" sx={{ margin: '1rem 0', width: '15rem' }}>
                     Flag {type_}
                 </Button>
             </form>

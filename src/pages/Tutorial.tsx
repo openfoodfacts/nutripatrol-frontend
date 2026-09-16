@@ -3,6 +3,7 @@ import Container from "@mui/material/Container"
 import Button from "@mui/material/Button"
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import { Link } from "react-router-dom"
+import { TICKETS_ROUTE } from "../admin/routes"
 
 export default function Tutorial() {
     return (
@@ -34,11 +35,18 @@ export default function Tutorial() {
             <Typography variant="body1" sx={{margin: '2rem 0', fontSize: {xs: '0.8rem', md: '1.2rem'}}}>
                 7. Then you can click on the green checkmark to close the ticket.
             </Typography>
-            <Link to="/image-moderation" >
-                <Button variant='contained' color='inherit' sx={{margin: '1rem'}} endIcon={<PlayArrowIcon />}>
-                    Images moderation
-                </Button>
-            </Link>
+            {/* The standalone image-moderation page is gone: image tickets are
+                now rows of the one ticket list, filtered by type. */}
+            <Button
+                component={Link}
+                to={TICKETS_ROUTE}
+                variant='contained'
+                color='inherit'
+                sx={{margin: '1rem'}}
+                endIcon={<PlayArrowIcon />}
+            >
+                Moderate tickets
+            </Button>
         </Container>
     )
 }
