@@ -68,6 +68,23 @@ function loadAccount(): Promise<Account | null> {
   return account;
 }
 
+/**
+ * Whether the OFF session cookie differs from the one the cached verdict was
+ * derived from.
+ *
+ * Signing in and out both happen on Open Food Facts, so that cookie is the
+ * only thing that can change who is signed in without this app doing anything
+ * - and comparing it is free, where asking OFF is a cross-site round-trip.
+ * Lets a caller that re-checks on a schedule (the login page, on every return
+ * to the tab) re-check only when there is something new to ask about.
+ */
+export function sessionCookieChanged(): boolean {
+  // No entry means nobody was signed in, which is the same state the reader
+  // reports as an empty string - so normalise, or a signed-out visitor would
+  // look like a change every single time.
+  return (cached?.cookie ?? "") !== off.getCookie("session");
+}
+
 export const authProvider: AuthProvider = {
   login: async () => window.open(`${import.meta.env.VITE_PO_URL}/cgi/session.pl`, '_blank', 'popup'),
   // `params` is whatever the page asked for. Moderator rights are the default
@@ -104,14 +121,20 @@ export const authProvider: AuthProvider = {
     }
     return Promise.resolve();
   },
-  logout: async () => {
+  logout: async (params?: { userInitiated?: boolean }) => {
     // react-admin runs logout() on every checkAuth rejection, including the
     // one that bounces a signed-in non-moderator. Their OFF session is valid
-    // and shared with the rest of the OFF sites, so it is not ours to end -
-    // only drop the cookie for a session this app itself signed in, or one
-    // OFF has already stopped recognising.
+    // and shared with the rest of the OFF sites, so it is not ours to end on
+    // their behalf - that one only drops a session OFF has already stopped
+    // recognising, or a moderator's.
+    //
+    // Asking to be signed out is a different matter, and it is the user menu's
+    // "Logout" that says so by passing `userInitiated` (see SignOut in
+    // admin/AdminAppBar): it drops the session whoever it belongs to, which is
+    // the whole point of the button. Without this the guard above also caught
+    // a contributor clicking Logout, and left them signed in.
     const account = await loadAccount();
-    if (!account || account.isModerator) {
+    if (params?.userInitiated || !account || account.isModerator) {
       // In dev mode there is no cookie to drop - the session is whatever the
       // login page's switcher last picked, so signing out means going back to
       // the signed-out role.
