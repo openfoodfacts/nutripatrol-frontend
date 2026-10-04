@@ -1,4 +1,5 @@
 import {
+    Alert,
     Typography,
     Container,
     TextField,
@@ -6,13 +7,21 @@ import {
     MenuItem,
     Button,
     InputLabel,
-    FormControl
+    FormControl,
+    Link,
 } from '@mui/material';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useGetIdentity } from 'react-admin';
-import { reasons, sources, flavors } from '../const/flagsConst';
+import {
+    reasonsForType,
+    reasonSpec,
+    sources,
+    flavors,
+    SCORE_DISPUTE_NOTICE,
+} from '../const/flagsConst';
+import type { IssueType } from '../const/flagsConst';
 import { trackEvent } from '../analytics';
 import ThanksPage from './ThanksPage';
 
@@ -20,18 +29,17 @@ import ThanksPage from './ThanksPage';
  * Interfaces
  */
 interface FlagFormProps {
-    type_: 'product' | 'image' | 'search';
+    type_: IssueType;
 }
 
 interface FormData {
     barcode: string;
-    type: 'product' | 'image' | 'search';
+    type: IssueType;
     image_id?: string;
     source: string;
     flavor: string;
-    reason: 'innapropriate' | 'duplicate' | 'other' | 'spam' | '';
+    reason: string;
     comment: string;
-
 }
 
 export default function FlagForm({ type_ }: FlagFormProps) {
@@ -47,8 +55,11 @@ export default function FlagForm({ type_ }: FlagFormProps) {
     const flavor = searchParams.get('flavor') || undefined;
     const image_id = searchParams.get('image_id') || undefined;
     const comment = searchParams.get('comment') || undefined;
+    const reason = searchParams.get('reason') || undefined;
 
     const [flagSent, setFlagSent] = useState(false)
+    const [error, setError] = useState<string | null>(null)
+    const [sending, setSending] = useState(false)
 
     const [formData, setFormData] = useState<FormData>({
         barcode: barcode || "", // only for product and image
@@ -56,8 +67,10 @@ export default function FlagForm({ type_ }: FlagFormProps) {
         image_id: image_id, // only for image
         source: source || "", // not in the form
         flavor: flavor || "", // not in the form
-        reason: "",
-        comment: comment || ""
+        // Prefilled when the link that brought the person here already knows
+        // what they are reporting - Open Food Facts has a button per problem.
+        reason: reasonSpec(reason)?.types.includes(type_) ? reason! : "",
+        comment: comment || "",
     });
     const [image, setImage] = useState<string | null>(null);
 
@@ -96,6 +109,8 @@ export default function FlagForm({ type_ }: FlagFormProps) {
         )
     }
 
+    const spec = reasonSpec(formData.reason);
+
     const handleChange = (e: any) => {
         const { name, value } = e.target;
         setFormData((prevData) => ({
@@ -104,20 +119,41 @@ export default function FlagForm({ type_ }: FlagFormProps) {
         }));
     };
 
+    // Reports about a computed score: the number cannot be edited, only the
+    // data under it. Said here rather than in the general advice above the
+    // form, because 79 people read that advice and reported it anyway.
+    const disputesAScore =
+        formData.reason === "wrong_data" &&
+        /nutri.?score|nova/i.test(formData.comment);
+
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        try {
-            axios.post(`${import.meta.env.VITE_API_URL}/flags`, {
-                ...formData,
-                user_id: String(identity?.id ?? ""), // not in the form
+        setError(null);
+        setSending(true);
+        axios.post(`${import.meta.env.VITE_API_URL}/flags`, {
+            ...formData,
+            user_id: String(identity?.id ?? ""), // not in the form
+        }, { withCredentials: true })
+            .then(() => {
+                trackEvent("Flag", "submit_flag", formData.barcode);
+                setFlagSent(true);
             })
-                .then(() => {
-                    trackEvent("Flag", "submit_flag", formData.barcode);
-                    setFlagSent(true);
-                })
-        } catch (err) {
-            console.error(err)
-        }
+            // Reporting a failure is the whole point of the catch: without one
+            // a rejected report showed the thank-you page, so a duplicate or a
+            // rejected value looked exactly like a report that went through.
+            .catch((err) => {
+                setSending(false);
+                setError(
+                    err?.response?.status === 409
+                        ? "You have already reported this for that reason. Thank you - a moderator will look at it."
+                        : err?.response?.data?.detail
+                            ? `Your report could not be sent: ${typeof err.response.data.detail === "string"
+                                ? err.response.data.detail
+                                : "some of the details were not accepted."
+                            }`
+                            : "Your report could not be sent. Please try again.",
+                );
+            });
     };
 
 
@@ -135,14 +171,7 @@ export default function FlagForm({ type_ }: FlagFormProps) {
                 Use Nutripatrol to report inconsistencies between our website's product information or images, and data gleaned from the actual packaging. For any other concern or question please use the <a href="https://slack.openfoodfacts.org/">Slack forums</a>.
             </Typography>
             <Typography variant="body1" sx={{margin: '2rem 0', fontSize: {xs: '0.8rem', md: '1.2rem'}}}>
-                Note that moderators will never contact you so please provide all the relevant details in your report. In particular:
-                <ul>
-                  {type_ === 'product' && <li>For barcode errors, please specify the correct barcode value. It is also very useful if you can upload a full photo of the product that includes the barcode.</li>}
-                  {type_ === 'product' && <li>In case of incorrect information, please specify some examples of field names and their expected value.</li>}
-                  {type_ === 'product' && <li>Invalid product scores (Nutriscore, Nova, ...) should be reported on the forums.</li>}
-                  {type_ === 'product' && <li>Concerns about the quality of a product or its health impacts should be discussed on the forums.</li>}
-                  {type_ === 'image' && <li>For image copyright violations it is useful if you can provide a link to the original image.</li>}
-                </ul>
+                Moderators will never contact you, so please give all the relevant details in your report. Pick the reason that fits best.
             </Typography>
             {image && <img src={image} alt="product" style={{ width: '250px', margin: '2rem 0' }} />}
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '70%' }}>
@@ -167,7 +196,7 @@ export default function FlagForm({ type_ }: FlagFormProps) {
                         fullWidth
                         required
                     >
-                        {reasons[type_].map((reason) => (
+                        {reasonsForType(type_).map((reason) => (
                             <MenuItem key={reason.value} value={reason.value}>
                                 {reason.label}
                             </MenuItem>
@@ -175,16 +204,50 @@ export default function FlagForm({ type_ }: FlagFormProps) {
                         }
                     </Select>
                 </FormControl>
+
+                {/* The advice each reason needs, next to the question it
+                answers, instead of one list of everything shown at once. */}
+                {spec?.hint && (
+                    <Alert severity="info" sx={{ width: '100%', mt: 1 }}>
+                        {spec.hint}
+                    </Alert>
+                )}
+                {spec?.outOfScope && (
+                    <Alert severity="warning" sx={{ width: '100%', mt: 1 }}>
+                        {spec.outOfScope.message}{' '}
+                        <Link href={spec.outOfScope.href} target="_blank" rel="noopener">
+                            {spec.outOfScope.linkLabel}
+                        </Link>
+                        . You can still send this report.
+                    </Alert>
+                )}
+                {disputesAScore && (
+                    <Alert severity="warning" sx={{ width: '100%', mt: 1 }}>
+                        {SCORE_DISPUTE_NOTICE.message}{' '}
+                        <Link href={SCORE_DISPUTE_NOTICE.href} target="_blank" rel="noopener">
+                            {SCORE_DISPUTE_NOTICE.linkLabel}
+                        </Link>
+                        .
+                    </Alert>
+                )}
+
                 <TextField
                     name="comment"
-                    label="Comment"
+                    label="Anything else we should know?"
                     value={formData.comment}
                     onChange={handleChange}
                     fullWidth
+                    multiline
+                    minRows={3}
                     margin="normal"
                 />
-                <Button type="submit" variant="contained" color="success" sx={{ margin: '1rem 0', width: '15rem' }}>
-                    Flag {type_}
+                {error && (
+                    <Alert severity="error" sx={{ width: '100%', mt: 1 }}>
+                        {error}
+                    </Alert>
+                )}
+                <Button type="submit" variant="contained" color="success" disabled={sending} sx={{ margin: '1rem 0', width: '15rem' }}>
+                    {sending ? 'Sending…' : `Flag ${type_}`}
                 </Button>
             </form>
         </Container>

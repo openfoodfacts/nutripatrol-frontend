@@ -1,3 +1,5 @@
+import { REASONS } from "../../const/flagsConst";
+
 // Mirrors the enums declared in nutripatrol's app/api.py (TicketStatus,
 // IssueType) and the openfoodfacts.Flavor enum used for `flavor`.
 //
@@ -26,18 +28,21 @@ export const flavorChoices = [
   { id: "off_pro", name: "Open Food Facts Pro" },
 ];
 
-// The reasons GET /tickets accepts as a `reason` filter, mirroring
-// nutripatrol's ReasonType enum in app/api.py. Same four values the existing
-// ImageModerationPage toggles offer.
+// The reasons GET /tickets accepts as a `reason` filter.
 //
-// Deliberately not src/const/flagsConst.ts's `reasons`: those are the values
-// the public flag form submits (wrong_barcode, outdated, duplicate...), and
-// FlagCreate.reason stores them as free text. The ticket list's `reason`
-// filter is validated against ReasonType, so filtering by any of the others
-// is a 422 rather than an empty result.
-export const reasonChoices = [
-  { id: "inappropriate", name: "Inappropriate" },
-  { id: "human", name: "Human" },
-  { id: "beauty", name: "Beauty" },
-  { id: "other", name: "Other" },
-];
+// Derived from src/const/flagsConst.ts rather than declared again, which is
+// the point of that file: the form's options, this filter and nutripatrol's
+// ReasonType used to be three lists that disagreed, so filtering by a reason
+// the form actually submitted -- wrong_barcode, outdated, duplicate -- was a
+// 422 rather than an empty result.
+//
+// All of them, including the bot-only ones: a moderator filters by what is in
+// the queue, and Robotoff's flags are most of it.
+export const reasonChoices = REASONS.map(({ value, label }) => ({
+  id: value,
+  name: label,
+}));
+
+// The reasons worth a queue of their own in the sidebar. Curated, because
+// there are twenty of them and a menu entry each would be unusable.
+export const reasonQueues = REASONS.filter((r) => r.queue);

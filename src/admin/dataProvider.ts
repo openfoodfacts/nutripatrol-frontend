@@ -83,7 +83,9 @@ export interface Flag {
   image_id: string | null;
   flavor: string;
   /**
-   * Free text to explain why the flag was raised
+   * Why the flag was raised. One of the taxonomy's values in
+   * src/const/flagsConst.ts - but stored as free text, so flags from Robotoff
+   * and from older forms hold values no current list mentions.
    */
   reason: string | null;
   comment: string | null;

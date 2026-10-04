@@ -1,6 +1,7 @@
 import { Link, Stack, Typography } from "@mui/material";
 import type { Flag } from "../dataProvider";
 import { flagReasonLabel } from "./flags";
+import { FlagActionsField } from "./FlagActionsField";
 import { userUrl } from "./flavorUrls";
 
 /** How many lines of a comment the compact form shows before clamping. */
@@ -91,6 +92,10 @@ export function FlagSummary({
           No comment
         </Typography>
       )}
+
+      {/* Only on the ticket page: these change Open Food Facts, and belong
+          next to the report that justifies them rather than in a table row. */}
+      {!dense && <FlagActionsField flag={flag} />}
     </Stack>
   );
 }
