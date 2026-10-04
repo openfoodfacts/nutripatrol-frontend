@@ -3,16 +3,14 @@ import { useQuery } from "@tanstack/react-query";
 import { useDataProvider } from "react-admin";
 import type { Identifier } from "react-admin";
 import type { NutriPatrolDataProvider } from "../dataProvider";
-import { reasons } from "../../const/flagsConst";
+import { REASONS } from "../../const/flagsConst";
 
-// The public flag form offers a different set of reasons per ticket type, but
-// they land in one free-text column - so for reading them back the three lists
-// are one lookup table. Built from flagsConst rather than duplicated, so a
-// reason added to the form is a reason this can name.
+// The form offers a different set of reasons per ticket type, but they land
+// in one free-text column - so for reading them back the taxonomy is one
+// lookup table. Built from flagsConst rather than duplicated, so a reason
+// added to the form is a reason this can name.
 const REASON_LABELS: Record<string, string> = Object.fromEntries(
-  Object.values(reasons).flatMap((byType) =>
-    byType.map(({ value, label }) => [value, label]),
-  ),
+  REASONS.map(({ value, label }) => [value, label]),
 );
 
 /**

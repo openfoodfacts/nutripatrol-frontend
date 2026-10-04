@@ -11,7 +11,7 @@ import { TicketList } from "./admin/tickets/TicketList";
 import { TicketShow } from "./admin/tickets/TicketShow";
 import { ReasonTicketList, reasonPath } from "./admin/tickets/ReasonTicketList";
 import { InappropriateTicketList } from "./admin/tickets/InappropriateTicketList";
-import { reasonChoices } from "./admin/tickets/choices";
+import { reasonQueues } from "./admin/tickets/choices";
 import { ActionList } from "./admin/actions/ActionList";
 import {
   FLAG_IMAGE_ROUTE,
@@ -30,22 +30,26 @@ import LoginPage from "./pages/LoginPage";
 import NonModeratorPage from "./pages/NonModeratorPage";
 import NotFound from "./pages/NotFound";
 
-// One page per flagging reason, so that a moderator working through, say,
-// inappropriate images gets a link to bookmark instead of having to set the
-// filter by hand. They are the ticket list with `reason` pinned - the routes
-// and the menu entries are both generated from reasonChoices, so adding a
-// reason there adds its page.
+// One page per flagging reason worth working through as a queue, so that a
+// moderator handling, say, inappropriate images gets a link to bookmark
+// instead of having to set the filter by hand. They are the ticket list with
+// `reason` pinned - the routes and the menu entries are both generated from
+// the taxonomy, so marking a reason `queue` there adds its page.
+//
+// Only the ones marked: there are twenty reasons, and a sidebar with a line
+// for each of them is a sidebar nobody reads. The rest stay reachable through
+// the ticket list's own reason filter, which accepts all of them.
 function AdminMenu() {
   const { permissions } = usePermissions();
 
   return (
     <Menu>
       <Menu.ResourceItems />
-      {(permissions === "moderator" ? reasonChoices : []).map((reason) => (
+      {(permissions === "moderator" ? reasonQueues : []).map((reason) => (
         <Menu.Item
-          key={reason.id}
-          to={reasonPath(reason.id)}
-          primaryText={reason.name}
+          key={reason.value}
+          to={reasonPath(reason.value)}
+          primaryText={reason.label}
           leftIcon={<FlagIcon />}
         />
       ))}
@@ -95,15 +99,15 @@ export default function AdminApp() {
           /> : null}
 
           <CustomRoutes>
-            {(permissions === 'moderator' ? reasonChoices : []).map((reason) => (
+            {(permissions === 'moderator' ? reasonQueues : []).map((reason) => (
               <Route
-                key={reason.id}
-                path={reasonPath(reason.id)}
+                key={reason.value}
+                path={reasonPath(reason.value)}
                 element={
-                  reason.id === "inappropriate" ? (
+                  reason.value === "inappropriate" ? (
                     <InappropriateTicketList />
                   ) : (
-                    <ReasonTicketList reason={reason.id} />
+                    <ReasonTicketList reason={reason.value} />
                   )
                 }
               />
