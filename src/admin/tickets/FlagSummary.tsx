@@ -3,6 +3,7 @@ import type { Flag } from "../dataProvider";
 import { flagReasonLabel } from "./flags";
 import { FlagActionsField } from "./FlagActionsField";
 import { userUrl } from "./flavorUrls";
+import { projectSpec } from "../../const/flagsConst";
 
 /** How many lines of a comment the compact form shows before clamping. */
 const CLAMPED_LINES = 3;
@@ -26,6 +27,7 @@ export function FlagSummary({
   // Robotoff files flags of its own, and older ones predate the form asking;
   // either way there is a row to show, just nobody to credit or link to.
   const author = flag.user_id || "unknown";
+  const belongsOn = projectSpec(flag.extra_data?.correct_flavor);
 
   return (
     <Stack spacing={0.25}>
@@ -54,6 +56,11 @@ export function FlagSummary({
         {reason && (
           <Typography variant="caption" color="text.secondary">
             {reason}
+          </Typography>
+        )}
+        {belongsOn && (
+          <Typography variant="caption" fontWeight="medium">
+            → belongs on {belongsOn.label}
           </Typography>
         )}
         {!dense && (

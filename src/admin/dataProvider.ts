@@ -89,6 +89,12 @@ export interface Flag {
    */
   reason: string | null;
   comment: string | null;
+  /**
+   * Structured details whose keys depend on `reason` - the backend's
+   * app/flag_extra_data.py lists them. Absent when the reporter answered
+   * none of the reason's questions.
+   */
+  extra_data?: Record<string, unknown> | null;
   product_revision: number | null;
   created_at: string;
 }
