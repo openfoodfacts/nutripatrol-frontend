@@ -12,6 +12,7 @@ import {
   usePermissions,
 } from "react-admin";
 import { productEditUrl } from "./flavorUrls";
+import { ProductPreviewButton } from "./ProductPreview";
 
 interface Ticket {
   id: number;
@@ -52,6 +53,9 @@ export function TicketActionsField(_props: Omit<FieldProps, "source">) {
     // Stops the buttons from wrapping into a column on a narrow window,
     // where the cell would grow taller than the thumbnail next to it.
     <Stack direction="row" spacing={1} flexWrap="nowrap">
+      {record.barcode && (
+        <ProductPreviewButton flavor={record.flavor} barcode={record.barcode} />
+      )}
       <Button
         size="small"
         variant="outlined"
