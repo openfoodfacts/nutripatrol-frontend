@@ -1,8 +1,10 @@
 import type { Flag } from "../dataProvider";
 import {
   deleteProductImages,
+  setProductType,
   uploadedImageId,
 } from "./offImages";
+import { projectSpec } from "../../const/flagsConst";
 
 /**
  * Turning a report into the action it is asking for.
@@ -54,6 +56,28 @@ export function suggestedActions(flag: Flag): SuggestedAction[] {
   });
 
   switch (reason) {
+
+    case "not_a_product": {
+      // Only when the reporter said where it belongs: a product of no
+      // project at all is a deletion, which deserves a closer look than one
+      // click.
+      const target = projectSpec(flag.extra_data?.correct_flavor);
+      if (!target || target.value === flavor) break;
+      actions.push({
+        key: "move-project",
+        label: `Move to ${target.label}`,
+        confirm: `Move ${barcode} to ${target.label}? It will no longer be listed on ${projectSpec(flavor)?.label ?? "its current project"}.`,
+        run: () =>
+          setProductType(
+            barcode,
+            target.productType,
+            flavor,
+            "Moved after a NutriPatrol report: not a product of this project",
+          ),
+        destructive: true,
+      });
+      break;
+    }
 
     case "copyright":
     case "inappropriate":

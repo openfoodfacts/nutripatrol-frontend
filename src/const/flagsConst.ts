@@ -202,6 +202,26 @@ export const SCORE_DISPUTE_NOTICE = {
 export const sources = ["web", "mobile"];
 
 /**
+ * The projects a "not a product of this project" report can send a product
+ * to, with the `product_type` Open Food Facts files it under there. Changing
+ * that type is what moves a product from one project to another.
+ *
+ * `value` must match nutripatrol's `NotAProductExtra.correct_flavor`. The pro
+ * platform is not one of them: it is a view of Open Food Facts, not a project
+ * of its own.
+ */
+export const projects = [
+  { value: "off", label: "Open Food Facts", productType: "food" },
+  { value: "obf", label: "Open Beauty Facts", productType: "beauty" },
+  { value: "opff", label: "Open Pet Food Facts", productType: "petfood" },
+  { value: "opf", label: "Open Products Facts", productType: "product" },
+];
+
+export function projectSpec(value: unknown) {
+  return projects.find((project) => project.value === value);
+}
+
+/**
  * FLAVORS: which project the report is about.
  *
  * Note the hyphen in 'off-pro': this is what the flag form accepts in its

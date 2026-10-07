@@ -19,6 +19,7 @@ import {
     reasonSpec,
     sources,
     flavors,
+    projects,
     SCORE_DISPUTE_NOTICE,
 } from '../const/flagsConst';
 import type { IssueType } from '../const/flagsConst';
@@ -40,6 +41,8 @@ interface FormData {
     flavor: string;
     reason: string;
     comment: string;
+    /** For `not_a_product`: the project the product belongs on, if known. */
+    correct_flavor: string;
 }
 
 export default function FlagForm({ type_ }: FlagFormProps) {
@@ -71,6 +74,7 @@ export default function FlagForm({ type_ }: FlagFormProps) {
         // what they are reporting - Open Food Facts has a button per problem.
         reason: reasonSpec(reason)?.types.includes(type_) ? reason! : "",
         comment: comment || "",
+        correct_flavor: "",
     });
     const [image, setImage] = useState<string | null>(null);
 
@@ -130,9 +134,15 @@ export default function FlagForm({ type_ }: FlagFormProps) {
         e.preventDefault();
         setError(null);
         setSending(true);
+        const { correct_flavor, ...flag } = formData;
         axios.post(`${import.meta.env.VITE_API_URL}/flags`, {
-            ...formData,
+            ...flag,
             user_id: String(identity?.id ?? ""), // not in the form
+            // Optional, and only meaningful for the reason that asks it: the
+            // API refuses extra_data a reason does not take.
+            ...(flag.reason === "not_a_product" && correct_flavor
+                ? { extra_data: { correct_flavor } }
+                : {}),
         }, { withCredentials: true })
             .then(() => {
                 trackEvent("Flag", "submit_flag", formData.barcode);
@@ -211,6 +221,31 @@ export default function FlagForm({ type_ }: FlagFormProps) {
                     <Alert severity="info" sx={{ width: '100%', mt: 1 }}>
                         {spec.hint}
                     </Alert>
+                )}
+                {/* Optional: lets a moderator move the product in one click
+                instead of working out where it should go. */}
+                {formData.reason === "not_a_product" && (
+                    <FormControl fullWidth margin="normal">
+                        <InputLabel id="correct_flavor">Where does it belong?</InputLabel>
+                        <Select
+                            labelId="correct_flavor"
+                            name="correct_flavor"
+                            label="Where does it belong?"
+                            value={formData.correct_flavor}
+                            onChange={handleChange}
+                        >
+                            <MenuItem value=""><em>I don't know / none of these</em></MenuItem>
+                            {/* The pro platform is Open Food Facts seen by
+                            producers, so a product there is already on it. */}
+                            {projects
+                                .filter((project) => project.value !== (flavor === "off-pro" ? "off" : flavor))
+                                .map((project) => (
+                                    <MenuItem key={project.value} value={project.value}>
+                                        {project.label}
+                                    </MenuItem>
+                                ))}
+                        </Select>
+                    </FormControl>
                 )}
                 {spec?.outOfScope && (
                     <Alert severity="warning" sx={{ width: '100%', mt: 1 }}>

@@ -14,12 +14,13 @@ async function act(
   barcode: string,
   path: string,
   body: Record<string, unknown>,
+  method: "post" | "patch" = "post",
 ): Promise<void> {
   const url = `${import.meta.env.VITE_API_URL}/products/${encodeURIComponent(barcode)}${path}`;
   try {
     // Carries the Open Food Facts session cookie, which is what the API
     // acts with - without it the call is refused.
-    await axios.post(url, body, { withCredentials: true });
+    await axios.request({ method, url, data: body, withCredentials: true });
   } catch (error) {
     // The API explains its refusals in `detail` ("requires an Open Food Facts
     // session cookie", "moderator session was not accepted", "the new barcode
@@ -69,6 +70,25 @@ export async function setProductObsolete(
   comment?: string,
 ): Promise<void> {
   return act(barcode, "/obsolete", { obsolete, flavor, comment });
+}
+
+/**
+ * Move a product to another project, by changing the type Open Food Facts
+ * files it under. Open Food Facts keeps the previous one in
+ * `old_product_type`, so the move can be reverted the same way.
+ */
+export async function setProductType(
+  barcode: string,
+  productType: string,
+  flavor: string,
+  comment?: string,
+): Promise<void> {
+  return act(
+    barcode,
+    "",
+    { flavor, fields: { product_type: productType }, comment },
+    "patch",
+  );
 }
 
 /**
