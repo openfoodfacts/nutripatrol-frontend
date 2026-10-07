@@ -12,6 +12,7 @@ import {
   usePermissions,
 } from "react-admin";
 import { productEditUrl } from "./flavorUrls";
+import { trackEvent } from "../../analytics";
 
 interface Ticket {
   id: number;
@@ -65,6 +66,7 @@ export function TicketActionsField(_props: Omit<FieldProps, "source">) {
         disabled={!record.barcode}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={() => trackEvent("Moderation", "click_edit", record.barcode ?? undefined)}
       >
         Edit
       </Button>
@@ -76,7 +78,10 @@ export function TicketActionsField(_props: Omit<FieldProps, "source">) {
           color="error"
           startIcon={<NotInterestedIcon />}
           disabled={isPending}
-          onClick={() => updateStatus('closed-no-issue')}
+          onClick={() => {
+            trackEvent("Moderation", "click_no_problem", record.barcode ?? undefined);
+            updateStatus('closed-no-issue');
+          }}
         >
           No problem
         </Button>
@@ -86,7 +91,10 @@ export function TicketActionsField(_props: Omit<FieldProps, "source">) {
           color="success"
           startIcon={<CheckIcon />}
           disabled={isPending}
-          onClick={() => updateStatus('closed-fixed')}
+          onClick={() => {
+            trackEvent("Moderation", "click_i_fixed_it", record.barcode ?? undefined);
+            updateStatus('closed-fixed');
+          }}
         >
           I fixed it!
         </Button>
