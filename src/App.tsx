@@ -29,6 +29,7 @@ import Tutorial from "./pages/Tutorial";
 import LoginPage from "./pages/LoginPage";
 import NonModeratorPage from "./pages/NonModeratorPage";
 import NotFound from "./pages/NotFound";
+import { darkTheme, lightTheme } from "./theme";
 
 // One page per flagging reason worth working through as a queue, so that a
 // moderator handling, say, inappropriate images gets a link to bookmark
@@ -68,6 +69,8 @@ export default function AdminApp() {
       dataProvider={dataProvider}
       authProvider={authProvider}
       layout={AdminLayout}
+      theme={lightTheme}
+      darkTheme={darkTheme}
       // NutriPatrol has no credentials of its own, so this replaces
       // react-admin's username/password form with a hand-off to Open Food
       // Facts. react-admin mounts it at "/login" and redirects here itself
