@@ -20,6 +20,7 @@ import {
     sources,
     flavors,
     projects,
+    projectSpec,
     SCORE_DISPUTE_NOTICE,
 } from '../const/flagsConst';
 import type { IssueType } from '../const/flagsConst';
@@ -135,15 +136,30 @@ export default function FlagForm({ type_ }: FlagFormProps) {
         setError(null);
         setSending(true);
         const { correct_flavor, ...flag } = formData;
-        axios.post(`${import.meta.env.VITE_API_URL}/flags`, {
+        const url = `${import.meta.env.VITE_API_URL}/flags`;
+        const body = {
             ...flag,
             user_id: String(identity?.id ?? ""), // not in the form
-            // Optional, and only meaningful for the reason that asks it: the
-            // API refuses extra_data a reason does not take.
-            ...(flag.reason === "not_a_product" && correct_flavor
-                ? { extra_data: { correct_flavor } }
-                : {}),
-        }, { withCredentials: true })
+        };
+        // Optional, and only meaningful for the reason that asks it: the
+        // API refuses extra_data a reason does not take.
+        const correctFlavor = flag.reason === "not_a_product" ? projectSpec(correct_flavor) : undefined;
+        const send = correctFlavor
+            ? axios.post(url, { ...body, extra_data: { correct_flavor } }, { withCredentials: true })
+                // An API that predates `correct_flavor` refuses the whole
+                // report over it. The report matters more than the field, so
+                // it goes again with the answer in the comment, where a
+                // moderator still reads it.
+                .catch((err) => {
+                    if (err?.response?.status !== 422) throw err;
+                    const note = `Belongs on ${correctFlavor.label}.`;
+                    return axios.post(url, {
+                        ...body,
+                        comment: body.comment ? `${body.comment}\n\n${note}` : note,
+                    }, { withCredentials: true });
+                })
+            : axios.post(url, body, { withCredentials: true });
+        send
             .then(() => {
                 trackEvent("Flag", "submit_flag", formData.barcode);
                 setFlagSent(true);
