@@ -26,10 +26,13 @@ async function act(
     // session cookie", "moderator session was not accepted", "the new barcode
     // is the current one"...); losing that for a bare "Request failed with
     // status code 401" would leave the moderator with nothing to act on.
-    const detail = (error as { response?: { data?: { detail?: string } } })
-      .response?.data?.detail;
-    throw new Error(detail ?? (error as Error).message);
+    throw new Error(apiDetail(error) ?? (error as Error).message);
   }
+}
+
+function apiDetail(error: unknown): string | undefined {
+  return (error as { response?: { data?: { detail?: string } } }).response
+    ?.data?.detail;
 }
 
 export async function deleteProductImage(
@@ -73,22 +76,25 @@ export async function setProductObsolete(
 }
 
 /**
- * Move a product to another project, by changing the type Open Food Facts
- * files it under. Open Food Facts keeps the previous one in
- * `old_product_type`, so the move can be reverted the same way.
+ * Move a ticket's product to another project, and close the ticket as fixed.
+ *
+ * One call rather than an edit followed by a status change: the API closes
+ * the ticket itself, and only once Open Food Facts has accepted the move, so
+ * there is no state where the product moved but the ticket stayed open.
+ * Open Food Facts keeps the previous type in `old_product_type`, so the move
+ * can be reverted.
  */
-export async function setProductType(
-  barcode: string,
-  productType: string,
+export async function moveTicketProduct(
+  ticketId: number,
   flavor: string,
   comment?: string,
 ): Promise<void> {
-  return act(
-    barcode,
-    "",
-    { flavor, fields: { product_type: productType }, comment },
-    "patch",
-  );
+  const url = `${import.meta.env.VITE_API_URL}/tickets/${ticketId}/move_product`;
+  try {
+    await axios.post(url, { flavor, comment }, { withCredentials: true });
+  } catch (error) {
+    throw new Error(apiDetail(error) ?? (error as Error).message);
+  }
 }
 
 /**

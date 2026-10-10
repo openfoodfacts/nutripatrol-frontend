@@ -1,7 +1,7 @@
 import type { Flag } from "../dataProvider";
 import {
   deleteProductImages,
-  setProductType,
+  moveTicketProduct,
   uploadedImageId,
 } from "./offImages";
 import { projectSpec } from "../../const/flagsConst";
@@ -23,6 +23,8 @@ export interface SuggestedAction {
   run: () => Promise<void>;
   /** Whether it changes Open Food Facts, and so deserves a hard confirm. */
   destructive?: boolean;
+  /** Whether `run` closes the ticket itself, through the same API call. */
+  closesTicket?: boolean;
 }
 
 /**
@@ -68,13 +70,13 @@ export function suggestedActions(flag: Flag): SuggestedAction[] {
         label: `Move to ${target.label}`,
         confirm: `Move ${barcode} to ${target.label}? It will no longer be listed on ${projectSpec(flavor)?.label ?? "its current project"}.`,
         run: () =>
-          setProductType(
-            barcode,
-            target.productType,
-            flavor,
+          moveTicketProduct(
+            flag.ticket_id,
+            target.value,
             "Moved after a NutriPatrol report: not a product of this project",
           ),
         destructive: true,
+        closesTicket: true,
       });
       break;
     }

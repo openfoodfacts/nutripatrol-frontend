@@ -44,6 +44,11 @@ export function FlagActionsField({ flag }: { flag: Flag }) {
     setRunning(true);
     try {
       await action.run();
+      if (action.closesTicket) {
+        notify("Done, and the ticket is closed", { type: "info" });
+        refresh();
+        return;
+      }
       update(
         "tickets",
         { id: flag.ticket_id, data: { status: "closed-fixed" } },
