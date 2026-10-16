@@ -26,6 +26,8 @@ import {
 import type { IssueType } from '../const/flagsConst';
 import { trackEvent } from '../analytics';
 import ThanksPage from './ThanksPage';
+import DuplicateImagesPicker from '../components/DuplicateImagesPicker';
+import { uploadedImageId } from '../admin/tickets/offImages';
 
 /**
  * Interfaces
@@ -44,6 +46,8 @@ interface FormData {
     comment: string;
     /** For `not_a_product`: the project the product belongs on, if known. */
     correct_flavor: string;
+    /** For `duplicate`: the uploaded pictures marked as copies. */
+    duplicate_image_ids: number[];
 }
 
 export default function FlagForm({ type_ }: FlagFormProps) {
@@ -76,6 +80,8 @@ export default function FlagForm({ type_ }: FlagFormProps) {
         reason: reasonSpec(reason)?.types.includes(type_) ? reason! : "",
         comment: comment || "",
         correct_flavor: "",
+        // The reported picture is a duplicate by the report's own account.
+        duplicate_image_ids: uploadedImageId(image_id) === null ? [] : [uploadedImageId(image_id)!],
     });
     const [image, setImage] = useState<string | null>(null);
 
@@ -135,7 +141,7 @@ export default function FlagForm({ type_ }: FlagFormProps) {
         e.preventDefault();
         setError(null);
         setSending(true);
-        const { correct_flavor, ...flag } = formData;
+        const { correct_flavor, duplicate_image_ids, ...flag } = formData;
         const url = `${import.meta.env.VITE_API_URL}/flags`;
         const body = {
             ...flag,
@@ -144,15 +150,23 @@ export default function FlagForm({ type_ }: FlagFormProps) {
         // Optional, and only meaningful for the reason that asks it: the
         // API refuses extra_data a reason does not take.
         const correctFlavor = flag.reason === "not_a_product" ? projectSpec(correct_flavor) : undefined;
-        const send = correctFlavor
-            ? axios.post(url, { ...body, extra_data: { correct_flavor } }, { withCredentials: true })
-                // An API that predates `correct_flavor` refuses the whole
-                // report over it. The report matters more than the field, so
-                // it goes again with the answer in the comment, where a
-                // moderator still reads it.
+        const duplicates = flag.reason === "duplicate" && duplicate_image_ids.length > 0
+            ? duplicate_image_ids
+            : undefined;
+        const extra = correctFlavor
+            ? { data: { correct_flavor }, note: `Belongs on ${correctFlavor.label}.` }
+            : duplicates
+                ? { data: { duplicate_image_ids: duplicates }, note: `Duplicate pictures: ${duplicates.join(", ")}.` }
+                : undefined;
+        const send = extra
+            ? axios.post(url, { ...body, extra_data: extra.data }, { withCredentials: true })
+                // An API that predates the field refuses the whole report
+                // over it. The report matters more than the field, so it goes
+                // again with the answer in the comment, where a moderator
+                // still reads it.
                 .catch((err) => {
                     if (err?.response?.status !== 422) throw err;
-                    const note = `Belongs on ${correctFlavor.label}.`;
+                    const { note } = extra;
                     return axios.post(url, {
                         ...body,
                         comment: body.comment ? `${body.comment}\n\n${note}` : note,
@@ -262,6 +276,19 @@ export default function FlagForm({ type_ }: FlagFormProps) {
                                 ))}
                         </Select>
                     </FormControl>
+                )}
+                {/* Optional: names every copy, so a moderator can delete
+                the extras in one go. */}
+                {formData.reason === "duplicate" && formData.barcode && (
+                    <DuplicateImagesPicker
+                        barcode={formData.barcode}
+                        flavor={flavor}
+                        flaggedImageId={formData.image_id}
+                        selected={formData.duplicate_image_ids}
+                        onChange={(duplicate_image_ids) =>
+                            setFormData((prevData) => ({ ...prevData, duplicate_image_ids }))
+                        }
+                    />
                 )}
                 {spec?.outOfScope && (
                     <Alert severity="warning" sx={{ width: '100%', mt: 1 }}>
