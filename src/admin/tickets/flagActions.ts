@@ -1,8 +1,10 @@
 import type { Flag } from "../dataProvider";
 import {
   deleteProductImages,
+  moveTicketProduct,
   uploadedImageId,
 } from "./offImages";
+import { projectSpec } from "../../const/flagsConst";
 
 /**
  * Turning a report into the action it is asking for.
@@ -21,6 +23,8 @@ export interface SuggestedAction {
   run: () => Promise<void>;
   /** Whether it changes Open Food Facts, and so deserves a hard confirm. */
   destructive?: boolean;
+  /** Whether `run` closes the ticket itself, through the same API call. */
+  closesTicket?: boolean;
 }
 
 /**
@@ -54,6 +58,28 @@ export function suggestedActions(flag: Flag): SuggestedAction[] {
   });
 
   switch (reason) {
+
+    case "not_a_product": {
+      // Only when the reporter said where it belongs: a product of no
+      // project at all is a deletion, which deserves a closer look than one
+      // click.
+      const target = projectSpec(flag.extra_data?.correct_flavor);
+      if (!target || target.value === flavor) break;
+      actions.push({
+        key: "move-project",
+        label: `Move to ${target.label}`,
+        confirm: `Move ${barcode} to ${target.label}? It will no longer be listed on ${projectSpec(flavor)?.label ?? "its current project"}.`,
+        run: () =>
+          moveTicketProduct(
+            flag.ticket_id,
+            target.value,
+            "Moved after a NutriPatrol report: not a product of this project",
+          ),
+        destructive: true,
+        closesTicket: true,
+      });
+      break;
+    }
 
     case "copyright":
     case "inappropriate":

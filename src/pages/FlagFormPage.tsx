@@ -19,6 +19,8 @@ import {
     reasonSpec,
     sources,
     flavors,
+    projects,
+    projectSpec,
     SCORE_DISPUTE_NOTICE,
 } from '../const/flagsConst';
 import type { IssueType } from '../const/flagsConst';
@@ -40,6 +42,8 @@ interface FormData {
     flavor: string;
     reason: string;
     comment: string;
+    /** For `not_a_product`: the project the product belongs on, if known. */
+    correct_flavor: string;
 }
 
 export default function FlagForm({ type_ }: FlagFormProps) {
@@ -71,6 +75,7 @@ export default function FlagForm({ type_ }: FlagFormProps) {
         // what they are reporting - Open Food Facts has a button per problem.
         reason: reasonSpec(reason)?.types.includes(type_) ? reason! : "",
         comment: comment || "",
+        correct_flavor: "",
     });
     const [image, setImage] = useState<string | null>(null);
 
@@ -130,10 +135,31 @@ export default function FlagForm({ type_ }: FlagFormProps) {
         e.preventDefault();
         setError(null);
         setSending(true);
-        axios.post(`${import.meta.env.VITE_API_URL}/flags`, {
-            ...formData,
+        const { correct_flavor, ...flag } = formData;
+        const url = `${import.meta.env.VITE_API_URL}/flags`;
+        const body = {
+            ...flag,
             user_id: String(identity?.id ?? ""), // not in the form
-        }, { withCredentials: true })
+        };
+        // Optional, and only meaningful for the reason that asks it: the
+        // API refuses extra_data a reason does not take.
+        const correctFlavor = flag.reason === "not_a_product" ? projectSpec(correct_flavor) : undefined;
+        const send = correctFlavor
+            ? axios.post(url, { ...body, extra_data: { correct_flavor } }, { withCredentials: true })
+                // An API that predates `correct_flavor` refuses the whole
+                // report over it. The report matters more than the field, so
+                // it goes again with the answer in the comment, where a
+                // moderator still reads it.
+                .catch((err) => {
+                    if (err?.response?.status !== 422) throw err;
+                    const note = `Belongs on ${correctFlavor.label}.`;
+                    return axios.post(url, {
+                        ...body,
+                        comment: body.comment ? `${body.comment}\n\n${note}` : note,
+                    }, { withCredentials: true });
+                })
+            : axios.post(url, body, { withCredentials: true });
+        send
             .then(() => {
                 trackEvent("Flag", "submit_flag", formData.barcode);
                 setFlagSent(true);
@@ -211,6 +237,31 @@ export default function FlagForm({ type_ }: FlagFormProps) {
                     <Alert severity="info" sx={{ width: '100%', mt: 1 }}>
                         {spec.hint}
                     </Alert>
+                )}
+                {/* Optional: lets a moderator move the product in one click
+                instead of working out where it should go. */}
+                {formData.reason === "not_a_product" && (
+                    <FormControl fullWidth margin="normal">
+                        <InputLabel id="correct_flavor">Where does it belong?</InputLabel>
+                        <Select
+                            labelId="correct_flavor"
+                            name="correct_flavor"
+                            label="Where does it belong?"
+                            value={formData.correct_flavor}
+                            onChange={handleChange}
+                        >
+                            <MenuItem value=""><em>I don't know / none of these</em></MenuItem>
+                            {/* The pro platform is Open Food Facts seen by
+                            producers, so a product there is already on it. */}
+                            {projects
+                                .filter((project) => project.value !== (flavor === "off-pro" ? "off" : flavor))
+                                .map((project) => (
+                                    <MenuItem key={project.value} value={project.value}>
+                                        {project.label}
+                                    </MenuItem>
+                                ))}
+                        </Select>
+                    </FormControl>
                 )}
                 {spec?.outOfScope && (
                     <Alert severity="warning" sx={{ width: '100%', mt: 1 }}>

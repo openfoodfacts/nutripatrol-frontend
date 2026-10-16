@@ -32,7 +32,7 @@ export interface ReasonSpec {
   outOfScope?: { message: string; href: string; linkLabel: string };
   /** Robotoff's own vocabulary. Filterable, never offered to a person. */
   botOnly?: boolean;
-  /** Gets a queue of its own in the moderation sidebar. */
+  /** Gets a page of its own in the moderation tool. */
   queue?: boolean;
 }
 
@@ -63,7 +63,6 @@ export const REASONS: ReasonSpec[] = [
     value: "not_a_product",
     label: "Not a product of this project",
     types: ["product"],
-    hint: "For a cosmetic on Open Food Facts, a pet food, or something that is not a product at all.",
   },
   {
     value: "duplicate_product",
@@ -200,6 +199,26 @@ export const SCORE_DISPUTE_NOTICE = {
  * different system, and files its own flags.
  */
 export const sources = ["web", "mobile"];
+
+/**
+ * The projects a "not a product of this project" report can send a product
+ * to, with the `product_type` Open Food Facts files it under there. Changing
+ * that type is what moves a product from one project to another.
+ *
+ * `value` must match nutripatrol's `NotAProductExtra.correct_flavor`. The pro
+ * platform is not one of them: it is a view of Open Food Facts, not a project
+ * of its own.
+ */
+export const projects = [
+  { value: "off", label: "Open Food Facts", productType: "food" },
+  { value: "obf", label: "Open Beauty Facts", productType: "beauty" },
+  { value: "opff", label: "Open Pet Food Facts", productType: "petfood" },
+  { value: "opf", label: "Open Products Facts", productType: "product" },
+];
+
+export function projectSpec(value: unknown) {
+  return projects.find((project) => project.value === value);
+}
 
 /**
  * FLAVORS: which project the report is about.
