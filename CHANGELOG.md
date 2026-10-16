@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.3.0](https://github.com/openfoodfacts/nutripatrol-frontend/compare/v1.2.1...v1.3.0) (2026-10-16)
+
+
+### Features
+
+* suggest the right project for a "not a product" flag ([#316](https://github.com/openfoodfacts/nutripatrol-frontend/issues/316)) ([434d8af](https://github.com/openfoodfacts/nutripatrol-frontend/commit/434d8af8fb6329fcdf04722d0e05d5fb20894df2))
+
+
+### Bug Fixes
+
+* use Open Food Facts colors for the theme ([#314](https://github.com/openfoodfacts/nutripatrol-frontend/issues/314)) ([25f8dd8](https://github.com/openfoodfacts/nutripatrol-frontend/commit/25f8dd8840deff2aa45f6665db0bd179ddb4d32f))
+
 ## [1.2.1](https://github.com/openfoodfacts/nutripatrol-frontend/compare/v1.2.0...v1.2.1) (2026-10-07)
 
 
