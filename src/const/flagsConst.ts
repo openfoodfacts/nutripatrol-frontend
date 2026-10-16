@@ -63,7 +63,6 @@ export const REASONS: ReasonSpec[] = [
     value: "not_a_product",
     label: "Not a product of this project",
     types: ["product"],
-    hint: "For a cosmetic on Open Food Facts, a pet food, or something that is not a product at all.",
   },
   {
     value: "duplicate_product",
