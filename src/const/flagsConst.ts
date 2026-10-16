@@ -32,7 +32,7 @@ export interface ReasonSpec {
   outOfScope?: { message: string; href: string; linkLabel: string };
   /** Robotoff's own vocabulary. Filterable, never offered to a person. */
   botOnly?: boolean;
-  /** Gets a queue of its own in the moderation sidebar. */
+  /** Gets a page of its own in the moderation tool. */
   queue?: boolean;
 }
 

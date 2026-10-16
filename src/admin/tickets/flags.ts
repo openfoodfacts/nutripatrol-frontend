@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useDataProvider } from "react-admin";
 import type { Identifier } from "react-admin";
 import type { NutriPatrolDataProvider } from "../dataProvider";
@@ -54,5 +54,9 @@ export function useFlagsByTicketIds(ticketIds: Identifier[]) {
     // minutes - not worth a request on every window focus.
     staleTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
+    // A ticket leaving the page changes the ids, hence the key. Keeping the
+    // previous answer meanwhile - which already holds the flags of every
+    // ticket still listed - stops every row from blanking until it lands.
+    placeholderData: keepPreviousData,
   });
 }

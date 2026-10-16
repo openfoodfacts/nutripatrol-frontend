@@ -3,7 +3,6 @@ import type { LayoutProps } from "react-admin";
 import { Route } from "react-router-dom";
 import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
 import HistoryIcon from "@mui/icons-material/History";
-import FlagIcon from "@mui/icons-material/Flag";
 import { dataProvider } from "./admin/dataProvider";
 import { authProvider } from "./admin/authProvider";
 import AdminAppBar from "./admin/AdminAppBar";
@@ -11,6 +10,8 @@ import { TicketList } from "./admin/tickets/TicketList";
 import { TicketShow } from "./admin/tickets/TicketShow";
 import { ReasonTicketList, reasonPath } from "./admin/tickets/ReasonTicketList";
 import { InappropriateTicketList } from "./admin/tickets/InappropriateTicketList";
+import { FixQueueList } from "./admin/tickets/FixQueueList";
+import { fixQueues, fixQueuePath } from "./admin/tickets/fixQueues";
 import { reasonQueues } from "./admin/tickets/choices";
 import { ActionList } from "./admin/actions/ActionList";
 import {
@@ -31,27 +32,22 @@ import NonModeratorPage from "./pages/NonModeratorPage";
 import NotFound from "./pages/NotFound";
 import { darkTheme, lightTheme } from "./theme";
 
-// One page per flagging reason worth working through as a queue, so that a
-// moderator handling, say, inappropriate images gets a link to bookmark
-// instead of having to set the filter by hand. They are the ticket list with
-// `reason` pinned - the routes and the menu entries are both generated from
-// the taxonomy, so marking a reason `queue` there adds its page.
-//
-// Only the ones marked: there are twenty reasons, and a sidebar with a line
-// for each of them is a sidebar nobody reads. The rest stay reachable through
-// the ticket list's own reason filter, which accepts all of them.
+// The ticket list, the moderator's own actions, and the fix queues (see
+// fixQueues). The per-reason pages (see reasonQueues) stay routed, so
+// bookmarks to them keep working, but are left out: the ticket list's reason
+// filter reaches them all, and a sidebar line each was more than anyone read.
 function AdminMenu() {
   const { permissions } = usePermissions();
 
   return (
     <Menu>
       <Menu.ResourceItems />
-      {(permissions === "moderator" ? reasonQueues : []).map((reason) => (
+      {(permissions === "moderator" ? fixQueues : []).map((queue) => (
         <Menu.Item
-          key={reason.value}
-          to={reasonPath(reason.value)}
-          primaryText={reason.label}
-          leftIcon={<FlagIcon />}
+          key={queue.key}
+          to={fixQueuePath(queue)}
+          primaryText={queue.menuLabel}
+          leftIcon={queue.icon}
         />
       ))}
     </Menu>
@@ -102,6 +98,13 @@ export default function AdminApp() {
           /> : null}
 
           <CustomRoutes>
+            {(permissions === 'moderator' ? fixQueues : []).map((queue) => (
+              <Route
+                key={queue.key}
+                path={fixQueuePath(queue)}
+                element={<FixQueueList queue={queue} />}
+              />
+            ))}
             {(permissions === 'moderator' ? reasonQueues : []).map((reason) => (
               <Route
                 key={reason.value}

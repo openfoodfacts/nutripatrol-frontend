@@ -43,6 +43,6 @@ export const reasonChoices = REASONS.map(({ value, label }) => ({
   name: label,
 }));
 
-// The reasons worth a queue of their own in the sidebar. Curated, because
-// there are twenty of them and a menu entry each would be unusable.
+// The reasons worth a page of their own. Curated, because there are twenty
+// of them.
 export const reasonQueues = REASONS.filter((r) => r.queue);
