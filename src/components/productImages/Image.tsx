@@ -71,7 +71,7 @@ export function Image({
   sx,
 }: ImageProps) {
   const context = useImages();
-  const { barcode, flavor, isPending, isError } = context;
+  const { barcode, flavor, isPending } = context;
   const image = context.getImage(imgid);
   const canSelect = selectable ?? context.selectable;
   const isSelected = canSelect && context.isSelected(imgid);
@@ -83,8 +83,10 @@ export function Image({
   const [failedSrc, setFailedSrc] = useState<string>();
 
   // The picture can be requested before the product's data arrives: its URL
-  // only needs the id. The data only tells whether it still exists.
-  const isMissing = !isPending && !isError && image === undefined;
+  // only needs the id. The data only tells whether it still exists - for an
+  // upload, that is: a selected crop ("front_fr") is not listed among them.
+  const isMissing =
+    /^\d+$/.test(imgid) && context.hasData && image === undefined;
   const isUnavailable = isMissing || failedSrc === src;
   const label = alt ?? `Picture ${imgid} of ${barcode}`;
 

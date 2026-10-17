@@ -21,6 +21,8 @@ export interface ImagesContextValue {
   images: ProductImage[];
   /** Undefined while loading, and for a picture the product no longer has. */
   getImage: (imgid: string) => ProductImage | undefined;
+  /** Whether the pictures' data was read, so `getImage` can be trusted. */
+  hasData: boolean;
   isPending: boolean;
   isError: boolean;
   /** Whether pictures show a button to select them. */

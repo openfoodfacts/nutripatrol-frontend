@@ -58,6 +58,12 @@ interface ImagesContextProps {
   selectable?: boolean;
   /** Whether more than one picture can be selected at a time. */
   multiple?: boolean;
+  /**
+   * Read the product's pictures. Off, the pictures still show, but nothing
+   * is known about them - for a list showing one per row, where a request
+   * per row would be too many.
+   */
+  loadData?: boolean;
   children: ReactNode;
 }
 
@@ -76,6 +82,7 @@ export function ImagesContext({
   onSelectionChange,
   selectable = onSelectionChange !== undefined,
   multiple = true,
+  loadData = true,
   children,
 }: ImagesContextProps) {
   const { data, isPending, isError } = useQuery({
@@ -90,7 +97,7 @@ export function ImagesContext({
       };
       return parseImages(body.product?.images);
     },
-    enabled: Boolean(barcode),
+    enabled: loadData && Boolean(barcode),
     staleTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
   });
@@ -107,7 +114,9 @@ export function ImagesContext({
       flavor,
       images,
       getImage: (imgid) => byId.get(imgid),
-      isPending,
+      hasData: data !== undefined,
+      // A disabled query stays pending: nothing is coming.
+      isPending: loadData && isPending,
       isError,
       selectable,
       selected: currentSelected,
@@ -127,6 +136,7 @@ export function ImagesContext({
     barcode,
     flavor,
     data,
+    loadData,
     isPending,
     isError,
     selectable,

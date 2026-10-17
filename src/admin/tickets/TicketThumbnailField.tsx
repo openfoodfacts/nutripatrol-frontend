@@ -1,14 +1,6 @@
-import { useState } from "react";
-import {
-  Box,
-  ButtonBase,
-  Dialog,
-  DialogContent,
-  Link,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Link, Stack, Typography } from "@mui/material";
 import { useRecordContext, type FieldProps } from "react-admin";
+import { Image, ImagesContext } from "../../components/productImages";
 import { userUrl } from "./flavorUrls";
 
 /** Displayed size of the thumbnail, in px. */
@@ -16,12 +8,12 @@ const SIZE_WIDTH = 100;
 const SIZE_HEIGHT = 80;
 
 /**
- * The OFF image server exposes resized copies of every picture next to the
- * original, as `<image_id>.<width>.jpg`. Same transform as the public
- * ImageTicket component, but at 100px: these are table cells, not cards.
+ * The id the image server files the ticket's picture by: the URL's file name,
+ * so "3" for an upload, or "front_fr.12" for revision 12 of a selected crop.
+ * Read from the URL rather than `image_id`, which leaves the revision out.
  */
-function thumbnailUrl(url: string) {
-  return url.replace(/\.jpg$/, ".100.jpg");
+function imageFileId(url: string): string | null {
+  return url.match(/\/([^/]+)\.jpg$/)?.[1] ?? null;
 }
 
 /**
@@ -29,9 +21,9 @@ function thumbnailUrl(url: string) {
  * full-size original in a dialog, next to who uploaded it and when.
  *
  * Renders an empty cell for the other ticket types: `url` then points at a
- * product or search page, not an image. Also for an image whose URL 404s -
- * moderators delete pictures from the flavor's site, which leaves the
- * ticket (and its now-dangling URL) behind.
+ * product or search page, not an image. An image whose URL 404s - moderators
+ * delete pictures from the flavor's site, which leaves the ticket (and its
+ * now-dangling URL) behind - shows as no longer available.
  */
 // Takes FieldProps although it reads none of them: Datagrid picks the
 // column's label and sortability off the props of its children.
@@ -45,77 +37,39 @@ export function TicketThumbnailField(_props: FieldProps) {
     image_uploaded_at?: string | null;
     image_uploader?: string | null
   }>();
-  const [failed, setFailed] = useState(false);
-  const [open, setOpen] = useState(false);
-  // Called before the early returns below, and inert until it has all three
-  // arguments - so a non-image ticket costs no request.
-  const isImage = record?.type === "image";
 
-  if (!record || !isImage || !record.url || failed) return null;
-
-  const alt = record.barcode
-    ? `Flagged image of ${record.barcode}`
-    : "Flagged image";
+  const imgid = record?.url ? imageFileId(record.url) : null;
+  if (!record || record.type !== "image" || !record.barcode || !imgid) {
+    return null;
+  }
 
   return (
-    <>
+    // The ticket already says who uploaded the picture and when, so there is
+    // no need for a product request per row.
+    <ImagesContext barcode={record.barcode} flavor={record.flavor} loadData={false}>
       <Stack direction="column" spacing={1} alignItems="start">
-        <ButtonBase
-          onClick={() => setOpen(true)}
-          aria-label={`${alt} - open full size`}
-          sx={{ borderRadius: 1, flexShrink: 0 }}
-        >
-          <Box
-            component="img"
-            src={thumbnailUrl(record.url)}
-            alt={alt}
-            loading="lazy"
-            onError={() => setFailed(true)}
-            sx={{
-              width: SIZE_WIDTH,
-              height: SIZE_HEIGHT,
-              objectFit: "contain",
-              display: "block",
-              borderRadius: 1,
-              border: 1,
-              borderColor: "divider",
-              backgroundColor: "common.white",
-            }}
-          />
-        </ButtonBase>
-        
-        {record && (
-          <Stack maxWidth={SIZE_WIDTH}>
-            {record.image_uploader && (
-              <Link color="text.secondary" noWrap
-                href={userUrl(record.flavor, record.image_uploader)}>
-                {record.image_uploader}
-              </Link>
-            )}
-            {record.image_uploaded_at && (
-              <Typography variant="caption" color="text.secondary" noWrap>
-                {new Date(record.image_uploaded_at).toLocaleDateString()}
-              </Typography>
-            )}
-          </Stack>
-        )}
+        <Image
+          imgid={imgid}
+          resolution={100}
+          width={SIZE_WIDTH}
+          height={SIZE_HEIGHT}
+          fit="contain"
+          alt={`Flagged image of ${record.barcode}`}
+        />
+        <Stack maxWidth={SIZE_WIDTH}>
+          {record.image_uploader && (
+            <Link color="text.secondary" noWrap
+              href={userUrl(record.flavor, record.image_uploader)}>
+              {record.image_uploader}
+            </Link>
+          )}
+          {record.image_uploaded_at && (
+            <Typography variant="caption" color="text.secondary" noWrap>
+              {new Date(record.image_uploaded_at).toLocaleDateString()}
+            </Typography>
+          )}
+        </Stack>
       </Stack>
-      <Dialog open={open} onClose={() => setOpen(false)} maxWidth="lg">
-        <DialogContent sx={{ p: 1, backgroundColor: "common.white" }}>
-          <Box
-            component="img"
-            src={record.url}
-            alt={alt}
-            sx={{
-              display: "block",
-              
-              maxWidth: "100%",
-              maxHeight: "85vh",
-              objectFit: "contain",
-            }}
-          />
-        </DialogContent>
-      </Dialog>
-    </>
+    </ImagesContext>
   );
 }

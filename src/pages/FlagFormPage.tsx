@@ -11,7 +11,7 @@ import {
     Link,
 } from '@mui/material';
 import axios from 'axios';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useGetIdentity } from 'react-admin';
 import {
@@ -26,6 +26,7 @@ import {
 import type { IssueType } from '../const/flagsConst';
 import { trackEvent } from '../analytics';
 import ThanksPage from './ThanksPage';
+import { Image, ImagesContext } from '../components/productImages';
 
 /**
  * Interfaces
@@ -77,32 +78,6 @@ export default function FlagForm({ type_ }: FlagFormProps) {
         comment: comment || "",
         correct_flavor: "",
     });
-    const [image, setImage] = useState<string | null>(null);
-
-    useEffect(() => {
-        const buildUrl = (barcode: string, imageId: string, def: string, rev?: string) => {
-            // split the barcode into 4 parts
-            const part1 = barcode.slice(0, 3);
-            const part2 = barcode.slice(3, 6);
-            const part3 = barcode.slice(6, 9);
-            const part4 = barcode.slice(9);
-            // if rev is defined, return the url with rev
-            if (rev) {
-                return `${import.meta.env.VITE_PO_IMAGE_URL}/images/products/${part1}/${part2}/${part3}/${part4}/${imageId}.${rev}.${def}.jpg`;
-            }
-            // else return the url without rev
-            return `${import.meta.env.VITE_PO_IMAGE_URL}/images/products/${part1}/${part2}/${part3}/${part4}/${imageId}.${def}.jpg`;
-        }
-        if (type_ === 'image') {
-            const url = buildUrl(formData.barcode, formData.image_id as string, '400');
-            axios.get(url).then(() => {
-                setImage(url);
-            }
-            ).catch((err) => {
-                console.error(err);
-            })
-        }
-    }, [formData.type]);
 
     if (source === undefined || !sources.includes(source) || flavor === undefined || !flavors.includes(flavor)) {
         return (
@@ -199,7 +174,18 @@ export default function FlagForm({ type_ }: FlagFormProps) {
             <Typography variant="body1" sx={{margin: '2rem 0', fontSize: {xs: '0.8rem', md: '1.2rem'}}}>
                 Moderators will never contact you, so please give all the relevant details in your report. Pick the reason that fits best.
             </Typography>
-            {image && <img src={image} alt="product" style={{ width: '250px', margin: '2rem 0' }} />}
+            {type_ === 'image' && formData.barcode && formData.image_id && (
+                <ImagesContext barcode={formData.barcode} flavor={flavor}>
+                    <Image
+                        imgid={formData.image_id}
+                        width={250}
+                        fit="contain"
+                        showInfo
+                        alt="The reported picture"
+                        sx={{ my: 4 }}
+                    />
+                </ImagesContext>
+            )}
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '70%' }}>
                 <TextField
                     name="barcode"
