@@ -3,6 +3,7 @@ import type { LayoutProps } from "react-admin";
 import { Route } from "react-router-dom";
 import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
 import HistoryIcon from "@mui/icons-material/History";
+import CollectionsIcon from "@mui/icons-material/Collections";
 import { dataProvider } from "./admin/dataProvider";
 import { authProvider } from "./admin/authProvider";
 import AdminAppBar from "./admin/AdminAppBar";
@@ -10,6 +11,10 @@ import { TicketList } from "./admin/tickets/TicketList";
 import { TicketShow } from "./admin/tickets/TicketShow";
 import { ReasonTicketList, reasonPath } from "./admin/tickets/ReasonTicketList";
 import { InappropriateTicketList } from "./admin/tickets/InappropriateTicketList";
+import {
+  DUPLICATE_IMAGES_PATH,
+  DuplicateImagesTicketList,
+} from "./admin/tickets/DuplicateImagesTicketList";
 import { FixQueueList } from "./admin/tickets/FixQueueList";
 import { fixQueues, fixQueuePath } from "./admin/tickets/fixQueues";
 import { reasonQueues } from "./admin/tickets/choices";
@@ -50,6 +55,13 @@ function AdminMenu() {
           leftIcon={queue.icon}
         />
       ))}
+      {permissions === "moderator" && (
+        <Menu.Item
+          to={DUPLICATE_IMAGES_PATH}
+          primaryText="Duplicate images"
+          leftIcon={<CollectionsIcon />}
+        />
+      )}
     </Menu>
   );
 }
@@ -98,6 +110,12 @@ export default function AdminApp() {
           /> : null}
 
           <CustomRoutes>
+            {permissions === 'moderator' && (
+              <Route
+                path={DUPLICATE_IMAGES_PATH}
+                element={<DuplicateImagesTicketList />}
+              />
+            )}
             {(permissions === 'moderator' ? fixQueues : []).map((queue) => (
               <Route
                 key={queue.key}
