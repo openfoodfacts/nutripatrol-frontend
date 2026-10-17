@@ -18,6 +18,7 @@ import {
 import { TicketFlagsField } from "./TicketFlagsField";
 import { TicketThumbnailField } from "./TicketThumbnailField";
 import { TicketActionsField } from "./TicketActionsField";
+import { ProductImagesManagerPanel } from "./ProductImagesManager";
 
 // `reason` is a flag field, not a ticket one: the API filters tickets on the
 // reasons of their flags. So it is filterable but not sortable, and the column
@@ -42,7 +43,14 @@ export function TicketDatagrid() {
     // Rows are inert: the whole row used to be a link to the edit form,
     // which made every stray click on a thumbnail or a barcode navigate
     // away. Moderating goes through the Actions column instead.
-    <Datagrid rowClick={false} bulkActionButtons={false}>
+    <Datagrid
+      rowClick={false}
+      bulkActionButtons={false}
+      // Every picture of the product, to delete or move some of them without
+      // leaving the list. Search tickets have no product to expand.
+      expand={<ProductImagesManagerPanel />}
+      isRowExpandable={(record) => Boolean(record.barcode)}
+    >
       {/* Not backed by a single source, and only ever filled for image
           tickets - hence an explicit label and no sorting. */}
       <TicketThumbnailField source="url" label="Image" sortable={false} />
