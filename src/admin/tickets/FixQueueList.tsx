@@ -22,6 +22,7 @@ import { productUrl } from "./flavorUrls";
 import type { SuggestedAction } from "./flagActions";
 import type { FixQueue, QueueTicket } from "./fixQueues";
 import { ProductImagesPanel } from "./ProductImagesPanel";
+import { EmptyTickets } from "./EmptyTickets";
 import { TicketFlagsField } from "./TicketFlagsField";
 import { useDropTicket } from "./useDropTicket";
 
@@ -220,9 +221,7 @@ export function FixQueueList({ queue }: { queue: FixQueue }) {
         expand={<ProductImagesPanel />}
         isRowExpandable={(ticket) => Boolean(ticket.barcode)}
         empty={
-          <Typography sx={{ p: 2 }} color="text.secondary">
-            {queue.emptyText}
-          </Typography>
+          <EmptyTickets description={`This page lists open reports marked “${queue.title}”. ${queue.emptyText}`} />
         }
       >
         <BarcodeField source="barcode" />

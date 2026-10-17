@@ -43,7 +43,7 @@ export function ReasonTicketList({ reason }: { reason: string }) {
       // CSV; nothing here is meant to leave the moderation tool.
       exporter={false}
     >
-      <TicketDatagrid />
+      <TicketDatagrid description={`This page lists reports marked “${label}”.`} />
     </List>
   );
 }
