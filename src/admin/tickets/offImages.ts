@@ -52,6 +52,27 @@ export async function deleteProductImages(
 }
 
 /**
+ * Move pictures uploaded on the wrong barcode to the product they show.
+ *
+ * Open Food Facts creates the destination product if it does not exist yet;
+ * `copyData` then also copies this product's fields (name, brands...) onto it.
+ */
+export async function moveProductImages(
+  barcode: string,
+  imgids: number[],
+  moveTo: string,
+  flavor: string,
+  copyData = false,
+): Promise<void> {
+  return act(barcode, "/images/move", {
+    imgids,
+    flavor,
+    move_to: moveTo,
+    copy_data: copyData,
+  });
+}
+
+/**
  * Delete a product page.
  *
  * Open Food Facts flags it as deleted rather than erasing it, so a moderator
