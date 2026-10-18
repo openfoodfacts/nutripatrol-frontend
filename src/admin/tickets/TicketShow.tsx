@@ -24,6 +24,7 @@ import { flavorChoices, statusChoices, typeChoices } from "./choices";
 import { FlagSummary } from "./FlagSummary";
 import { useFlagsByTicketIds } from "./flags";
 import { productUrl, userUrl } from "./flavorUrls";
+import { ProductImagesManager } from "./ProductImagesManager";
 import { TicketActionsField } from "./TicketActionsField";
 import { TicketThumbnailField } from "./TicketThumbnailField";
 
@@ -144,6 +145,19 @@ function TicketFlags() {
   );
 }
 
+/** Every picture of the product, to delete or move some of them. */
+function TicketProductImages() {
+  const record = useRecordContext<Ticket>();
+  // Search tickets have no product.
+  if (!record?.barcode) return null;
+
+  return (
+    <Section title="Product pictures">
+      <ProductImagesManager barcode={record.barcode} flavor={record.flavor} />
+    </Section>
+  );
+}
+
 /** What moderators have done about it, most recent first. */
 function TicketHistory() {
   const record = useRecordContext<Ticket>();
@@ -231,6 +245,7 @@ export function TicketShow() {
       <Stack spacing={2} sx={{ p: 2 }}>
         <TicketSummary />
         <TicketFlags />
+        <TicketProductImages />
         <TicketHistory />
       </Stack>
     </Show>

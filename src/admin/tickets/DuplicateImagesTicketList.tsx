@@ -25,9 +25,9 @@ import {
 } from "react-admin";
 import type { Flag } from "../dataProvider";
 import ImageToggleGrid from "../../components/ImageToggleGrid";
+import { ImagesContext, useImages } from "../../components/productImages";
 import { useFlagsByTicketIds } from "./flags";
 import { productUrl } from "./flavorUrls";
-import { useProductImageIds } from "./ProductImagesPanel";
 import { deleteProductImages, uploadedImageId } from "./offImages";
 import { statusChoices } from "./choices";
 import { TicketFlagsField } from "./TicketFlagsField";
@@ -77,28 +77,49 @@ function reportedDuplicates(ticket: Ticket, flags: Flag[]): string[] {
  */
 function DuplicateImagesCard({ flags }: { flags: Flag[] }) {
   const record = useRecordContext<Ticket>();
+  // Null until the moderator clicks a picture: until then the selection
+  // follows the reports, which arrive after the ticket.
+  const [picked, setPicked] = useState<string[] | null>(null);
+  if (!record) return null;
+
+  return (
+    <ImagesContext
+      barcode={record.barcode ?? ""}
+      flavor={record.flavor}
+      loadData={Boolean(record.barcode)}
+      selected={picked ?? reportedDuplicates(record, flags)}
+      onSelectionChange={setPicked}
+    >
+      <DuplicateImagesCardContent
+        record={record}
+        flags={flags}
+        onDeleted={() => setPicked([])}
+      />
+    </ImagesContext>
+  );
+}
+
+function DuplicateImagesCardContent({
+  record,
+  flags,
+  onDeleted,
+}: {
+  record: Ticket;
+  flags: Flag[];
+  onDeleted: () => void;
+}) {
   const notify = useNotify();
   const refresh = useRefresh();
   const [update] = useUpdate();
-  // Null until the moderator clicks a picture: until then the selection
-  // follows the reports, which arrive after the ticket.
-  const [picked, setPicked] = useState<number[] | null>(null);
-  // The same query the grid makes, so it costs nothing more.
-  const { ids: productIds } = useProductImageIds(
-    record?.flavor ?? "off",
-    record?.barcode,
-  );
+  const images = useImages();
   const [deleting, setDeleting] = useState(false);
   const [confirming, setConfirming] = useState(false);
-  if (!record) return null;
 
   // Reported ids the product no longer has are left out: they are not shown,
   // so they must not be deleted unseen.
-  const selected =
-    picked ??
-    reportedDuplicates(record, flags)
-      .filter((imgid) => productIds.includes(imgid))
-      .map(Number);
+  const selected = images.selected
+    .filter((imgid) => images.getImage(imgid) !== undefined)
+    .map(Number);
 
   const NOTIFICATIONS = {
     "closed-fixed": "Images deleted, ticket closed",
@@ -126,7 +147,7 @@ function DuplicateImagesCard({ flags }: { flags: Flag[] }) {
     setDeleting(true);
     try {
       await deleteProductImages(record.barcode!, selected, record.flavor);
-      setPicked([]);
+      onDeleted();
       // Only once Open Food Facts has accepted the deletion: closing a ticket
       // whose pictures are still up would lose the report.
       setStatus("closed-fixed");
@@ -213,13 +234,9 @@ function DuplicateImagesCard({ flags }: { flags: Flag[] }) {
                 The copies the reporters named are selected. Unselect the one to keep.
               </Typography>
               <ImageToggleGrid
-                barcode={record.barcode}
-                flavor={record.flavor}
                 pinned={reportedDuplicates(record, flags)}
                 pinnedTitle="Reported as duplicates"
                 othersTitle="The product's other pictures"
-                selected={selected}
-                onChange={setPicked}
                 badge="Delete"
               />
             </>

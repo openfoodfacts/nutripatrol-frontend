@@ -24,6 +24,7 @@ import {
   useRefresh,
   useUpdate,
 } from "react-admin";
+import { EmptyTickets } from "./EmptyTickets";
 import { TicketThumbnailField } from "./TicketThumbnailField";
 import { productUrl } from "./flavorUrls";
 import { deleteProductImage, uploadedImageId } from "./offImages";
@@ -204,9 +205,7 @@ function ImageReviewList() {
   if (isPending || !data) return null;
   if (data.length === 0) {
     return (
-      <Typography sx={{ p: 2 }} color="text.secondary">
-        Nothing to review here.
-      </Typography>
+      <EmptyTickets description="This page lists images reported as inappropriate, for a moderator to review." />
     );
   }
 

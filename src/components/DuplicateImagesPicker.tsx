@@ -1,5 +1,6 @@
 import { Box, Typography } from '@mui/material';
 import ImageToggleGrid from './ImageToggleGrid';
+import { ImagesContext } from './productImages';
 
 interface DuplicateImagesPickerProps {
     barcode: string;
@@ -29,19 +30,22 @@ export default function DuplicateImagesPicker({
                 Which pictures are duplicates?
             </Typography>
             <Typography variant="body2" color="text.secondary">
-                Click the pictures that show the same thing to mark them as duplicates.
+                Select the pictures that show the same thing to mark them as duplicates.
             </Typography>
-            <ImageToggleGrid
+            <ImagesContext
                 barcode={barcode}
                 flavor={flavor}
-                pinned={flaggedImageId ? [flaggedImageId] : []}
-                pinnedTitle="The picture you reported"
-                othersTitle="The product's other pictures"
-                selected={selected}
-                onChange={onChange}
-                badge="Duplicate"
-                errorText="Could not load the product's pictures. Tell us which ones are duplicates in your comment."
-            />
+                selected={selected.map(String)}
+                onSelectionChange={(ids) => onChange(ids.map(Number))}
+            >
+                <ImageToggleGrid
+                    pinned={flaggedImageId ? [flaggedImageId] : []}
+                    pinnedTitle="The picture you reported"
+                    othersTitle="The product's other pictures"
+                    badge="Duplicate"
+                    errorText="Could not load the product's pictures. Tell us which ones are duplicates in your comment."
+                />
+            </ImagesContext>
         </Box>
     );
 }
