@@ -1,6 +1,6 @@
-import { Box, Typography } from '@mui/material';
-import ImageToggleGrid from './ImageToggleGrid';
-import { ImagesContext } from './productImages';
+import { Box, Chip, Typography } from '@mui/material';
+import PinnedImagesGrid from './PinnedImagesGrid';
+import { Image, ImagesContext } from './productImages';
 
 interface DuplicateImagesPickerProps {
     barcode: string;
@@ -38,13 +38,28 @@ export default function DuplicateImagesPicker({
                 selected={selected.map(String)}
                 onSelectionChange={(ids) => onChange(ids.map(Number))}
             >
-                <ImageToggleGrid
-                    pinned={flaggedImageId ? [flaggedImageId] : []}
+                <PinnedImagesGrid
+                    pinned={flaggedImageId ? [flaggedImageId, ...selected.map(String)] : selected.map(String)}
                     pinnedTitle="The picture you reported"
                     othersTitle="The product's other pictures"
-                    badge="Duplicate"
                     errorText="Could not load the product's pictures. Tell us which ones are duplicates in your comment."
-                />
+                >
+                    {(imgid) => (
+                        <Image
+                            imgid={imgid}
+                            width={160}
+                            selectedSx={{ outlineColor: 'error.main' }}
+                            renderSelected={() => (
+                                <Chip
+                                    label="Duplicate"
+                                    color="error"
+                                    size="small"
+                                    sx={{ position: 'absolute', top: 8, left: 8, fontWeight: 700 }}
+                                />
+                            )}
+                        />
+                    )}
+                </PinnedImagesGrid>
             </ImagesContext>
         </Box>
     );

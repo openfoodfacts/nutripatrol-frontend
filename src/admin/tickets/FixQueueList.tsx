@@ -71,7 +71,7 @@ function FixButton({
     setConfirming(false);
     setRunning(true);
     try {
-      await action.run();
+      await action.run?.();
     } catch (error) {
       notify((error as Error).message, { type: "error" });
       setRunning(false);
@@ -107,7 +107,7 @@ function FixButton({
         color={action.destructive ? "error" : "primary"}
         startIcon={<BoltIcon />}
         disabled={running}
-        onClick={() => setConfirming(true)}
+        onClick={() => (action.confirm ? setConfirming(true) : run())}
         sx={{ whiteSpace: "nowrap" }}
       >
         {action.label}
@@ -218,7 +218,7 @@ export function FixQueueList({ queue }: { queue: FixQueue }) {
         bulkActionButtons={false}
         // The product's pictures, under the row: what it actually is decides
         // most of these reports.
-        expand={<ProductImagesPanel />}
+        expand={queue.expand ?? <ProductImagesPanel />}
         isRowExpandable={(ticket) => Boolean(ticket.barcode)}
         empty={
           <EmptyTickets description={`This page lists open reports marked “${queue.title}”. ${queue.emptyText}`} />

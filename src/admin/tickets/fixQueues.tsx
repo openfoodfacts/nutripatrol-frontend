@@ -1,10 +1,12 @@
 import type { ComponentType, ReactElement } from "react";
+import CollectionsIcon from "@mui/icons-material/Collections";
 import DriveFileMoveIcon from "@mui/icons-material/DriveFileMove";
 import type { Flag } from "../dataProvider";
 import { projectSpec } from "../../const/flagsConst";
 import type { SuggestedAction } from "./flagActions";
 import { moveTicketProduct } from "./offImages";
 import { MoveToProjectButton } from "./MoveToProjectButton";
+import { DuplicateImagesPanel } from "./DuplicateImagesPanel";
 
 /** What a queue reads off a ticket. */
 export interface QueueTicket {
@@ -53,6 +55,11 @@ export interface FixQueue {
    * button, after these.
    */
   extraActions?: ComponentType<QueueTicketActionProps>[];
+  /**
+   * The row's expandable section, for tickets with a product. Defaults to
+   * the product's pictures.
+   */
+  expand?: ReactElement;
 }
 
 /** The URL of a queue's page. Outside "/tickets/*", which the Resource owns. */
@@ -118,5 +125,21 @@ export const fixQueues: FixQueue[] = [
         />
       ),
     ],
+  },
+  {
+    key: "duplicate-images",
+    menuLabel: "Duplicate images",
+    icon: <CollectionsIcon />,
+    title: "Duplicate images",
+    filter: { reason: ["duplicate"] },
+    emptyText: "No copies to clean up.",
+    noFixText: "No product",
+    // The fix itself is in the row's expandable section, one picture at a
+    // time: this only closes the ticket once it is done.
+    fix: () => ({
+      key: "close-fixed",
+      label: "Close (fixed)",
+    }),
+    expand: <DuplicateImagesPanel />,
   },
 ];
