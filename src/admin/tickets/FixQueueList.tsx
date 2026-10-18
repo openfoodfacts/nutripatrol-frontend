@@ -24,6 +24,7 @@ import type { FixQueue, QueueTicket } from "./fixQueues";
 import { ProductImagesPanel } from "./ProductImagesPanel";
 import { EmptyTickets } from "./EmptyTickets";
 import { TicketFlagsField } from "./TicketFlagsField";
+import { TicketThumbnailField } from "./TicketThumbnailField";
 import { useDropTicket } from "./useDropTicket";
 
 function BarcodeField(_props: FieldProps) {
@@ -49,7 +50,7 @@ function BarcodeField(_props: FieldProps) {
  * accepted, either by the fix's own API call or by a status update after it.
  * Either way the row then leaves the list, without reloading the others.
  */
-function FixButton({
+export function FixButton({
   ticket,
   action,
 }: {
@@ -224,6 +225,9 @@ export function FixQueueList({ queue }: { queue: FixQueue }) {
           <EmptyTickets description={`This page lists open reports marked “${queue.title}”. ${queue.emptyText}`} />
         }
       >
+        {queue.thumbnail && (
+          <TicketThumbnailField source="url" label="Image" sortable={false} />
+        )}
         <BarcodeField source="barcode" />
         <SelectField source="flavor" label="On" choices={flavorChoices} />
         <DateField

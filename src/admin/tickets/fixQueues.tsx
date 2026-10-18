@@ -1,12 +1,22 @@
 import type { ComponentType, ReactElement } from "react";
 import CollectionsIcon from "@mui/icons-material/Collections";
 import DriveFileMoveIcon from "@mui/icons-material/DriveFileMove";
+import ReportIcon from "@mui/icons-material/Report";
 import type { Flag } from "../dataProvider";
 import { projectSpec } from "../../const/flagsConst";
 import type { SuggestedAction } from "./flagActions";
-import { moveTicketProduct } from "./offImages";
+import {
+  deleteProductImage,
+  moveTicketProduct,
+  uploadedImageId,
+} from "./offImages";
 import { MoveToProjectButton } from "./MoveToProjectButton";
-import { DuplicateImagesPanel } from "./DuplicateImagesPanel";
+import {
+  ReportedImagesPanel,
+  reportedDuplicates,
+  reportedImages,
+} from "./ReportedImagesPanel";
+import { FixButton } from "./FixQueueList";
 
 /** What a queue reads off a ticket. */
 export interface QueueTicket {
@@ -60,6 +70,8 @@ export interface FixQueue {
    * the product's pictures.
    */
   expand?: ReactElement;
+  /** Show the ticket's picture in a column of its own. */
+  thumbnail?: boolean;
 }
 
 /** The URL of a queue's page. Outside "/tickets/*", which the Resource owns. */
@@ -140,6 +152,54 @@ export const fixQueues: FixQueue[] = [
       key: "close-fixed",
       label: "Close (fixed)",
     }),
-    expand: <DuplicateImagesPanel />,
+    expand: (
+      <ReportedImagesPanel
+        reported={reportedDuplicates}
+        reportedTitle="Reported as duplicates"
+        hint="Delete the extra copies, keep one, then close the ticket."
+      />
+    ),
+  },
+  {
+    key: "inappropriate-images",
+    menuLabel: "Inappropriate images",
+    icon: <ReportIcon />,
+    title: "Inappropriate images",
+    // A product flagged as inappropriate has no picture to show or delete,
+    // and is dealt with from the main ticket list.
+    filter: { reason: ["inappropriate"], type: "image" },
+    emptyText: "No pictures to review.",
+    thumbnail: true,
+    // A selected image ("front_fr") names a crop rather than a file: the
+    // upload it was cut from is in the row's expandable section.
+    noFixText: "Delete it from the pictures below",
+    fix: (ticket) => {
+      const imgid = uploadedImageId(ticket.image_id);
+      if (!ticket.barcode || imgid === null) return null;
+      const barcode = ticket.barcode;
+      return {
+        key: "delete-image",
+        label: "Delete image",
+        confirm: `Move image ${imgid} of ${barcode} to the Open Food Facts trash?`,
+        run: () => deleteProductImage(barcode, imgid, ticket.flavor),
+        destructive: true,
+      };
+    },
+    // For when the pictures were deleted from the expandable section.
+    extraActions: [
+      ({ ticket }) => (
+        <FixButton
+          ticket={ticket}
+          action={{ key: "close-fixed", label: "Close (fixed)" }}
+        />
+      ),
+    ],
+    expand: (
+      <ReportedImagesPanel
+        reported={reportedImages}
+        reportedTitle="Reported picture"
+        hint="Delete the reported picture, and any other one that does not belong, then close the ticket."
+      />
+    ),
   },
 ];

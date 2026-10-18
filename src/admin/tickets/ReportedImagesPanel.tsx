@@ -19,47 +19,68 @@ import type { QueueTicket } from "./fixQueues";
 import { useFlagsByTicketIds } from "./flags";
 import { deleteProductImages } from "./offImages";
 
+/** Adds an image id to `ids`, if it is one: a positive number or a string. */
+function addId(ids: Set<string>, id: unknown) {
+  if (typeof id === "number" && id > 0) ids.add(String(id));
+  if (typeof id === "string" && id.trim()) ids.add(id.trim());
+}
+
 /**
- * The pictures the reporters named as copies: the ticket's own image, each
- * flag's image, and the ids each flag adds.
+ * The pictures the reports are about: the ticket's own image and each
+ * flag's. Upload ids ("3") or selected crops ("front_fr"), which the grid
+ * resolves to the upload they were cut from.
+ */
+export function reportedImages(ticket: QueueTicket, flags: Flag[]): string[] {
+  const ids = new Set<string>();
+  addId(ids, ticket.image_id);
+  for (const flag of flags) addId(ids, flag.image_id);
+  return [...ids];
+}
+
+/**
+ * The pictures the reporters named as copies: the reported images, and the
+ * ids each flag adds.
  *
  * Those come from `duplicate_of_image_id`, the key the API takes, from
  * `duplicate_image_ids`, in case it takes the form's list one day, and from
  * the "Duplicate pictures: 1, 2." note the form writes into the comment when
  * the API refuses that list.
- *
- * Images are upload ids ("3") or selected crops ("front_fr"), which the grid
- * resolves to the upload they were cut from.
  */
-function reportedDuplicates(ticket: QueueTicket, flags: Flag[]): string[] {
-  const ids = new Set<string>();
-  const add = (id: unknown) => {
-    if (typeof id === "number" && id > 0) ids.add(String(id));
-    if (typeof id === "string" && id.trim()) ids.add(id.trim());
-  };
-  add(ticket.image_id);
+export function reportedDuplicates(ticket: QueueTicket, flags: Flag[]): string[] {
+  const ids = new Set(reportedImages(ticket, flags));
   for (const flag of flags) {
-    add(flag.image_id);
     const extra = flag.extra_data ?? {};
-    add(extra.duplicate_of_image_id);
+    addId(ids, extra.duplicate_of_image_id);
     if (Array.isArray(extra.duplicate_image_ids)) {
-      extra.duplicate_image_ids.forEach(add);
+      extra.duplicate_image_ids.forEach((id) => addId(ids, id));
     }
     const note = flag.comment?.match(/Duplicate pictures: ([\d, ]+)/);
-    note?.[1].match(/\d+/g)?.forEach(add);
+    note?.[1].match(/\d+/g)?.forEach((id) => addId(ids, id));
   }
   return [...ids];
 }
 
+interface ReportedImagesPanelProps {
+  /** The pictures shown first, from the ticket and its reports. */
+  reported: (ticket: QueueTicket, flags: Flag[]) => string[];
+  reportedTitle: string;
+  /** What the moderator is expected to do, above the pictures. */
+  hint: string;
+}
+
 /**
- * The row's product pictures, the reported copies first, each with its own
- * delete button: the expandable section of the duplicate images queue.
+ * The row's product pictures, the reported ones first, each with its own
+ * delete button: the expandable section of the image queues.
  *
- * Pictures are deleted one at a time: every copy is one of a set, and the
- * moderator keeps one of them, so which ones go is a call per picture. The
- * ticket stays open until the moderator closes it from the row's actions.
+ * Pictures are deleted one at a time: which ones go is a call per picture -
+ * of a set of copies, one stays. The ticket stays open until the moderator
+ * closes it from the row's actions.
  */
-export function DuplicateImagesPanel() {
+export function ReportedImagesPanel({
+  reported,
+  reportedTitle,
+  hint,
+}: ReportedImagesPanelProps) {
   const record = useRecordContext<QueueTicket>();
   const { data: tickets } = useListContext();
   // One request for the whole page, shared with the Reports column.
@@ -96,11 +117,11 @@ export function DuplicateImagesPanel() {
     <ImagesContext barcode={barcode} flavor={record.flavor}>
       <Box sx={{ py: 1 }}>
         <Typography variant="body2" color="text.secondary">
-          Delete the extra copies, keep one, then close the ticket.
+          {hint}
         </Typography>
         <PinnedImagesGrid
-          pinned={reportedDuplicates(record, flags)}
-          pinnedTitle="Reported as duplicates"
+          pinned={reported(record, flags)}
+          pinnedTitle={reportedTitle}
           othersTitle="The product's other pictures"
         >
           {(imgid) => (

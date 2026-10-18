@@ -35,18 +35,20 @@ export default function PinnedImagesGrid({
     const { images, hasData } = useImages();
 
     const others = (filter: (imgid: string) => boolean) => (
-        <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap" sx={{ py: 1 }}>
-            <Images
-                filter={(image) => filter(image.imgid)}
-                error={
-                    <Typography variant="body2" color="text.secondary">
-                        {errorText}
-                    </Typography>
-                }
-            >
-                {(image) => children(image.imgid)}
-            </Images>
-        </Stack>
+        <Box sx={{ maxHeight: 400, overflow: 'auto' }}>
+            <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap" sx={{ py: 1 }}>
+                <Images
+                    filter={(image) => filter(image.imgid)}
+                    error={
+                        <Typography variant="body2" color="text.secondary">
+                            {errorText}
+                        </Typography>
+                    }
+                >
+                    {(image) => children(image.imgid)}
+                </Images>
+            </Stack>
+        </Box>
     );
 
     // Until the pictures are known, a crop cannot be told apart from a
@@ -84,9 +86,7 @@ export default function PinnedImagesGrid({
                     <Typography variant="body2" sx={{ mt: 1, fontWeight: 600 }}>
                         {othersTitle}
                     </Typography>
-                    <Box sx={{ maxHeight: 400, overflow: 'auto' }}>
-                        {others((imgid) => !top.includes(imgid))}
-                    </Box>
+                    {others((imgid) => !top.includes(imgid))}
                 </>
             )}
         </>

@@ -1,6 +1,6 @@
 import { Admin, CustomRoutes, Layout, Menu, Resource, usePermissions } from "react-admin";
 import type { LayoutProps } from "react-admin";
-import { Route } from "react-router-dom";
+import { Navigate, Route } from "react-router-dom";
 import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
 import HistoryIcon from "@mui/icons-material/History";
 import { dataProvider } from "./admin/dataProvider";
@@ -9,7 +9,6 @@ import AdminAppBar from "./admin/AdminAppBar";
 import { TicketList } from "./admin/tickets/TicketList";
 import { TicketShow } from "./admin/tickets/TicketShow";
 import { ReasonTicketList, reasonPath } from "./admin/tickets/ReasonTicketList";
-import { InappropriateTicketList } from "./admin/tickets/InappropriateTicketList";
 import { FixQueueList } from "./admin/tickets/FixQueueList";
 import { fixQueues, fixQueuePath } from "./admin/tickets/fixQueues";
 import { reasonQueues } from "./admin/tickets/choices";
@@ -110,8 +109,9 @@ export default function AdminApp() {
                 key={reason.value}
                 path={reasonPath(reason.value)}
                 element={
+                  // Its page became a fix queue: old links land there.
                   reason.value === "inappropriate" ? (
-                    <InappropriateTicketList />
+                    <Navigate to="/fix/inappropriate-images" replace />
                   ) : (
                     <ReasonTicketList reason={reason.value} />
                   )
