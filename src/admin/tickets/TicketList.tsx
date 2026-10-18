@@ -15,6 +15,7 @@ import {
   flavorChoices,
   reasonChoices,
 } from "./choices";
+import { EmptyTickets } from "./EmptyTickets";
 import { TicketFlagsField } from "./TicketFlagsField";
 import { TicketThumbnailField } from "./TicketThumbnailField";
 import { TicketActionsField } from "./TicketActionsField";
@@ -38,7 +39,9 @@ export const ticketFilters = [
 
 // Shared with the per-reason pages (see ReasonTicketList), so that a column
 // added here shows up on all of them.
-export function TicketDatagrid() {
+export function TicketDatagrid({
+  description = "This page lists reports about products, images and searches.",
+}: { description?: string }) {
   return (
     // Rows are inert: the whole row used to be a link to the edit form,
     // which made every stray click on a thumbnail or a barcode navigate
@@ -50,6 +53,7 @@ export function TicketDatagrid() {
       // leaving the list. Search tickets have no product to expand.
       expand={<ProductImagesManagerPanel />}
       isRowExpandable={(record) => Boolean(record.barcode)}
+      empty={<EmptyTickets description={description} />}
     >
       {/* Not backed by a single source, and only ever filled for image
           tickets - hence an explicit label and no sorting. */}
@@ -79,6 +83,7 @@ export function TicketList() {
   return (
     <List
       filters={ticketFilters}
+      empty={false}
       // The default toolbar's Export button downloads the current page as
       // CSV; nothing here is meant to leave the moderation tool.
       exporter={false}
