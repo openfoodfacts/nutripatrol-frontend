@@ -4,13 +4,19 @@
  */
 function isValidReturnUrl(url: string | null): boolean {
   if (!url) return false;
-  
-  if (url.startsWith('/')) return true; // Relative paths are always safe
+
+  // Allow only root-relative paths, but reject scheme-relative URLs like "//evil.com"
+  if (url.startsWith('/')) return !url.startsWith('//');
 
   try {
     const targetUrl = new URL(url);
     const currentUrl = new URL(window.location.origin);
-    
+
+    // Restrict to web-safe protocols for navigation
+    if (targetUrl.protocol !== 'http:' && targetUrl.protocol !== 'https:') {
+      return false;
+    }
+
     // Extract root domain (e.g., "openfoodfacts.net" from "nutripatrol.openfoodfacts.net")
     const parts = currentUrl.hostname.split('.');
     const rootDomain = parts.length > 1 ? parts.slice(-2).join('.') : currentUrl.hostname;
