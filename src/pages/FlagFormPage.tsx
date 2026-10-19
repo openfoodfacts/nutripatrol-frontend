@@ -9,6 +9,8 @@ import {
     InputLabel,
     FormControl,
     Link,
+    ToggleButton,
+    ToggleButtonGroup,
 } from '@mui/material';
 import axios from 'axios';
 import { useState } from 'react';
@@ -23,7 +25,7 @@ import {
     projectSpec,
     SCORE_DISPUTE_NOTICE,
 } from '../const/flagsConst';
-import type { IssueType } from '../const/flagsConst';
+import type { IssueSubType, IssueType } from '../const/flagsConst';
 import { trackEvent } from '../analytics';
 import ThanksPage from './ThanksPage';
 import DuplicateImagesPicker from '../components/DuplicateImagesPicker';
@@ -36,6 +38,16 @@ import { Image, ImagesContext } from '../components/productImages';
 interface FlagFormProps {
     type_: IssueType;
 }
+
+/**
+ * The first question of an image report: what should happen to the picture.
+ * Only narrows the reasons offered - it is not sent.
+ */
+const IMAGE_ACTIONS: { value: IssueSubType; label: string }[] = [
+    { value: 'delete', label: 'Delete' },
+    { value: 'move', label: 'Move' },
+    { value: 'other', label: 'Other' },
+];
 
 interface FormData {
     barcode: string;
@@ -70,6 +82,15 @@ export default function FlagForm({ type_ }: FlagFormProps) {
     const [error, setError] = useState<string | null>(null)
     const [sending, setSending] = useState(false)
 
+    // Reasons without a sub type ("Something else") fall under "other".
+    const subTypeOf = (value: string | undefined) =>
+        value ? reasonSpec(value, type_)?.subType ?? 'other' : null;
+    const prefilledReason = reasonsForType(type_).some((r) => r.value === reason) ? reason! : "";
+
+    const [subType, setSubType] = useState<IssueSubType | null>(
+        type_ === 'image' ? subTypeOf(prefilledReason || undefined) : null,
+    );
+
     const [formData, setFormData] = useState<FormData>({
         barcode: barcode || "", // only for product and image
         type: type_, // product, image, search
@@ -78,7 +99,7 @@ export default function FlagForm({ type_ }: FlagFormProps) {
         flavor: flavor || "", // not in the form
         // Prefilled when the link that brought the person here already knows
         // what they are reporting - Open Food Facts has a button per problem.
-        reason: reasonSpec(reason)?.types.includes(type_) ? reason! : "",
+        reason: prefilledReason,
         comment: comment || "",
         correct_flavor: "",
         // The reported picture is a duplicate by the report's own account.
@@ -95,7 +116,21 @@ export default function FlagForm({ type_ }: FlagFormProps) {
         )
     }
 
-    const spec = reasonSpec(formData.reason);
+    const spec = reasonSpec(formData.reason, type_);
+
+    const offeredReasons = reasonsForType(type_).filter(
+        (r) => type_ !== 'image' || (r.subType ?? 'other') === subType,
+    );
+
+    const handleSubTypeChange = (_: unknown, value: IssueSubType | null) => {
+        if (value === null) return;
+        setSubType(value);
+        // A reason from the other group would be submitted without being shown.
+        setFormData((prevData) => ({
+            ...prevData,
+            reason: subTypeOf(prevData.reason) === value ? prevData.reason : "",
+        }));
+    };
 
     const handleChange = (e: any) => {
         const { name, value } = e.target;
@@ -211,6 +246,27 @@ export default function FlagForm({ type_ }: FlagFormProps) {
                     margin="normal"
                     required
                 />
+                {type_ === 'image' && (
+                    <FormControl fullWidth margin="normal">
+                        <Typography variant="body1" sx={{ mb: 1 }}>
+                            What should happen to this picture?
+                        </Typography>
+                        <ToggleButtonGroup
+                            value={subType}
+                            exclusive
+                            onChange={handleSubTypeChange}
+                            aria-label="What should happen to this picture?"
+                            fullWidth
+                        >
+                            {IMAGE_ACTIONS.map((action) => (
+                                <ToggleButton key={action.value} value={action.value}>
+                                    {action.label}
+                                </ToggleButton>
+                            ))}
+                        </ToggleButtonGroup>
+                    </FormControl>
+                )}
+                {(type_ !== 'image' || subType !== null) && (
                 <FormControl fullWidth margin="normal">
                     <InputLabel id="reason">Reason *</InputLabel>
                     <Select
@@ -222,7 +278,7 @@ export default function FlagForm({ type_ }: FlagFormProps) {
                         fullWidth
                         required
                     >
-                        {reasonsForType(type_).map((reason) => (
+                        {offeredReasons.map((reason) => (
                             <MenuItem key={reason.value} value={reason.value}>
                                 {reason.label}
                             </MenuItem>
@@ -230,6 +286,7 @@ export default function FlagForm({ type_ }: FlagFormProps) {
                         }
                     </Select>
                 </FormControl>
+                )}
 
                 {/* The advice each reason needs, next to the question it
                 answers, instead of one list of everything shown at once. */}

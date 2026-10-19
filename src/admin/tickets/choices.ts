@@ -38,7 +38,11 @@ export const flavorChoices = [
 //
 // All of them, including the bot-only ones: a moderator filters by what is in
 // the queue, and Robotoff's flags are most of it.
-export const reasonChoices = REASONS.map(({ value, label }) => ({
+//
+// Deduplicated by value: `other` is declared once per type.
+export const reasonChoices = REASONS.filter(
+  (r, index) => REASONS.findIndex((other) => other.value === r.value) === index,
+).map(({ value, label }) => ({
   id: value,
   name: label,
 }));
