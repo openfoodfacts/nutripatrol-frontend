@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.3.0](https://github.com/openfoodfacts/nutripatrol-frontend/compare/v1.2.1...v1.3.0) (2026-10-19)
+
+
+### Features
+
+* Add tools to moderate images ([#321](https://github.com/openfoodfacts/nutripatrol-frontend/issues/321)) ([001bbc1](https://github.com/openfoodfacts/nutripatrol-frontend/commit/001bbc1567640db7beb1c6ad9039735d6da7fd67))
+* suggest the right project for a "not a product" flag ([#316](https://github.com/openfoodfacts/nutripatrol-frontend/issues/316)) ([434d8af](https://github.com/openfoodfacts/nutripatrol-frontend/commit/434d8af8fb6329fcdf04722d0e05d5fb20894df2))
+
+
+### Bug Fixes
+
+* explain empty moderation queues ([#322](https://github.com/openfoodfacts/nutripatrol-frontend/issues/322)) ([0d6b828](https://github.com/openfoodfacts/nutripatrol-frontend/commit/0d6b828d0e186dfabdb62b4319d0a31366894d44))
+* use Open Food Facts colors for the theme ([#314](https://github.com/openfoodfacts/nutripatrol-frontend/issues/314)) ([25f8dd8](https://github.com/openfoodfacts/nutripatrol-frontend/commit/25f8dd8840deff2aa45f6665db0bd179ddb4d32f))
+
 ## [1.2.1](https://github.com/openfoodfacts/nutripatrol-frontend/compare/v1.2.0...v1.2.1) (2026-10-07)
 
 
