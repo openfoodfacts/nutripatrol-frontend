@@ -53,6 +53,15 @@ function AdminMenu() {
   );
 }
 
+/** The image fix queue that replaced a reason's page, if any. */
+function imageQueueOf(reason: string) {
+  return fixQueues.find(
+    (queue) =>
+      queue.filter.type === "image" &&
+      (queue.filter.reason as string[] | undefined)?.join() === reason,
+  );
+}
+
 function AdminLayout(props: LayoutProps) {
 
   return <Layout {...props} menu={AdminMenu} appBar={AdminAppBar} />;
@@ -110,8 +119,8 @@ export default function AdminApp() {
                 path={reasonPath(reason.value)}
                 element={
                   // Its page became a fix queue: old links land there.
-                  reason.value === "inappropriate" ? (
-                    <Navigate to="/fix/inappropriate-images" replace />
+                  imageQueueOf(reason.value) ? (
+                    <Navigate to={fixQueuePath(imageQueueOf(reason.value)!)} replace />
                   ) : (
                     <ReasonTicketList reason={reason.value} />
                   )

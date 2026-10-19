@@ -1,5 +1,8 @@
 import type { ComponentType, ReactElement } from "react";
 import CollectionsIcon from "@mui/icons-material/Collections";
+import CopyrightIcon from "@mui/icons-material/Copyright";
+import FaceIcon from "@mui/icons-material/Face";
+import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
 import DriveFileMoveIcon from "@mui/icons-material/DriveFileMove";
 import ReportIcon from "@mui/icons-material/Report";
 import type { Flag } from "../dataProvider";
@@ -100,6 +103,61 @@ function targetProject(flags: Flag[], flavor: string) {
   return projectSpec(best);
 }
 
+/**
+ * A queue of reported pictures that should go: the reported one gets a
+ * delete button, and the product's other pictures can be deleted from the
+ * row's expandable section.
+ */
+function imageDeletionQueue({
+  reasons,
+  hint,
+  ...queue
+}: Pick<FixQueue, "key" | "menuLabel" | "icon" | "title"> & {
+  reasons: string[];
+  /** What the moderator is expected to do, above the pictures. */
+  hint: string;
+}): FixQueue {
+  return {
+    ...queue,
+    // A product flagged for these reasons has no picture to show or delete,
+    // and is dealt with from the main ticket list.
+    filter: { reason: reasons, type: "image" },
+    emptyText: "No pictures to review.",
+    thumbnail: true,
+    // A selected image ("front_fr") names a crop rather than a file: the
+    // upload it was cut from is in the row's expandable section.
+    noFixText: "Delete it from the pictures below",
+    fix: (ticket) => {
+      const imgid = uploadedImageId(ticket.image_id);
+      if (!ticket.barcode || imgid === null) return null;
+      const barcode = ticket.barcode;
+      return {
+        key: "delete-image",
+        label: "Delete image",
+        confirm: `Move image ${imgid} of ${barcode} to the Open Food Facts trash?`,
+        run: () => deleteProductImage(barcode, imgid, ticket.flavor),
+        destructive: true,
+      };
+    },
+    // For when the pictures were deleted from the expandable section.
+    extraActions: [
+      ({ ticket }) => (
+        <FixButton
+          ticket={ticket}
+          action={{ key: "close-fixed", label: "Close (fixed)" }}
+        />
+      ),
+    ],
+    expand: (
+      <ReportedImagesPanel
+        reported={reportedImages}
+        reportedTitle="Reported picture"
+        hint={hint}
+      />
+    ),
+  };
+}
+
 export const fixQueues: FixQueue[] = [
   {
     key: "not-a-product",
@@ -160,46 +218,38 @@ export const fixQueues: FixQueue[] = [
       />
     ),
   },
-  {
+  imageDeletionQueue({
     key: "inappropriate-images",
     menuLabel: "Inappropriate images",
     icon: <ReportIcon />,
     title: "Inappropriate images",
-    // A product flagged as inappropriate has no picture to show or delete,
-    // and is dealt with from the main ticket list.
-    filter: { reason: ["inappropriate"], type: "image" },
-    emptyText: "No pictures to review.",
-    thumbnail: true,
-    // A selected image ("front_fr") names a crop rather than a file: the
-    // upload it was cut from is in the row's expandable section.
-    noFixText: "Delete it from the pictures below",
-    fix: (ticket) => {
-      const imgid = uploadedImageId(ticket.image_id);
-      if (!ticket.barcode || imgid === null) return null;
-      const barcode = ticket.barcode;
-      return {
-        key: "delete-image",
-        label: "Delete image",
-        confirm: `Move image ${imgid} of ${barcode} to the Open Food Facts trash?`,
-        run: () => deleteProductImage(barcode, imgid, ticket.flavor),
-        destructive: true,
-      };
-    },
-    // For when the pictures were deleted from the expandable section.
-    extraActions: [
-      ({ ticket }) => (
-        <FixButton
-          ticket={ticket}
-          action={{ key: "close-fixed", label: "Close (fixed)" }}
-        />
-      ),
-    ],
-    expand: (
-      <ReportedImagesPanel
-        reported={reportedImages}
-        reportedTitle="Reported picture"
-        hint="Delete the reported picture, and any other one that does not belong, then close the ticket."
-      />
-    ),
-  },
+    reasons: ["inappropriate"],
+    hint: "Delete the reported picture, and any other one that does not belong, then close the ticket.",
+  }),
+  imageDeletionQueue({
+    key: "copyright-images",
+    menuLabel: "Copyright images",
+    icon: <CopyrightIcon />,
+    title: "Copyrighted images",
+    reasons: ["copyright"],
+    hint: "Check the source the reporter links to in their comment. If the picture is proprietary, delete it, then close the ticket.",
+  }),
+  imageDeletionQueue({
+    key: "personal-info-images",
+    menuLabel: "Personal information",
+    icon: <PrivacyTipIcon />,
+    title: "Images showing personal information",
+    reasons: ["includes_personal_infos"],
+    hint: "Delete every picture showing personal information - a receipt, a face, an address - then close the ticket.",
+  }),
+  imageDeletionQueue({
+    key: "people-images",
+    menuLabel: "People in images",
+    icon: <FaceIcon />,
+    title: "People in images",
+    // Robotoff's own flags: a face detected, not a person's report, so
+    // most are a hand holding the pack and need no deletion.
+    reasons: ["human"],
+    hint: "Robotoff detected a person. A hand holding the product is fine; delete pictures where someone can be recognised, then close the ticket.",
+  }),
 ];
