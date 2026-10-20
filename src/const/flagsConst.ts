@@ -16,13 +16,16 @@
  */
 
 export type IssueType = "product" | "image" | "search";
+export type IssueSubType = "delete" | "move" | "other";
 
 export interface ReasonSpec {
   /** Must match the backend ReasonType. */
   value: string;
   label: string;
   /** Which forms offer it. The API accepts any reason for any type. */
-  types: IssueType[];
+  type: IssueType;
+  /** The issue sub type helping to group issue par action (only for images for now) */
+  subType?: IssueSubType;
   /** Shown once the reason is picked. */
   hint?: string;
   /**
@@ -43,53 +46,53 @@ export const REASONS: ReasonSpec[] = [
   {
     value: "wrong_data",
     label: "Incorrect information",
-    types: ["product"],
+    type: "product",
     queue: true,
     hint: "Tell us in your comment which field is wrong and what the packaging says instead.",
   },
   {
     value: "missing_data",
     label: "Missing information",
-    types: ["product"],
+    type: "product",
   },
   {
     value: "wrong_barcode",
     label: "Wrong barcode",
-    types: ["product"],
+    type: "product",
     queue: true,
     hint: "Give the barcode printed on the pack in your comment. If you can, upload a photo of the pack showing it before reporting — it is what lets a moderator act without asking you.",
   },
   {
     value: "not_a_product",
     label: "Not a product of this project",
-    types: ["product"],
+    type: "product",
   },
   {
     value: "duplicate_product",
     label: "Duplicate of another product",
-    types: ["product"],
+    type: "product",
   },
   {
     value: "discontinued",
     label: "No longer sold",
-    types: ["product"],
+    type: "product",
   },
   {
     value: "spam_or_vandalism",
     label: "Spam or vandalism",
-    types: ["product"],
+    type: "product",
     queue: true,
   },
   {
     value: "legal_takedown",
     label: "Trademark or legal takedown",
-    types: ["product"],
+    type: "product",
     hint: "For a rights holder asking for a product page to be removed.",
   },
   {
     value: "product_complaint",
     label: "A problem with the product itself",
-    types: ["product"],
+    type: "product",
     queue: true,
     outOfScope: {
       message:
@@ -98,85 +101,97 @@ export const REASONS: ReasonSpec[] = [
       linkLabel: "Ask on the forums",
     },
   },
+  {
+    value: "other",
+    label: "Something else",
+    type: "product",
+  },
 
   /* ------------------------------------------------------------------ image */
   {
     value: "inappropriate",
     label: "Inappropriate",
-    types: ["image"],
+    type: "image",
+    subType: "delete",
     queue: true,
   },
   {
     value: "copyright",
     label: "Copyright (proprietary image)",
-    types: ["image"],
+    type: "image",
+    subType: "delete",
     queue: true,
     hint: "Add a link to where the image was originally published in your comment — it is what makes the claim actionable.",
   },
   {
     value: "includes_personal_infos",
     label: "Shows personal information",
-    types: ["image"],
+    type: "image",
+    subType: "delete",
     queue: true,
     hint: "Please do not repeat the personal information here — just tell us where in the picture it is.",
   },
   {
     value: "wrong_product",
     label: "Shows a different product",
-    types: ["image"],
+    type: "image",
+    subType: "move",
     queue: true,
     hint: "The photo itself is fine — it is just filed under the wrong barcode. Tell us in your comment which product it shows.",
   },
   {
     value: "duplicate",
     label: "Duplicate image",
-    types: ["image"],
+    type: "image",
+    subType: "delete",
   },
   {
     value: "outdated",
     label: "Outdated packaging",
-    types: ["image"],
+    type: "image",
+    subType: "other",
+  },
+  {
+    value: "other",
+    label: "Something else",
+    type: "image",
   },
 
-  /* ------------------------------------------------------- product or image */
-  {
-    value: "delete_request",
-    label: "I added this by mistake",
-    types: ["product", "image"],
-    queue: true,
-  },
 
   /* ----------------------------------------------------------------- search */
   {
     value: "no_results",
     label: "No results",
-    types: ["search"],
+    type: "search",
   },
   {
     value: "wrong_results",
     label: "Irrelevant results",
-    types: ["search"],
+    type: "search",
   },
 
-  /* ----------------------------------------------------------------- shared */
   {
     value: "other",
     label: "Something else",
-    types: ["product", "image", "search"],
+    type: "search",
   },
 
   /* --------------------------------------------------------------- bot-only */
-  { value: "human", label: "Person in the picture", types: [], botOnly: true },
-  { value: "beauty", label: "Cosmetic product", types: [], botOnly: true },
+  { value: "human", label: "Person in the picture", type: 'image', subType: 'delete', botOnly: true },
+  { value: "beauty", label: "Cosmetic product", type: 'image', subType: 'move', botOnly: true },
 ];
 
 /** The reasons the form offers for a given type of report. */
 export function reasonsForType(type: IssueType): ReasonSpec[] {
-  return REASONS.filter((r) => !r.botOnly && r.types.includes(type));
+  return REASONS.filter((r) => !r.botOnly && r.type === type);
 }
 
-export function reasonSpec(value: string | null | undefined): ReasonSpec | undefined {
-  return value ? REASONS.find((r) => r.value === value) : undefined;
+/**
+ * The spec of a reason. Some values (`other`) exist for several types, so pass
+ * the type when it is known to get the matching hint and sub type.
+ */
+export function reasonSpec(value: string | null | undefined, type?: IssueType): ReasonSpec | undefined {
+  return value ? REASONS.find((r) => r.value === value && (!type || r.type === type)) : undefined;
 }
 
 /**
