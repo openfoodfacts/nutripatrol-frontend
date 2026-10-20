@@ -135,6 +135,7 @@ function imageDeletionQueue({
         key: "delete-image",
         label: "Delete image",
         confirm: `Move image ${imgid} of ${barcode} to the Open Food Facts trash?`,
+        confirmImages: [String(imgid)],
         run: () => deleteProductImage(barcode, imgid, ticket.flavor),
         destructive: true,
       };

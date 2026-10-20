@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Link, Stack, Typography } from "@mui/material";
+import { Box, Button, DialogContentText, Link, Stack, Typography } from "@mui/material";
 import BoltIcon from "@mui/icons-material/Bolt";
 import CloseIcon from "@mui/icons-material/Close";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
@@ -22,6 +22,7 @@ import { productUrl } from "./flavorUrls";
 import type { SuggestedAction } from "./flagActions";
 import type { FixQueue, QueueTicket } from "./fixQueues";
 import { ProductImagesPanel } from "./ProductImagesPanel";
+import { Image, ImagesContext } from "../../components/productImages";
 import { EmptyTickets } from "./EmptyTickets";
 import { TicketFlagsField } from "./TicketFlagsField";
 import { TicketThumbnailField } from "./TicketThumbnailField";
@@ -116,7 +117,28 @@ export function FixButton({
       <Confirm
         isOpen={confirming}
         title={action.label}
-        content={`${action.confirm} The ticket will be closed as fixed.`}
+        content={
+          <>
+            {ticket.barcode && action.confirmImages?.length ? (
+              <ImagesContext barcode={ticket.barcode} flavor={ticket.flavor}>
+                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 2 }}>
+                  {action.confirmImages.map((imgid) => (
+                    <Image
+                      key={imgid}
+                      imgid={imgid}
+                      width={200}
+                      fit="contain"
+                      zoomable={false}
+                    />
+                  ))}
+                </Box>
+              </ImagesContext>
+            ) : null}
+            <DialogContentText>
+              {action.confirm} The ticket will be closed as fixed.
+            </DialogContentText>
+          </>
+        }
         onConfirm={run}
         onClose={() => setConfirming(false)}
       />
