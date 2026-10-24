@@ -40,7 +40,11 @@ interface ProductImagesManagerProps {
  * Reports often point at one picture when the problem is several: the same
  * photo uploaded three times, or a whole set taken on the wrong product.
  */
-export function ProductImagesManager({ barcode, flavor }: ProductImagesManagerProps) {
+export function ProductImagesManager(props: ProductImagesManagerProps) {
+  return <ProductImagesManagerContent key={`${props.flavor}:${props.barcode}`} {...props} />;
+}
+
+function ProductImagesManagerContent({ barcode, flavor }: ProductImagesManagerProps) {
   const notify = useNotify();
   const queryClient = useQueryClient();
   const [selected, setSelected] = useState<string[]>([]);
