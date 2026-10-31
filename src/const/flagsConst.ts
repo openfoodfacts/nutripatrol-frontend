@@ -125,7 +125,7 @@ export const REASONS: ReasonSpec[] = [
     label: "Shows a different product",
     types: ["image"],
     queue: true,
-    hint: "The photo itself is fine — it is just filed under the wrong barcode. Tell us in your comment which product it shows.",
+    hint: "The photo itself is fine — it is just filed under the wrong barcode. Enter the correct product barcode below if you know it, or describe the product in your comment.",
   },
   {
     value: "duplicate",
