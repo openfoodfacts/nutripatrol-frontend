@@ -4,6 +4,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import NotInterestedIcon from "@mui/icons-material/NotInterested";
 import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
 import CheckIcon from "@mui/icons-material/Check";
+import CommentIcon from "@mui/icons-material/Comment";
 import {
   useRecordContext,
   useUpdate,
@@ -11,6 +12,7 @@ import {
   type FieldProps,
   usePermissions,
 } from "react-admin";
+import { CloseWithCommentDialog } from "./CloseWithCommentDialog";
 import { productEditUrl } from "./flavorUrls";
 
 interface Ticket {
@@ -33,6 +35,7 @@ export function TicketActionsField(_props: Omit<FieldProps, "source">) {
   const notify = useNotify();
   const [update, { isPending }] = useUpdate();
   const { permissions } = usePermissions();
+  const [commenting, setCommenting] = React.useState(false);
   if (!record) return null;
 
   const updateStatus = (newStatus: "closed-no-issue" | "closed-fixed" | "open") =>
@@ -90,6 +93,21 @@ export function TicketActionsField(_props: Omit<FieldProps, "source">) {
         >
           I fixed it!
         </Button>
+        <Button
+          size="small"
+          variant="outlined"
+          color="inherit"
+          startIcon={<CommentIcon />}
+          disabled={isPending}
+          onClick={() => setCommenting(true)}
+        >
+          Close with comment
+        </Button>
+        <CloseWithCommentDialog
+          ticketId={record.id}
+          open={commenting}
+          onClose={() => setCommenting(false)}
+        />
       </React.Fragment> : <Button
         size="small"
         variant="outlined"

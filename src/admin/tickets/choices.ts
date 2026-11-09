@@ -14,6 +14,21 @@ export const statusChoices = [
   { id: "closed-fixed", name: "Fixed" },
 ];
 
+// What a moderator action did (nutripatrol's ActionType): the status it set
+// on the ticket, or one of the actions that leave the status alone.
+export const actionTypeChoices = [
+  ...statusChoices,
+  { id: "comment", name: "Comment" },
+];
+
+/** The label of an action type, or the raw value for one this UI predates. */
+export function actionTypeLabel(actionType: string): string {
+  return (
+    actionTypeChoices.find((choice) => choice.id === actionType)?.name ??
+    actionType
+  );
+}
+
 export const typeChoices = [
   { id: "product", name: "Product" },
   { id: "image", name: "Image" },

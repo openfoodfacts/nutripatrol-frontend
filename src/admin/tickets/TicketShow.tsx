@@ -1,5 +1,7 @@
+import { useState } from "react";
 import {
   Box,
+  Button,
   Card,
   CardContent,
   Chip,
@@ -7,20 +9,28 @@ import {
   Link,
   Skeleton,
   Stack,
+  TextField as MuiTextField,
   Typography,
 } from "@mui/material";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   DateField,
   SelectField,
   Show,
   TextField,
   useDataProvider,
+  useNotify,
+  usePermissions,
   useRecordContext,
 } from "react-admin";
 import type { Identifier } from "react-admin";
 import type { NutriPatrolDataProvider } from "../dataProvider";
-import { flavorChoices, statusChoices, typeChoices } from "./choices";
+import {
+  actionTypeLabel,
+  flavorChoices,
+  statusChoices,
+  typeChoices,
+} from "./choices";
 import { FlagSummary } from "./FlagSummary";
 import { useFlagsByTicketIds } from "./flags";
 import { productUrl, userUrl } from "./flavorUrls";
@@ -158,10 +168,63 @@ function TicketProductImages() {
   );
 }
 
+/**
+ * Where a moderator writes a comment. Reporters read comments too, which the
+ * field says, so that nothing meant for moderators only ends up there.
+ */
+function AddCommentForm({ ticketId }: { ticketId: Identifier }) {
+  const dataProvider = useDataProvider<NutriPatrolDataProvider>();
+  const queryClient = useQueryClient();
+  const notify = useNotify();
+  const [text, setText] = useState("");
+  const { mutate, isPending } = useMutation({
+    mutationFn: () => dataProvider.addTicketComment(ticketId, text.trim()),
+    onSuccess: () => {
+      setText("");
+      // The history lists the new `comment` action, and the ticket its count.
+      queryClient.invalidateQueries({ queryKey: ["tickets"] });
+    },
+    onError: (error) => notify((error as Error).message, { type: "error" }),
+  });
+
+  return (
+    <Stack
+      component="form"
+      spacing={1}
+      onSubmit={(event: React.FormEvent) => {
+        event.preventDefault();
+        if (text.trim()) mutate();
+      }}
+    >
+      <MuiTextField
+        label="Add a comment"
+        helperText="Visible to the people who reported this ticket."
+        value={text}
+        onChange={(event) => setText(event.target.value)}
+        multiline
+        minRows={2}
+        inputProps={{ maxLength: 2000 }}
+        fullWidth
+      />
+      <Box>
+        <Button
+          type="submit"
+          variant="contained"
+          size="small"
+          disabled={isPending || !text.trim()}
+        >
+          Comment
+        </Button>
+      </Box>
+    </Stack>
+  );
+}
+
 /** What moderators have done about it, most recent first. */
 function TicketHistory() {
   const record = useRecordContext<Ticket>();
   const dataProvider = useDataProvider<NutriPatrolDataProvider>();
+  const { permissions } = usePermissions();
   const { data, isPending, isError } = useQuery({
     queryKey: ["tickets", record?.id, "actions"],
     queryFn: () => dataProvider.getTicketActions(record!.id),
@@ -181,9 +244,6 @@ function TicketHistory() {
   }
 
   const actions = data?.actions ?? [];
-  const statusLabel = (actionType: string) =>
-    statusChoices.find((choice) => choice.id === actionType)?.name ??
-    actionType;
 
   return (
     <Section title="Moderation history" count={data?.total ?? actions.length}>
@@ -194,31 +254,44 @@ function TicketHistory() {
       ) : (
         <Stack spacing={1} divider={<Divider flexItem />}>
           {actions.map((action) => (
-            <Stack
-              key={action.id}
-              direction="row"
-              spacing={1}
-              alignItems="baseline"
-              flexWrap="wrap"
-              useFlexGap
-            >
-              {/* action_type holds the status the action set on the ticket,
-                  so it shares the ticket status labels. */}
-              <Chip size="small" label={statusLabel(action.action_type)} />
-              <Link
-                href={userUrl(record.flavor, action.user_id)}
-                target="_blank"
-                rel="noopener"
-                variant="body2"
+            <Stack key={action.id} spacing={0.5}>
+              <Stack
+                direction="row"
+                spacing={1}
+                alignItems="baseline"
+                flexWrap="wrap"
+                useFlexGap
               >
-                {action.user_id}
-              </Link>
-              <Typography variant="caption" color="text.secondary">
-                {new Date(action.created_at).toLocaleString()}
-              </Typography>
+                {/* The status the action set on the ticket, or `comment`. */}
+                <Chip
+                  size="small"
+                  label={actionTypeLabel(action.action_type)}
+                />
+                <Link
+                  href={userUrl(record.flavor, action.user_id)}
+                  target="_blank"
+                  rel="noopener"
+                  variant="body2"
+                >
+                  {action.user_id}
+                </Link>
+                <Typography variant="caption" color="text.secondary">
+                  {new Date(action.created_at).toLocaleString()}
+                </Typography>
+              </Stack>
+              {action.comment && (
+                <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>
+                  {action.comment.text}
+                </Typography>
+              )}
             </Stack>
           ))}
         </Stack>
+      )}
+      {permissions === "moderator" && (
+        <Box mt={2}>
+          <AddCommentForm ticketId={record.id} />
+        </Box>
       )}
     </Section>
   );

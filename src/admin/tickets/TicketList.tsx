@@ -19,6 +19,7 @@ import { EmptyTickets } from "./EmptyTickets";
 import { TicketFlagsField } from "./TicketFlagsField";
 import { TicketThumbnailField } from "./TicketThumbnailField";
 import { TicketActionsField } from "./TicketActionsField";
+import { TicketCommentCountField } from "./TicketCommentCountField";
 import { ProductImagesManagerPanel } from "./ProductImagesManager";
 
 // `reason` is a flag field, not a ticket one: the API filters tickets on the
@@ -72,6 +73,11 @@ export function TicketDatagrid({
       {/* Who reported it and what they wrote - not a ticket field but its
           flags', fetched a page at a time. See TicketFlagsField. */}
       <TicketFlagsField source="flags" label="Reports" sortable={false} />
+      <TicketCommentCountField
+        source="comment_count"
+        label="Comments"
+        sortable={false}
+      />
       {/* The way to the full ticket, now that the row itself is inert. */}
       <ShowButton label="Details" />
       <TicketActionsField label="Actions" sortable={false} />

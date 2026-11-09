@@ -53,12 +53,31 @@ function notImplemented(method: string): never {
   throw new HttpError(`${method} is not supported by the nutripatrol API`, 501);
 }
 
+/** A comment a moderator wrote on a ticket. */
+export interface TicketComment {
+  id: number;
+  ticket_id: number;
+  /** The `comment` action the comment was recorded with. */
+  moderator_action_id: number;
+  user_id: string;
+  text: string;
+  created_at: string;
+}
+
+/** The two statuses a ticket can be closed with, with or without a comment. */
+export type ClosedStatus = "closed-no-issue" | "closed-fixed";
+
 export interface ModeratorAction {
   id: number;
+  /**
+   * The ticket status the action set, or `comment` - see actionTypeChoices.
+   */
   action_type: string;
   user_id: string;
   ticket_id: number;
   created_at: string;
+  /** The comment, on a `comment` action. */
+  comment?: TicketComment | null;
 }
 
 /**
@@ -123,6 +142,8 @@ interface Ticket {
   image_id: string | null;
   flavor: string;
   created_at: string;
+  /** How many comments moderators wrote on the ticket. */
+  comment_count?: number;
 }
 
 // Built as a concretely-typed provider rather than the generic RecordType
@@ -245,10 +266,47 @@ export const dataProvider = {
     );
     return { actions: data.actions ?? [], total: data.total ?? 0 };
   },
+
+  /** One ticket's comments, oldest first. */
+  getTicketComments: async (ticketId: Identifier) => {
+    const data = await request<{ comments?: TicketComment[]; total?: number }>(
+      axios.get(`${apiUrl}/tickets/${ticketId}/comments`, {
+        withCredentials: true,
+      }),
+    );
+    return { comments: data.comments ?? [], total: data.total ?? 0 };
+  },
+
+  /** Comment on a ticket, without changing its status. */
+  addTicketComment: async (ticketId: Identifier, text: string) =>
+    request<TicketComment>(
+      axios.post(
+        `${apiUrl}/tickets/${ticketId}/comments`,
+        { text },
+        { withCredentials: true },
+      ),
+    ),
+
+  /**
+   * Comment on a ticket and close it. The API records the comment, then the
+   * close, as two actions.
+   */
+  closeTicketWithComment: async (
+    ticketId: Identifier,
+    status: ClosedStatus,
+    comment: string,
+  ) =>
+    request<Ticket>(
+      axios.post(
+        `${apiUrl}/tickets/${ticketId}/close_with_comment`,
+        { status, comment },
+        { withCredentials: true },
+      ),
+    ),
 } as NutriPatrolDataProvider;
 
 /**
- * The react-admin provider plus the two ticket-scoped reads above. Components
+ * The react-admin provider plus the ticket-scoped methods above. Components
  * ask for it explicitly - `useDataProvider<NutriPatrolDataProvider>()` - since
  * the plain DataProvider type knows nothing of them.
  */
@@ -259,4 +317,16 @@ export type NutriPatrolDataProvider = DataProvider & {
     page?: number,
     perPage?: number,
   ) => Promise<{ actions: ModeratorAction[]; total: number }>;
+  getTicketComments: (
+    ticketId: Identifier,
+  ) => Promise<{ comments: TicketComment[]; total: number }>;
+  addTicketComment: (
+    ticketId: Identifier,
+    text: string,
+  ) => Promise<TicketComment>;
+  closeTicketWithComment: (
+    ticketId: Identifier,
+    status: ClosedStatus,
+    comment: string,
+  ) => Promise<Ticket>;
 };
