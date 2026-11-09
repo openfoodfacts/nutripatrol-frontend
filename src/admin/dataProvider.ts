@@ -64,6 +64,30 @@ export interface TicketComment {
   created_at: string;
 }
 
+/** The colors a label can take: the MUI palette, which Chip accepts as is. */
+export type LabelColor =
+  | "default"
+  | "primary"
+  | "secondary"
+  | "error"
+  | "info"
+  | "success"
+  | "warning";
+
+/**
+ * A label moderators put on tickets. Shared between tickets, and never
+ * deleted - only renamed or recolored.
+ */
+export interface Label {
+  id: number;
+  name: string;
+  color: LabelColor | null;
+  created_by: string;
+  created_at: string;
+  /** How many tickets have it - only GET /labels says. */
+  ticket_count?: number;
+}
+
 /** The two statuses a ticket can be closed with, with or without a comment. */
 export type ClosedStatus = "closed-no-issue" | "closed-fixed";
 
@@ -78,6 +102,8 @@ export interface ModeratorAction {
   created_at: string;
   /** The comment, on a `comment` action. */
   comment?: TicketComment | null;
+  /** The label, on `label_added` and `label_removed` actions. */
+  label?: Label | null;
 }
 
 /**
@@ -144,6 +170,19 @@ interface Ticket {
   created_at: string;
   /** How many comments moderators wrote on the ticket. */
   comment_count?: number;
+  /** Its labels - always empty for a non-moderator. */
+  labels?: Label[];
+}
+
+/**
+ * Every label. There are few of them, and GET /labels takes no parameter, so
+ * the label resource below pages, sorts and searches them here.
+ */
+async function getAllLabels(): Promise<Label[]> {
+  const data = await request<{ labels?: Label[] }>(
+    axios.get(`${apiUrl}/labels`, { withCredentials: true }),
+  );
+  return data.labels ?? [];
 }
 
 // Built as a concretely-typed provider rather than the generic RecordType
@@ -152,8 +191,9 @@ interface Ticket {
 // on a provider this small. Correctness is still enforced by the Ticket /
 // ModeratorAction typing used throughout (request<Ticket>, etc.) above.
 //
-// "tickets" is the only writable resource; "moderator_actions" is
-// list-only, since the API has no per-action route.
+// "tickets" and "labels" are the writable resources; "moderator_actions" is
+// list-only, since the API has no per-action route. Labels cannot be
+// deleted, so their `delete` stays unsupported like everything else's.
 export const dataProvider = {
   getList: async (resource, params) => {
     if (resource === "moderator_actions") {
@@ -171,6 +211,15 @@ export const dataProvider = {
       );
       return { data: data.actions, total: data.total };
     }
+    if (resource === "labels") {
+      // AutocompleteArrayInput searches with `q`.
+      const { filter } = params as { filter?: { q?: string } };
+      const q = filter?.q?.trim().toLowerCase();
+      const labels = (await getAllLabels()).filter(
+        (label) => !q || label.name.toLowerCase().includes(q),
+      );
+      return { data: labels, total: labels.length };
+    }
     if (resource !== "tickets") notImplemented("getList");
     const query = buildListQuery(params as any);
     const data = await request<{ tickets: Ticket[]; total: number }>(
@@ -180,6 +229,13 @@ export const dataProvider = {
   },
 
   getOne: async (resource, params) => {
+    if (resource === "labels") {
+      const label = (await getAllLabels()).find(
+        (label) => String(label.id) === String(params.id),
+      );
+      if (!label) throw new HttpError("Label not found", 404);
+      return { data: label };
+    }
     if (resource !== "tickets") notImplemented("getOne");
     const data = await request<Ticket>(
       axios.get(`${apiUrl}/tickets/${params.id}`, { withCredentials: true }),
@@ -188,6 +244,11 @@ export const dataProvider = {
   },
 
   getMany: async (resource, params) => {
+    if (resource === "labels") {
+      const ids = new Set(params.ids.map(String));
+      const labels = await getAllLabels();
+      return { data: labels.filter((label) => ids.has(String(label.id))) };
+    }
     if (resource !== "tickets") notImplemented("getMany");
     const data = await Promise.all(
       params.ids.map((id) =>
@@ -200,6 +261,17 @@ export const dataProvider = {
   },
 
   update: async (resource, params) => {
+    if (resource === "labels") {
+      const { name, color } = params.data as Partial<Label>;
+      const data = await request<Label>(
+        axios.patch(
+          `${apiUrl}/labels/${params.id}`,
+          { name, color },
+          { withCredentials: true },
+        ),
+      );
+      return { data };
+    }
     if (resource !== "tickets") notImplemented("update");
     // Status is the only field the API allows updating - forward only that,
     // regardless of what else is present in params.data.
@@ -215,7 +287,23 @@ export const dataProvider = {
   },
 
   getManyReference: async () => notImplemented("getManyReference"),
-  create: async () => notImplemented("create"),
+
+  /**
+   * Only labels are created through react-admin. Creating a name that exists
+   * already, whatever its case, returns that label.
+   */
+  create: async (resource, params) => {
+    if (resource !== "labels") notImplemented("create");
+    const { name, color } = params.data as Partial<Label>;
+    const data = await request<Label>(
+      axios.post(
+        `${apiUrl}/labels`,
+        { name, color },
+        { withCredentials: true },
+      ),
+    );
+    return { data };
+  },
   delete: async () => notImplemented("delete"),
   deleteMany: async () => notImplemented("deleteMany"),
   updateMany: async () => notImplemented("updateMany"),
@@ -266,6 +354,22 @@ export const dataProvider = {
     );
     return { actions: data.actions ?? [], total: data.total ?? 0 };
   },
+
+  /** Put a label on a ticket. Returns the ticket, with its labels. */
+  addTicketLabel: async (ticketId: Identifier, labelId: Identifier) =>
+    request<Ticket>(
+      axios.post(`${apiUrl}/tickets/${ticketId}/labels/${labelId}`, null, {
+        withCredentials: true,
+      }),
+    ),
+
+  /** Take a label off a ticket. Returns the ticket, with its labels. */
+  removeTicketLabel: async (ticketId: Identifier, labelId: Identifier) =>
+    request<Ticket>(
+      axios.delete(`${apiUrl}/tickets/${ticketId}/labels/${labelId}`, {
+        withCredentials: true,
+      }),
+    ),
 
   /** One ticket's comments, oldest first. */
   getTicketComments: async (ticketId: Identifier) => {
@@ -328,5 +432,10 @@ export type NutriPatrolDataProvider = DataProvider & {
     ticketId: Identifier,
     status: ClosedStatus,
     comment: string,
+  ) => Promise<Ticket>;
+  addTicketLabel: (ticketId: Identifier, labelId: Identifier) => Promise<Ticket>;
+  removeTicketLabel: (
+    ticketId: Identifier,
+    labelId: Identifier,
   ) => Promise<Ticket>;
 };
