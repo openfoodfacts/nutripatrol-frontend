@@ -8,6 +8,7 @@ import {
   TextInput,
   SelectInput,
   SelectArrayInput,
+  usePermissions,
 } from "react-admin";
 import {
   statusChoices,
@@ -43,6 +44,7 @@ export const ticketFilters = [
 export function TicketDatagrid({
   description = "This page lists reports about products, images and searches.",
 }: { description?: string }) {
+  const { permissions } = usePermissions();
   return (
     // Rows are inert: the whole row used to be a link to the edit form,
     // which made every stray click on a thumbnail or a barcode navigate
@@ -80,7 +82,11 @@ export function TicketDatagrid({
       />
       {/* The way to the full ticket, now that the row itself is inert. */}
       <ShowButton label="Details" />
-      <TicketActionsField label="Actions" sortable={false} />
+      {/* Contributors cannot moderate, so the column would only hold an
+          edit link. */}
+      {permissions === "moderator" && (
+        <TicketActionsField label="Actions" sortable={false} />
+      )}
     </Datagrid>
   );
 }

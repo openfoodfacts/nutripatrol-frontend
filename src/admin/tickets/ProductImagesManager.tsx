@@ -16,7 +16,12 @@ import {
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import DriveFileMoveIcon from "@mui/icons-material/DriveFileMove";
 import { useQueryClient } from "@tanstack/react-query";
-import { Confirm, useNotify, useRecordContext } from "react-admin";
+import {
+  Confirm,
+  useNotify,
+  usePermissions,
+  useRecordContext,
+} from "react-admin";
 import {
   Image,
   Images,
@@ -39,6 +44,9 @@ interface ProductImagesManagerProps {
  *
  * Reports often point at one picture when the problem is several: the same
  * photo uploaded three times, or a whole set taken on the wrong product.
+ *
+ * Only moderators can select, delete or move pictures; contributors just see
+ * them.
  */
 export function ProductImagesManager({ barcode, flavor }: ProductImagesManagerProps) {
   const notify = useNotify();
@@ -47,6 +55,8 @@ export function ProductImagesManager({ barcode, flavor }: ProductImagesManagerPr
   const [running, setRunning] = useState(false);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
   const [moving, setMoving] = useState(false);
+  const { permissions } = usePermissions();
+  const moderator = permissions === "moderator";
 
   const imgids = selected.map(Number);
   const pictures =
@@ -89,8 +99,9 @@ export function ProductImagesManager({ barcode, flavor }: ProductImagesManagerPr
       flavor={flavor}
       selected={selected}
       onSelectionChange={setSelected}
+      selectable={moderator}
     >
-      <Stack
+      {moderator && <Stack
         direction="row"
         spacing={1}
         alignItems="center"
@@ -128,7 +139,7 @@ export function ProductImagesManager({ barcode, flavor }: ProductImagesManagerPr
         >
           Delete
         </Button>
-      </Stack>
+      </Stack>}
 
       <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap" sx={{ maxHeight: 300, overflow: 'auto' }}>
         <Images>

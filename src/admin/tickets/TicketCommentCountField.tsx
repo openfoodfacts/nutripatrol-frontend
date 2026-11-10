@@ -1,19 +1,37 @@
-import { Stack, Tooltip, Typography } from "@mui/material";
+import { useState } from "react";
+import { Button, Tooltip } from "@mui/material";
 import CommentIcon from "@mui/icons-material/CommentOutlined";
 import { useRecordContext, type FieldProps } from "react-admin";
+import { TicketCommentsDialog } from "./TicketCommentsDialog";
 
-/** How many comments a ticket has, left empty when it has none. */
+/**
+ * How many comments a ticket has, left empty when it has none. Clicking it
+ * opens the comments.
+ */
 export function TicketCommentCountField(_props: FieldProps) {
-  const record = useRecordContext<{ comment_count?: number }>();
+  const record = useRecordContext<{ id: number; comment_count?: number }>();
+  const [open, setOpen] = useState(false);
   const count = record?.comment_count ?? 0;
-  if (count === 0) return null;
+  if (!record || count === 0) return null;
 
   return (
-    <Tooltip title={count === 1 ? "1 comment" : `${count} comments`}>
-      <Stack direction="row" spacing={0.5} alignItems="center">
-        <CommentIcon fontSize="small" color="action" />
-        <Typography variant="body2">{count}</Typography>
-      </Stack>
-    </Tooltip>
+    <>
+      <Tooltip title={count === 1 ? "Show 1 comment" : `Show ${count} comments`}>
+        <Button
+          size="small"
+          color="inherit"
+          startIcon={<CommentIcon fontSize="small" color="action" />}
+          onClick={() => setOpen(true)}
+          sx={{ minWidth: 0 }}
+        >
+          {count}
+        </Button>
+      </Tooltip>
+      <TicketCommentsDialog
+        ticketId={record.id}
+        open={open}
+        onClose={() => setOpen(false)}
+      />
+    </>
   );
 }

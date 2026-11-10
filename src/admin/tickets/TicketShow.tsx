@@ -220,7 +220,11 @@ function AddCommentForm({ ticketId }: { ticketId: Identifier }) {
   );
 }
 
-/** What moderators have done about it, most recent first. */
+/**
+ * What moderators have done about it, oldest first, so it reads like a
+ * conversation ending at the comment box. The API returns it most recent
+ * first, hence the reverse.
+ */
 function TicketHistory() {
   const record = useRecordContext<Ticket>();
   const dataProvider = useDataProvider<NutriPatrolDataProvider>();
@@ -243,7 +247,7 @@ function TicketHistory() {
     );
   }
 
-  const actions = data?.actions ?? [];
+  const actions = [...(data?.actions ?? [])].reverse();
 
   return (
     <Section title="Moderation history" count={data?.total ?? actions.length}>
