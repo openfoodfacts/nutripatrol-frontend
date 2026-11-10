@@ -1,5 +1,5 @@
 import { List } from "react-admin";
-import { TicketDatagrid, ticketFilters } from "./TicketList";
+import { TicketDatagrid, moderatorTicketFilters } from "./TicketList";
 import { reasonChoices } from "./choices";
 
 /** Path of the page listing the tickets flagged for `reason`.
@@ -13,7 +13,10 @@ export function reasonPath(reason: string) {
 
 // The reason is pinned by the page, so the reason input would only let a
 // moderator contradict it - every other filter stays available.
-const filters = ticketFilters.filter((filter) => filter.key !== "reason");
+// These pages are for moderators only, so they get the label filter too.
+const filters = moderatorTicketFilters.filter(
+  (filter) => filter.key !== "reason",
+);
 
 /**
  * The ticket list with `reason` pinned to one value.
