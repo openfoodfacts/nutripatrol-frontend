@@ -9,6 +9,8 @@ import {
     InputLabel,
     FormControl,
     Link,
+    ToggleButton,
+    ToggleButtonGroup,
 } from '@mui/material';
 import axios from 'axios';
 import { useState } from 'react';
@@ -23,9 +25,11 @@ import {
     projectSpec,
     SCORE_DISPUTE_NOTICE,
 } from '../const/flagsConst';
-import type { IssueType } from '../const/flagsConst';
+import type { IssueSubType, IssueType } from '../const/flagsConst';
 import { trackEvent } from '../analytics';
 import ThanksPage from './ThanksPage';
+import DuplicateImagesPicker from '../components/DuplicateImagesPicker';
+import { uploadedImageId } from '../admin/tickets/offImages';
 import { Image, ImagesContext } from '../components/productImages';
 
 /**
@@ -34,6 +38,16 @@ import { Image, ImagesContext } from '../components/productImages';
 interface FlagFormProps {
     type_: IssueType;
 }
+
+/**
+ * The first question of an image report: what should happen to the picture.
+ * Only narrows the reasons offered - it is not sent.
+ */
+const IMAGE_ACTIONS: { value: IssueSubType; label: string }[] = [
+    { value: 'delete', label: 'Delete' },
+    { value: 'move', label: 'Move' },
+    { value: 'other', label: 'Other' },
+];
 
 interface FormData {
     barcode: string;
@@ -45,6 +59,8 @@ interface FormData {
     comment: string;
     /** For `not_a_product`: the project the product belongs on, if known. */
     correct_flavor: string;
+    /** For `duplicate`: the uploaded pictures marked as copies. */
+    duplicate_image_ids: number[];
 }
 
 export default function FlagForm({ type_ }: FlagFormProps) {
@@ -66,6 +82,15 @@ export default function FlagForm({ type_ }: FlagFormProps) {
     const [error, setError] = useState<string | null>(null)
     const [sending, setSending] = useState(false)
 
+    // Reasons without a sub type ("Something else") fall under "other".
+    const subTypeOf = (value: string | undefined) =>
+        value ? reasonSpec(value, type_)?.subType ?? 'other' : null;
+    const prefilledReason = reasonsForType(type_).some((r) => r.value === reason) ? reason! : "";
+
+    const [subType, setSubType] = useState<IssueSubType | null>(
+        type_ === 'image' ? subTypeOf(prefilledReason || undefined) : null,
+    );
+
     const [formData, setFormData] = useState<FormData>({
         barcode: barcode || "", // only for product and image
         type: type_, // product, image, search
@@ -74,9 +99,11 @@ export default function FlagForm({ type_ }: FlagFormProps) {
         flavor: flavor || "", // not in the form
         // Prefilled when the link that brought the person here already knows
         // what they are reporting - Open Food Facts has a button per problem.
-        reason: reasonSpec(reason)?.types.includes(type_) ? reason! : "",
+        reason: prefilledReason,
         comment: comment || "",
         correct_flavor: "",
+        // The reported picture is a duplicate by the report's own account.
+        duplicate_image_ids: uploadedImageId(image_id) === null ? [] : [uploadedImageId(image_id)!],
     });
 
     if (source === undefined || !sources.includes(source) || flavor === undefined || !flavors.includes(flavor)) {
@@ -89,7 +116,21 @@ export default function FlagForm({ type_ }: FlagFormProps) {
         )
     }
 
-    const spec = reasonSpec(formData.reason);
+    const spec = reasonSpec(formData.reason, type_);
+
+    const offeredReasons = reasonsForType(type_).filter(
+        (r) => type_ !== 'image' || (r.subType ?? 'other') === subType,
+    );
+
+    const handleSubTypeChange = (_: unknown, value: IssueSubType | null) => {
+        if (value === null) return;
+        setSubType(value);
+        // A reason from the other group would be submitted without being shown.
+        setFormData((prevData) => ({
+            ...prevData,
+            reason: subTypeOf(prevData.reason) === value ? prevData.reason : "",
+        }));
+    };
 
     const handleChange = (e: any) => {
         const { name, value } = e.target;
@@ -110,7 +151,7 @@ export default function FlagForm({ type_ }: FlagFormProps) {
         e.preventDefault();
         setError(null);
         setSending(true);
-        const { correct_flavor, ...flag } = formData;
+        const { correct_flavor, duplicate_image_ids, ...flag } = formData;
         const url = `${import.meta.env.VITE_API_URL}/flags`;
         const body = {
             ...flag,
@@ -119,15 +160,23 @@ export default function FlagForm({ type_ }: FlagFormProps) {
         // Optional, and only meaningful for the reason that asks it: the
         // API refuses extra_data a reason does not take.
         const correctFlavor = flag.reason === "not_a_product" ? projectSpec(correct_flavor) : undefined;
-        const send = correctFlavor
-            ? axios.post(url, { ...body, extra_data: { correct_flavor } }, { withCredentials: true })
-                // An API that predates `correct_flavor` refuses the whole
-                // report over it. The report matters more than the field, so
-                // it goes again with the answer in the comment, where a
-                // moderator still reads it.
+        const duplicates = flag.reason === "duplicate" && duplicate_image_ids.length > 0
+            ? duplicate_image_ids
+            : undefined;
+        const extra = correctFlavor
+            ? { data: { correct_flavor }, note: `Belongs on ${correctFlavor.label}.` }
+            : duplicates
+                ? { data: { duplicate_image_ids: duplicates }, note: `Duplicate pictures: ${duplicates.join(", ")}.` }
+                : undefined;
+        const send = extra
+            ? axios.post(url, { ...body, extra_data: extra.data }, { withCredentials: true })
+                // An API that predates the field refuses the whole report
+                // over it. The report matters more than the field, so it goes
+                // again with the answer in the comment, where a moderator
+                // still reads it.
                 .catch((err) => {
                     if (err?.response?.status !== 422) throw err;
-                    const note = `Belongs on ${correctFlavor.label}.`;
+                    const { note } = extra;
                     return axios.post(url, {
                         ...body,
                         comment: body.comment ? `${body.comment}\n\n${note}` : note,
@@ -197,6 +246,27 @@ export default function FlagForm({ type_ }: FlagFormProps) {
                     margin="normal"
                     required
                 />
+                {type_ === 'image' && (
+                    <FormControl fullWidth margin="normal">
+                        <Typography variant="body1" sx={{ mb: 1 }}>
+                            What should happen to this picture?
+                        </Typography>
+                        <ToggleButtonGroup
+                            value={subType}
+                            exclusive
+                            onChange={handleSubTypeChange}
+                            aria-label="What should happen to this picture?"
+                            fullWidth
+                        >
+                            {IMAGE_ACTIONS.map((action) => (
+                                <ToggleButton key={action.value} value={action.value}>
+                                    {action.label}
+                                </ToggleButton>
+                            ))}
+                        </ToggleButtonGroup>
+                    </FormControl>
+                )}
+                {(type_ !== 'image' || subType !== null) && (
                 <FormControl fullWidth margin="normal">
                     <InputLabel id="reason">Reason *</InputLabel>
                     <Select
@@ -208,7 +278,7 @@ export default function FlagForm({ type_ }: FlagFormProps) {
                         fullWidth
                         required
                     >
-                        {reasonsForType(type_).map((reason) => (
+                        {offeredReasons.map((reason) => (
                             <MenuItem key={reason.value} value={reason.value}>
                                 {reason.label}
                             </MenuItem>
@@ -216,6 +286,7 @@ export default function FlagForm({ type_ }: FlagFormProps) {
                         }
                     </Select>
                 </FormControl>
+                )}
 
                 {/* The advice each reason needs, next to the question it
                 answers, instead of one list of everything shown at once. */}
@@ -248,6 +319,19 @@ export default function FlagForm({ type_ }: FlagFormProps) {
                                 ))}
                         </Select>
                     </FormControl>
+                )}
+                {/* Optional: names every copy, so a moderator can delete
+                the extras in one go. */}
+                {formData.reason === "duplicate" && formData.barcode && (
+                    <DuplicateImagesPicker
+                        barcode={formData.barcode}
+                        flavor={flavor}
+                        flaggedImageId={formData.image_id}
+                        selected={formData.duplicate_image_ids}
+                        onChange={(duplicate_image_ids) =>
+                            setFormData((prevData) => ({ ...prevData, duplicate_image_ids }))
+                        }
+                    />
                 )}
                 {spec?.outOfScope && (
                     <Alert severity="warning" sx={{ width: '100%', mt: 1 }}>

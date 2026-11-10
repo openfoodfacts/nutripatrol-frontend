@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Link, Stack, Typography } from "@mui/material";
+import { Box, Button, DialogContentText, Link, Stack, Typography } from "@mui/material";
 import BoltIcon from "@mui/icons-material/Bolt";
 import CloseIcon from "@mui/icons-material/Close";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
@@ -22,8 +22,10 @@ import { productUrl } from "./flavorUrls";
 import type { SuggestedAction } from "./flagActions";
 import type { FixQueue, QueueTicket } from "./fixQueues";
 import { ProductImagesPanel } from "./ProductImagesPanel";
+import { Image, ImagesContext } from "../../components/productImages";
 import { EmptyTickets } from "./EmptyTickets";
 import { TicketFlagsField } from "./TicketFlagsField";
+import { TicketThumbnailField } from "./TicketThumbnailField";
 import { useDropTicket } from "./useDropTicket";
 
 function BarcodeField(_props: FieldProps) {
@@ -49,7 +51,7 @@ function BarcodeField(_props: FieldProps) {
  * accepted, either by the fix's own API call or by a status update after it.
  * Either way the row then leaves the list, without reloading the others.
  */
-function FixButton({
+export function FixButton({
   ticket,
   action,
 }: {
@@ -71,7 +73,7 @@ function FixButton({
     setConfirming(false);
     setRunning(true);
     try {
-      await action.run();
+      await action.run?.();
     } catch (error) {
       notify((error as Error).message, { type: "error" });
       setRunning(false);
@@ -107,7 +109,7 @@ function FixButton({
         color={action.destructive ? "error" : "primary"}
         startIcon={<BoltIcon />}
         disabled={running}
-        onClick={() => setConfirming(true)}
+        onClick={() => (action.confirm ? setConfirming(true) : run())}
         sx={{ whiteSpace: "nowrap" }}
       >
         {action.label}
@@ -115,7 +117,28 @@ function FixButton({
       <Confirm
         isOpen={confirming}
         title={action.label}
-        content={`${action.confirm} The ticket will be closed as fixed.`}
+        content={
+          <>
+            {ticket.barcode && action.confirmImages?.length ? (
+              <ImagesContext barcode={ticket.barcode} flavor={ticket.flavor}>
+                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 2 }}>
+                  {action.confirmImages.map((imgid) => (
+                    <Image
+                      key={imgid}
+                      imgid={imgid}
+                      width={200}
+                      fit="contain"
+                      zoomable={false}
+                    />
+                  ))}
+                </Box>
+              </ImagesContext>
+            ) : null}
+            <DialogContentText>
+              {action.confirm} The ticket will be closed as fixed.
+            </DialogContentText>
+          </>
+        }
         onConfirm={run}
         onClose={() => setConfirming(false)}
       />
@@ -218,12 +241,15 @@ export function FixQueueList({ queue }: { queue: FixQueue }) {
         bulkActionButtons={false}
         // The product's pictures, under the row: what it actually is decides
         // most of these reports.
-        expand={<ProductImagesPanel />}
+        expand={queue.expand ?? <ProductImagesPanel />}
         isRowExpandable={(ticket) => Boolean(ticket.barcode)}
         empty={
           <EmptyTickets description={`This page lists open reports marked “${queue.title}”. ${queue.emptyText}`} />
         }
       >
+        {queue.thumbnail && (
+          <TicketThumbnailField source="url" label="Image" sortable={false} />
+        )}
         <BarcodeField source="barcode" />
         <SelectField source="flavor" label="On" choices={flavorChoices} />
         <DateField
