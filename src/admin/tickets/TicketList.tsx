@@ -8,6 +8,7 @@ import {
   TextInput,
   SelectInput,
   SelectArrayInput,
+  usePermissions,
 } from "react-admin";
 import {
   statusChoices,
@@ -19,6 +20,7 @@ import { EmptyTickets } from "./EmptyTickets";
 import { TicketFlagsField } from "./TicketFlagsField";
 import { TicketThumbnailField } from "./TicketThumbnailField";
 import { TicketActionsField } from "./TicketActionsField";
+import { TicketCommentCountField } from "./TicketCommentCountField";
 import { ProductImagesManagerPanel } from "./ProductImagesManager";
 
 // `reason` is a flag field, not a ticket one: the API filters tickets on the
@@ -42,6 +44,7 @@ export const ticketFilters = [
 export function TicketDatagrid({
   description = "This page lists reports about products, images and searches.",
 }: { description?: string }) {
+  const { permissions } = usePermissions();
   return (
     // Rows are inert: the whole row used to be a link to the edit form,
     // which made every stray click on a thumbnail or a barcode navigate
@@ -72,9 +75,18 @@ export function TicketDatagrid({
       {/* Who reported it and what they wrote - not a ticket field but its
           flags', fetched a page at a time. See TicketFlagsField. */}
       <TicketFlagsField source="flags" label="Reports" sortable={false} />
+      <TicketCommentCountField
+        source="comment_count"
+        label="Comments"
+        sortable={false}
+      />
       {/* The way to the full ticket, now that the row itself is inert. */}
       <ShowButton label="Details" />
-      <TicketActionsField label="Actions" sortable={false} />
+      {/* Contributors cannot moderate, so the column would only hold an
+          edit link. */}
+      {permissions === "moderator" && (
+        <TicketActionsField label="Actions" sortable={false} />
+      )}
     </Datagrid>
   );
 }
