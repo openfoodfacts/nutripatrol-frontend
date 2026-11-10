@@ -12,7 +12,7 @@ import {
   type FieldProps,
   usePermissions,
 } from "react-admin";
-import { CloseWithCommentDialog } from "./CloseWithCommentDialog";
+import { CommentDialog } from "./CommentDialog";
 import { productEditUrl } from "./flavorUrls";
 
 interface Ticket {
@@ -101,9 +101,9 @@ export function TicketActionsField(_props: Omit<FieldProps, "source">) {
           disabled={isPending}
           onClick={() => setCommenting(true)}
         >
-          Close with comment
+          Comment
         </Button>
-        <CloseWithCommentDialog
+        <CommentDialog
           ticketId={record.id}
           open={commenting}
           onClose={() => setCommenting(false)}

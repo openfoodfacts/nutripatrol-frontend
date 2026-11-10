@@ -8,6 +8,7 @@ import {
   TextField,
 } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
+import CommentIcon from "@mui/icons-material/Comment";
 import NotInterestedIcon from "@mui/icons-material/NotInterested";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useDataProvider, useNotify } from "react-admin";
@@ -15,13 +16,13 @@ import type { Identifier } from "react-admin";
 import type { ClosedStatus, NutriPatrolDataProvider } from "../dataProvider";
 
 /**
- * Close a ticket with a comment saying why.
+ * Comment on a ticket, and either leave it open or close it.
  *
  * The comment is required: closing without one is what the one-click buttons
- * next to "Close with comment" are for. The API records the comment, then the
- * close, as two actions in the ticket history.
+ * next to "Comment" are for. Closing with a comment makes the API record the
+ * comment, then the close, as two actions in the ticket history.
  */
-export function CloseWithCommentDialog({
+export function CommentDialog({
   ticketId,
   open,
   onClose,
@@ -35,11 +36,17 @@ export function CloseWithCommentDialog({
   const notify = useNotify();
   const [comment, setComment] = useState("");
 
+  // `null` comments without changing the ticket's status.
   const { mutate, isPending } = useMutation({
-    mutationFn: (status: ClosedStatus) =>
-      dataProvider.closeTicketWithComment(ticketId, status, comment.trim()),
-    onSuccess: () => {
-      notify("Ticket closed", { type: "info" });
+    mutationFn: async (status: ClosedStatus | null) => {
+      if (status === null) {
+        await dataProvider.addTicketComment(ticketId, comment.trim());
+      } else {
+        await dataProvider.closeTicketWithComment(ticketId, status, comment.trim());
+      }
+    },
+    onSuccess: (_data, status) => {
+      notify(status === null ? "Comment added" : "Ticket closed", { type: "info" });
       setComment("");
       onClose();
       // The ticket's status and comment count, in every list and on its page,
@@ -53,7 +60,7 @@ export function CloseWithCommentDialog({
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-      <DialogTitle>Close with a comment</DialogTitle>
+      <DialogTitle>Comment on this ticket</DialogTitle>
       <DialogContent>
         <TextField
           autoFocus
@@ -73,13 +80,21 @@ export function CloseWithCommentDialog({
           Cancel
         </Button>
         <Button
+          variant="contained"
+          startIcon={<CommentIcon />}
+          disabled={disabled}
+          onClick={() => mutate(null)}
+        >
+          Comment
+        </Button>
+        <Button
           variant="outlined"
           color="error"
           startIcon={<NotInterestedIcon />}
           disabled={disabled}
           onClick={() => mutate("closed-no-issue")}
         >
-          No problem
+          Close: no problem
         </Button>
         <Button
           variant="outlined"
@@ -88,7 +103,7 @@ export function CloseWithCommentDialog({
           disabled={disabled}
           onClick={() => mutate("closed-fixed")}
         >
-          I fixed it!
+          Close: I fixed it!
         </Button>
       </DialogActions>
     </Dialog>
