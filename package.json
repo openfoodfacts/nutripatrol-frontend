@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "test": "node --test",
     "build": "tsc && vite build",
     "build-staging": "vite build --mode preprod",
     "build-prod": "vite build --mode prod",

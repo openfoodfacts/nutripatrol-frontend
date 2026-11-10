@@ -2,8 +2,10 @@ import type { Flag } from "../dataProvider";
 import {
   deleteProductImages,
   moveTicketProduct,
+  moveProductImages,
   uploadedImageId,
 } from "./offImages";
+import { isProductBarcode } from "../../utils/barcode";
 import { projectSpec } from "../../const/flagsConst";
 
 /**
@@ -77,6 +79,19 @@ export function suggestedActions(flag: Flag): SuggestedAction[] {
           ),
         destructive: true,
         closesTicket: true,
+      });
+      break;
+    }
+
+    case "wrong_product": {
+      const target = flag.extra_data?.correct_barcode;
+      if (flag.type !== "image" || !isProductBarcode(target) || target === barcode || imgids.length === 0) break;
+      actions.push({
+        key: "move-image",
+        label: `Move image to ${target}`,
+        confirm: `Move image ${imgids.join(", ")} from ${barcode} to ${target}? If the destination product does not exist, it will be created without copying the source product's fields.`,
+        run: () => moveProductImages(barcode, imgids, target, flavor),
+        destructive: true,
       });
       break;
     }

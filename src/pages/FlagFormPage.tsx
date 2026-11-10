@@ -26,6 +26,8 @@ import {
 import type { IssueType } from '../const/flagsConst';
 import { trackEvent } from '../analytics';
 import ThanksPage from './ThanksPage';
+import CorrectProductBarcode from '../components/CorrectProductBarcode';
+import { isProductBarcode } from '../utils/barcode';
 import { Image, ImagesContext } from '../components/productImages';
 
 /**
@@ -45,6 +47,7 @@ interface FormData {
     comment: string;
     /** For `not_a_product`: the project the product belongs on, if known. */
     correct_flavor: string;
+    correct_barcode: string;
 }
 
 export default function FlagForm({ type_ }: FlagFormProps) {
@@ -77,6 +80,7 @@ export default function FlagForm({ type_ }: FlagFormProps) {
         reason: reasonSpec(reason)?.types.includes(type_) ? reason! : "",
         comment: comment || "",
         correct_flavor: "",
+        correct_barcode: "",
     });
 
     if (source === undefined || !sources.includes(source) || flavor === undefined || !flavors.includes(flavor)) {
@@ -109,8 +113,13 @@ export default function FlagForm({ type_ }: FlagFormProps) {
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setError(null);
+        const { correct_flavor, correct_barcode, ...flag } = formData;
+        const targetBarcode = flag.reason === "wrong_product" ? correct_barcode.trim() : "";
+        if (targetBarcode && (!isProductBarcode(targetBarcode) || targetBarcode === flag.barcode)) {
+            setError("Enter a different barcode with 4 to 30 digits, or leave it blank.");
+            return;
+        }
         setSending(true);
-        const { correct_flavor, ...flag } = formData;
         const url = `${import.meta.env.VITE_API_URL}/flags`;
         const body = {
             ...flag,
@@ -133,7 +142,9 @@ export default function FlagForm({ type_ }: FlagFormProps) {
                         comment: body.comment ? `${body.comment}\n\n${note}` : note,
                     }, { withCredentials: true });
                 })
-            : axios.post(url, body, { withCredentials: true });
+            : axios.post(url, targetBarcode
+                ? { ...body, extra_data: { correct_barcode: targetBarcode } }
+                : body, { withCredentials: true });
         send
             .then(() => {
                 trackEvent("Flag", "submit_flag", formData.barcode);
@@ -248,6 +259,14 @@ export default function FlagForm({ type_ }: FlagFormProps) {
                                 ))}
                         </Select>
                     </FormControl>
+                )}
+                {formData.reason === "wrong_product" && (
+                    <CorrectProductBarcode
+                        value={formData.correct_barcode}
+                        currentBarcode={formData.barcode}
+                        flavor={formData.flavor}
+                        onChange={(value) => setFormData((previous) => ({ ...previous, correct_barcode: value }))}
+                    />
                 )}
                 {spec?.outOfScope && (
                     <Alert severity="warning" sx={{ width: '100%', mt: 1 }}>
