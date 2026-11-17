@@ -48,7 +48,11 @@ interface ProductImagesManagerProps {
  * Only moderators can select, delete or move pictures; contributors just see
  * them.
  */
-export function ProductImagesManager({ barcode, flavor }: ProductImagesManagerProps) {
+export function ProductImagesManager(props: ProductImagesManagerProps) {
+  return <ProductImagesManagerContent key={`${props.flavor}:${props.barcode}`} {...props} />;
+}
+
+function ProductImagesManagerContent({ barcode, flavor }: ProductImagesManagerProps) {
   const notify = useNotify();
   const queryClient = useQueryClient();
   const [selected, setSelected] = useState<string[]>([]);
