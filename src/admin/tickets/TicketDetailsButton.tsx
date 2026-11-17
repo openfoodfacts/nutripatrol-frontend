@@ -5,31 +5,45 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
   Skeleton,
   Stack,
   Tooltip,
   Typography,
 } from "@mui/material";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import CloseIcon from "@mui/icons-material/Close";
+import EditIcon from "@mui/icons-material/Edit";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { Link } from "react-router-dom";
 import { ShowBase, useCreatePath, useRecordContext } from "react-admin";
 import type { FieldProps } from "react-admin";
+import { productEditUrl, productUrl } from "./flavorUrls";
 import { TicketDetails } from "./TicketShow";
 
 /**
- * Opens the ticket's details on top of the list, so that reading a ticket
- * does not lose the list's page, filters and scroll position. The ticket's
- * own page stays one click away in the dialog's title, for a link to share.
+ * The ways to look closer at a ticket, behind a single "Details" menu shaped
+ * like the Actions one: the ticket itself, and its product on Open Food Facts.
+ *
+ * The ticket opens in a dialog on top of the list, so that reading it does
+ * not lose the list's page, filters and scroll position. Its own page stays
+ * one click away in the dialog's title, for a link to share.
  */
 export function TicketDetailsButton(_props: Omit<FieldProps, "source">) {
   const record = useRecordContext();
   const createPath = useCreatePath();
   const [open, setOpen] = useState(false);
+  const [anchor, setAnchor] = useState<HTMLElement | null>(null);
   if (!record) return null;
 
   const close = () => setOpen(false);
+  const closeMenu = () => setAnchor(null);
+  // Search tickets carry no barcode, so there is no product to open.
+  const barcode: string | null = record.barcode;
   const showPath = createPath({
     resource: "tickets",
     id: record.id,
@@ -40,11 +54,50 @@ export function TicketDetailsButton(_props: Omit<FieldProps, "source">) {
     <>
       <Button
         size="small"
-        startIcon={<VisibilityIcon />}
-        onClick={() => setOpen(true)}
+        variant="outlined"
+        color="inherit"
+        endIcon={<ArrowDropDownIcon />}
+        aria-haspopup="menu"
+        aria-expanded={anchor ? "true" : undefined}
+        onClick={(event) => setAnchor(event.currentTarget)}
       >
         Details
       </Button>
+      <Menu anchorEl={anchor} open={Boolean(anchor)} onClose={closeMenu}>
+        <MenuItem
+          onClick={() => {
+            closeMenu();
+            setOpen(true);
+          }}
+        >
+          <ListItemIcon><VisibilityIcon fontSize="small" /></ListItemIcon>
+          <ListItemText>Ticket</ListItemText>
+        </MenuItem>
+        {/* Anchors rather than handlers, so the product opens in a new tab
+            and the moderator keeps their place in the list. */}
+        <MenuItem
+          component="a"
+          href={barcode ? productUrl(record.flavor, barcode) : undefined}
+          disabled={!barcode}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={closeMenu}
+        >
+          <ListItemIcon><OpenInNewIcon fontSize="small" /></ListItemIcon>
+          <ListItemText>See product</ListItemText>
+        </MenuItem>
+        <MenuItem
+          component="a"
+          href={barcode ? productEditUrl(record.flavor, barcode) : undefined}
+          disabled={!barcode}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={closeMenu}
+        >
+          <ListItemIcon><EditIcon fontSize="small" /></ListItemIcon>
+          <ListItemText>Edit product</ListItemText>
+        </MenuItem>
+      </Menu>
       <Dialog
         open={open}
         onClose={close}
