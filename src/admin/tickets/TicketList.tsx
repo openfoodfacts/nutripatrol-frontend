@@ -1,3 +1,4 @@
+import { Stack } from "@mui/material";
 import {
   List,
   Datagrid,
@@ -8,6 +9,7 @@ import {
   TextInput,
   SelectInput,
   SelectArrayInput,
+  Labeled,
   usePermissions,
 } from "react-admin";
 import {
@@ -39,6 +41,36 @@ export const ticketFilters = [
   />,
 ];
 
+/**
+ * A row's expanded part: the ticket fields that do not earn a column - the
+ * reports need the width more, and the filters already narrow the list by
+ * each of them - then every picture of the product, to delete or move some
+ * of them without leaving the list.
+ */
+function TicketExpandPanel() {
+  return (
+    <Stack spacing={1} sx={{ pt: 1 }}>
+      <Stack direction="row" spacing={4} flexWrap="wrap" useFlexGap>
+        {/* Search tickets have no barcode, and say so. */}
+        <Labeled>
+          <TextField source="barcode" emptyText="-" />
+        </Labeled>
+        <Labeled>
+          <SelectField source="type" choices={typeChoices} />
+        </Labeled>
+        <Labeled>
+          <SelectField source="status" choices={statusChoices} />
+        </Labeled>
+        <Labeled>
+          <SelectField source="flavor" choices={flavorChoices} />
+        </Labeled>
+      </Stack>
+      {/* Renders nothing for search tickets, which have no product. */}
+      <ProductImagesManagerPanel />
+    </Stack>
+  );
+}
+
 // Shared with the per-reason pages (see ReasonTicketList), so that a column
 // added here shows up on all of them.
 export function TicketDatagrid({
@@ -52,19 +84,14 @@ export function TicketDatagrid({
     <Datagrid
       rowClick={false}
       bulkActionButtons={false}
-      // Every picture of the product, to delete or move some of them without
-      // leaving the list. Search tickets have no product to expand.
-      expand={<ProductImagesManagerPanel />}
-      isRowExpandable={(record) => Boolean(record.barcode)}
+      // Every row, search tickets included: the panel holds the ticket's
+      // fields as well as the product's pictures.
+      expand={<TicketExpandPanel />}
       empty={<EmptyTickets description={description} />}
     >
       {/* Not backed by a single source, and only ever filled for image
           tickets - hence an explicit label and no sorting. */}
       <TicketThumbnailField source="url" label="Image" sortable={false} />
-      <TextField source="barcode" />
-      <SelectField source="type" choices={typeChoices} />
-      <SelectField source="status" choices={statusChoices} />
-      <SelectField source="flavor" choices={flavorChoices} />
       {/* Day precision, month in letters: enough to scan a list by age,
           and unambiguous between the d/m and m/d readings of a numeric
           date. The full timestamp stays on the ticket page. */}
