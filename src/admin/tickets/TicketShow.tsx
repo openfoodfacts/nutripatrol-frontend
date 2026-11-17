@@ -302,13 +302,26 @@ function TicketHistory() {
 }
 
 /**
- * Everything about one ticket on one page: what was flagged, every report
- * behind it, and what moderators have done since.
+ * Everything about one ticket: what was flagged, every report behind it, and
+ * what moderators have done since. Expects the ticket in a record context -
+ * the show page's, or the list's details dialog (see TicketDetailsButton).
  *
  * The list can only ever show a summary of each - a ticket gathers the reports
  * of everyone who hit the same product, and long comments do not fit in a
  * table cell. This is where they are read in full.
  */
+export function TicketDetails() {
+  return (
+    <Stack spacing={2} sx={{ p: 2 }}>
+      <TicketSummary />
+      <TicketFlags />
+      <TicketProductImages />
+      <TicketHistory />
+    </Stack>
+  );
+}
+
+/** The ticket's own page, which links to a ticket still point to. */
 export function TicketShow() {
   return (
     <Show
@@ -319,12 +332,7 @@ export function TicketShow() {
       // tickets have no edit page. Moderating happens below, on the record.
       actions={false}
     >
-      <Stack spacing={2} sx={{ p: 2 }}>
-        <TicketSummary />
-        <TicketFlags />
-        <TicketProductImages />
-        <TicketHistory />
-      </Stack>
+      <TicketDetails />
     </Show>
   );
 }

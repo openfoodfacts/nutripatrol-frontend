@@ -5,13 +5,13 @@ import {
   TextField,
   DateField,
   SelectField,
-  ShowButton,
   TextInput,
   SelectInput,
   SelectArrayInput,
   Labeled,
   usePermissions,
 } from "react-admin";
+import { TicketDetailsButton } from "./TicketDetailsButton";
 import {
   statusChoices,
   typeChoices,
@@ -108,7 +108,7 @@ export function TicketDatagrid({
         sortable={false}
       />
       {/* The way to the full ticket, now that the row itself is inert. */}
-      <ShowButton label="Details" />
+      <TicketDetailsButton />
       {/* Contributors cannot moderate, so the column would only hold an
           edit link. */}
       {permissions === "moderator" && (
