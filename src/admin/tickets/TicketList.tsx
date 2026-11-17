@@ -122,6 +122,11 @@ export function TicketList() {
   return (
     <List
       filters={ticketFilters}
+      // Moderators come here to work through what is still pending, newest
+      // first. Both are only defaults: the status filter can be cleared and
+      // any sortable column clicked.
+      filterDefaultValues={{ status: "open" }}
+      sort={{ field: "created_at", order: "DESC" }}
       empty={false}
       // The default toolbar's Export button downloads the current page as
       // CSV; nothing here is meant to leave the moderation tool.
