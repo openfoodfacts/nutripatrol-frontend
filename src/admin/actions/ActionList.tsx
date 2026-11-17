@@ -9,6 +9,7 @@ import {
 } from "react-admin";
 import { actionTypeChoices } from "../tickets/choices";
 import type { ModeratorAction } from "../dataProvider";
+import { LabelChip } from "../tickets/TicketLabelsField";
 
 // GET /moderator_actions/me is scoped to the caller and always ordered
 // created_at desc server-side, and takes no filter or sort parameter - so
@@ -37,6 +38,13 @@ export function ActionList() {
           source="action_type"
           choices={actionTypeChoices}
           sortable={false}
+        />
+        <FunctionField<ModeratorAction>
+          label="Label"
+          sortable={false}
+          render={(action) =>
+            action.label ? <LabelChip label={action.label} /> : null
+          }
         />
         <FunctionField<ModeratorAction>
           label="Comment"

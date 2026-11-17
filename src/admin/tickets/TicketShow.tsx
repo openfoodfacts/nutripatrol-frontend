@@ -36,6 +36,8 @@ import { useFlagsByTicketIds } from "./flags";
 import { productUrl, userUrl } from "./flavorUrls";
 import { ProductImagesManager } from "./ProductImagesManager";
 import { TicketActionsField } from "./TicketActionsField";
+import { LabelChip } from "./TicketLabelsField";
+import { TicketLabelsEditor } from "./TicketLabelsEditor";
 import { TicketThumbnailField } from "./TicketThumbnailField";
 
 interface Ticket {
@@ -74,6 +76,7 @@ function Section({
 /** What the ticket itself says, next to the picture it is about. */
 function TicketSummary() {
   const record = useRecordContext<Ticket>();
+  const { permissions } = usePermissions();
   if (!record) return null;
 
   return (
@@ -107,6 +110,14 @@ function TicketSummary() {
               </Link>
             ) : (
               <TextField source="url" variant="body2" />
+            )}
+
+            {/* Labels are for moderators only: the API sends none to anyone
+                else. */}
+            {permissions === "moderator" && (
+              <Box pt={1} maxWidth={480}>
+                <TicketLabelsEditor />
+              </Box>
             )}
 
             <Box pt={1}>
@@ -271,6 +282,7 @@ function TicketHistory() {
                   size="small"
                   label={actionTypeLabel(action.action_type)}
                 />
+                {action.label && <LabelChip label={action.label} />}
                 <Link
                   href={userUrl(record.flavor, action.user_id)}
                   target="_blank"

@@ -8,6 +8,8 @@ import {
   TextInput,
   SelectInput,
   SelectArrayInput,
+  ReferenceArrayInput,
+  AutocompleteArrayInput,
   usePermissions,
 } from "react-admin";
 import {
@@ -21,6 +23,7 @@ import { TicketFlagsField } from "./TicketFlagsField";
 import { TicketThumbnailField } from "./TicketThumbnailField";
 import { TicketActionsField } from "./TicketActionsField";
 import { TicketCommentCountField } from "./TicketCommentCountField";
+import { TicketLabelsField } from "./TicketLabelsField";
 import { ProductImagesManagerPanel } from "./ProductImagesManager";
 
 // `reason` is a flag field, not a ticket one: the API filters tickets on the
@@ -37,6 +40,16 @@ export const ticketFilters = [
     choices={reasonChoices}
     label="Reason"
   />,
+];
+
+// Labels are for moderators only - GET /labels refuses anyone else - so
+// their filter is only offered to moderators. Tickets with any of the
+// selected labels match.
+export const moderatorTicketFilters = [
+  ...ticketFilters,
+  <ReferenceArrayInput key="label" source="label" reference="labels">
+    <AutocompleteArrayInput label="Labels" optionText="name" />
+  </ReferenceArrayInput>,
 ];
 
 // Shared with the per-reason pages (see ReasonTicketList), so that a column
@@ -80,6 +93,8 @@ export function TicketDatagrid({
         label="Comments"
         sortable={false}
       />
+      {/* Empty for non-moderators: the API sends them no labels. */}
+      <TicketLabelsField source="labels" label="Labels" sortable={false} />
       {/* The way to the full ticket, now that the row itself is inert. */}
       <ShowButton label="Details" />
       {/* Contributors cannot moderate, so the column would only hold an
@@ -92,9 +107,12 @@ export function TicketDatagrid({
 }
 
 export function TicketList() {
+  const { permissions } = usePermissions();
   return (
     <List
-      filters={ticketFilters}
+      filters={
+        permissions === "moderator" ? moderatorTicketFilters : ticketFilters
+      }
       empty={false}
       // The default toolbar's Export button downloads the current page as
       // CSV; nothing here is meant to leave the moderation tool.
