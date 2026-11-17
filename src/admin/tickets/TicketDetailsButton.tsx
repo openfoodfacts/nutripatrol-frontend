@@ -16,13 +16,12 @@ import {
 } from "@mui/material";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import CloseIcon from "@mui/icons-material/Close";
-import EditIcon from "@mui/icons-material/Edit";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { Link } from "react-router-dom";
 import { ShowBase, useCreatePath, useRecordContext } from "react-admin";
 import type { FieldProps } from "react-admin";
-import { productEditUrl, productUrl } from "./flavorUrls";
+import { productUrl } from "./flavorUrls";
 import { TicketDetails } from "./TicketShow";
 
 /**
@@ -73,8 +72,9 @@ export function TicketDetailsButton(_props: Omit<FieldProps, "source">) {
           <ListItemIcon><VisibilityIcon fontSize="small" /></ListItemIcon>
           <ListItemText>Ticket</ListItemText>
         </MenuItem>
-        {/* Anchors rather than handlers, so the product opens in a new tab
-            and the moderator keeps their place in the list. */}
+        {/* An anchor rather than a handler, so the product opens in a new
+            tab and the moderator keeps their place in the list. Editing it
+            stays under Actions. */}
         <MenuItem
           component="a"
           href={barcode ? productUrl(record.flavor, barcode) : undefined}
@@ -85,17 +85,6 @@ export function TicketDetailsButton(_props: Omit<FieldProps, "source">) {
         >
           <ListItemIcon><OpenInNewIcon fontSize="small" /></ListItemIcon>
           <ListItemText>See product</ListItemText>
-        </MenuItem>
-        <MenuItem
-          component="a"
-          href={barcode ? productEditUrl(record.flavor, barcode) : undefined}
-          disabled={!barcode}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={closeMenu}
-        >
-          <ListItemIcon><EditIcon fontSize="small" /></ListItemIcon>
-          <ListItemText>Edit product</ListItemText>
         </MenuItem>
       </Menu>
       <Dialog
