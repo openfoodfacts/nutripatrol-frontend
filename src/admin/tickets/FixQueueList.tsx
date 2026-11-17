@@ -9,13 +9,13 @@ import {
   DateField,
   List,
   SelectField,
-  ShowButton,
   useListContext,
   useNotify,
   useRecordContext,
   useUpdate,
   type FieldProps,
 } from "react-admin";
+import { TicketDetailsButton } from "./TicketDetailsButton";
 import { flavorChoices } from "./choices";
 import { useFlagsByTicketIds } from "./flags";
 import { productUrl } from "./flavorUrls";
@@ -231,7 +231,7 @@ export function FixQueueList({ queue }: { queue: FixQueue }) {
           options={{ day: "numeric", month: "short", year: "numeric" }}
         />
         <TicketFlagsField source="flags" label="Reports" sortable={false} />
-        <ShowButton label="Details" />
+        <TicketDetailsButton />
         <QueueActions queue={queue} label="Actions" />
       </Datagrid>
     </List>
