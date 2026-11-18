@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.3.0](https://github.com/openfoodfacts/nutripatrol-frontend/compare/v1.2.1...v1.3.0) (2026-11-17)
+
+
+### Features
+
+* Add tools to moderate images ([#321](https://github.com/openfoodfacts/nutripatrol-frontend/issues/321)) ([001bbc1](https://github.com/openfoodfacts/nutripatrol-frontend/commit/001bbc1567640db7beb1c6ad9039735d6da7fd67))
+* comment on tickets, and close them with a comment ([#333](https://github.com/openfoodfacts/nutripatrol-frontend/issues/333)) ([c027a53](https://github.com/openfoodfacts/nutripatrol-frontend/commit/c027a530edda4ed0a8367900693d2b41d0ff124f))
+* default the ticket list to open tickets, newest first ([#337](https://github.com/openfoodfacts/nutripatrol-frontend/issues/337)) ([6f6afe4](https://github.com/openfoodfacts/nutripatrol-frontend/commit/6f6afe436829f8d62a1ab47eaae599d45b40923a))
+* move barcode, type, status and flavor into the row's expand panel ([#335](https://github.com/openfoodfacts/nutripatrol-frontend/issues/335)) ([4195b04](https://github.com/openfoodfacts/nutripatrol-frontend/commit/4195b044a9c36dbfcfecc6cae7830b4dd6a4c767))
+* open ticket details in a dialog to avoid disturbing workflow ([#336](https://github.com/openfoodfacts/nutripatrol-frontend/issues/336)) ([c9b11b7](https://github.com/openfoodfacts/nutripatrol-frontend/commit/c9b11b767f0b7396b9c9ce4dcffb3b0522ac3780))
+* suggest the right project for a "not a product" flag ([#316](https://github.com/openfoodfacts/nutripatrol-frontend/issues/316)) ([434d8af](https://github.com/openfoodfacts/nutripatrol-frontend/commit/434d8af8fb6329fcdf04722d0e05d5fb20894df2))
+
+
+### Bug Fixes
+
+* Client-side cross-site scripting ([#292](https://github.com/openfoodfacts/nutripatrol-frontend/issues/292)) ([601f2d2](https://github.com/openfoodfacts/nutripatrol-frontend/commit/601f2d2f9ed490c277c591288cddba27fae9aa3b))
+* explain empty moderation queues ([#322](https://github.com/openfoodfacts/nutripatrol-frontend/issues/322)) ([0d6b828](https://github.com/openfoodfacts/nutripatrol-frontend/commit/0d6b828d0e186dfabdb62b4319d0a31366894d44))
+* reset image actions when the product changes ([#326](https://github.com/openfoodfacts/nutripatrol-frontend/issues/326)) ([1aea9c7](https://github.com/openfoodfacts/nutripatrol-frontend/commit/1aea9c76ef0a207861ca00f156409d1eeeb75b1b))
+* use Open Food Facts colors for the theme ([#314](https://github.com/openfoodfacts/nutripatrol-frontend/issues/314)) ([25f8dd8](https://github.com/openfoodfacts/nutripatrol-frontend/commit/25f8dd8840deff2aa45f6665db0bd179ddb4d32f))
+
 ## [1.2.1](https://github.com/openfoodfacts/nutripatrol-frontend/compare/v1.2.0...v1.2.1) (2026-10-07)
 
 
