@@ -2,7 +2,8 @@ import { Link, Stack, Typography } from "@mui/material";
 import type { Flag } from "../dataProvider";
 import { flagReasonLabel } from "./flags";
 import { FlagActionsField } from "./FlagActionsField";
-import { userUrl } from "./flavorUrls";
+import { isProductBarcode } from "../../utils/barcode";
+import { userUrl, productUrl } from "./flavorUrls";
 import { projectSpec } from "../../const/flagsConst";
 
 /** How many lines of a comment the compact form shows before clamping. */
@@ -62,6 +63,11 @@ export function FlagSummary({
           <Typography variant="caption" fontWeight="medium">
             → belongs on {belongsOn.label}
           </Typography>
+        )}
+        {flag.reason === "wrong_product" && isProductBarcode(flag.extra_data?.correct_barcode) && (
+          <Link href={productUrl(flag.flavor, flag.extra_data.correct_barcode)} target="_blank" rel="noopener" variant="caption">
+            Correct product: {flag.extra_data.correct_barcode}
+          </Link>
         )}
         {!dense && (
           <Typography variant="caption" color="text.secondary">
