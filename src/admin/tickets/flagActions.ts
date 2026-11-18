@@ -18,9 +18,19 @@ export interface SuggestedAction {
   key: string;
   /** Names the values it will use, because that is what is being confirmed. */
   label: string;
-  /** The sentence in the confirmation dialog. */
-  confirm: string;
-  run: () => Promise<void>;
+  /**
+   * The sentence in the confirmation dialog. Without one, the action runs on
+   * click: for those that change nothing on Open Food Facts.
+   */
+  confirm?: string;
+  /**
+   * Pictures of the ticket's product shown in the confirmation dialog, as
+   * upload ids or selected crops: what is about to be deleted, seen rather
+   * than named.
+   */
+  confirmImages?: string[];
+  /** Without it, the action only closes the ticket as fixed. */
+  run?: () => Promise<void>;
   /** Whether it changes Open Food Facts, and so deserves a hard confirm. */
   destructive?: boolean;
   /** Whether `run` closes the ticket itself, through the same API call. */
