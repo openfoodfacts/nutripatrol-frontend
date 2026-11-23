@@ -49,7 +49,7 @@ export interface FixQueue {
   noFixText: string;
   /**
    * Buttons shown after the fix, for when it is not the right answer. Each
-   * deals with refreshing the list itself. Every queue also gets a "Close"
+   * refreshes the tickets itself (see useRefreshTickets). Every queue also gets a "Close"
    * button, after these.
    */
   extraActions?: ComponentType<QueueTicketActionProps>[];

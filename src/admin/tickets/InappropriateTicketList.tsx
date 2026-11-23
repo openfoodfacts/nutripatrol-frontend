@@ -21,7 +21,6 @@ import {
   useListContext,
   useNotify,
   useRecordContext,
-  useRefresh,
   useUpdate,
 } from "react-admin";
 import { EmptyTickets } from "./EmptyTickets";
@@ -29,6 +28,7 @@ import { TicketThumbnailField } from "./TicketThumbnailField";
 import { productUrl } from "./flavorUrls";
 import { deleteProductImage, uploadedImageId } from "./offImages";
 import { statusChoices } from "./choices";
+import { useRefreshTickets } from "./useRefreshTickets";
 
 /** What this page reads off a ticket. */
 interface Ticket {
@@ -52,7 +52,7 @@ interface Ticket {
 function ImageReviewActions() {
   const record = useRecordContext<Ticket>();
   const notify = useNotify();
-  const refresh = useRefresh();
+  const refreshTickets = useRefreshTickets();
   const [update] = useUpdate();
   const [deleting, setDeleting] = useState(false);
   const [confirming, setConfirming] = useState(false);
@@ -78,7 +78,7 @@ function ImageReviewActions() {
           notify(NOTIFICATIONS[status], { type: "info" });
           // The list is filtered by status, so the ticket just acted on
           // usually leaves it - which is the point of a queue.
-          refresh();
+          refreshTickets();
         },
         onError: (error) => notify((error as Error).message, { type: "error" }),
       },

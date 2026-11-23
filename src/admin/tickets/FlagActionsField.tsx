@@ -9,10 +9,11 @@ import {
   Stack,
 } from "@mui/material";
 import BoltIcon from "@mui/icons-material/Bolt";
-import { useNotify, useRefresh, useUpdate, usePermissions } from "react-admin";
+import { useNotify, useUpdate, usePermissions } from "react-admin";
 import type { Flag } from "../dataProvider";
 import { suggestedActions } from "./flagActions";
 import type { SuggestedAction } from "./flagActions";
+import { useRefreshTickets } from "./useRefreshTickets";
 
 /**
  * The actions a report already carries the arguments for.
@@ -29,7 +30,7 @@ import type { SuggestedAction } from "./flagActions";
 export function FlagActionsField({ flag }: { flag: Flag }) {
   const { permissions } = usePermissions();
   const notify = useNotify();
-  const refresh = useRefresh();
+  const refreshTickets = useRefreshTickets();
   const [update] = useUpdate();
   const [pending, setPending] = useState<SuggestedAction | null>(null);
   const [running, setRunning] = useState(false);
@@ -46,7 +47,7 @@ export function FlagActionsField({ flag }: { flag: Flag }) {
       await action.run();
       if (action.closesTicket) {
         notify("Done, and the ticket is closed", { type: "info" });
-        refresh();
+        refreshTickets();
         return;
       }
       update(
@@ -55,7 +56,7 @@ export function FlagActionsField({ flag }: { flag: Flag }) {
         {
           onSuccess: () => {
             notify("Done, and the ticket is closed", { type: "info" });
-            refresh();
+            refreshTickets();
           },
           // The edit went through; only the ticket did not close. Saying so
           // beats a bare failure, which would invite doing it all again.

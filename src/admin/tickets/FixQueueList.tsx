@@ -24,7 +24,7 @@ import type { FixQueue, QueueTicket } from "./fixQueues";
 import { ProductImagesPanel } from "./ProductImagesPanel";
 import { EmptyTickets } from "./EmptyTickets";
 import { TicketFlagsField } from "./TicketFlagsField";
-import { useDropTicket } from "./useDropTicket";
+import { useRefreshTickets } from "./useRefreshTickets";
 
 function BarcodeField(_props: FieldProps) {
   const record = useRecordContext<QueueTicket>();
@@ -47,7 +47,7 @@ function BarcodeField(_props: FieldProps) {
  *
  * Open Food Facts is asked first and the ticket is closed only once it has
  * accepted, either by the fix's own API call or by a status update after it.
- * Either way the row then leaves the list, without reloading the others.
+ * Either way the queue then reloads, and the ticket leaves it.
  */
 function FixButton({
   ticket,
@@ -57,14 +57,14 @@ function FixButton({
   action: SuggestedAction;
 }) {
   const notify = useNotify();
-  const dropTicket = useDropTicket();
+  const refreshTickets = useRefreshTickets();
   const [update] = useUpdate();
   const [confirming, setConfirming] = useState(false);
   const [running, setRunning] = useState(false);
 
   const done = () => {
     notify("Done, and the ticket is closed", { type: "info" });
-    dropTicket(ticket.id);
+    refreshTickets();
   };
 
   const run = async () => {
@@ -129,7 +129,7 @@ function FixButton({
  */
 function CloseButton({ ticket }: { ticket: QueueTicket }) {
   const notify = useNotify();
-  const dropTicket = useDropTicket();
+  const refreshTickets = useRefreshTickets();
   const [update, { isPending }] = useUpdate();
 
   const close = () =>
@@ -139,7 +139,7 @@ function CloseButton({ ticket }: { ticket: QueueTicket }) {
       {
         onSuccess: () => {
           notify("Ticket closed", { type: "info" });
-          dropTicket(ticket.id);
+          refreshTickets();
         },
         onError: (error) => notify((error as Error).message, { type: "error" }),
       },
