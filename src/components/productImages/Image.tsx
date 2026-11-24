@@ -79,6 +79,7 @@ export function Image({
 
   const [open, setOpen] = useState(false);
   const src = productImageUrl(flavor, barcode, imgid, resolution);
+  const originalSrc = productImageUrl(flavor, barcode, imgid, "full");
   // Kept by URL so that showing another picture starts over.
   const [failedSrc, setFailedSrc] = useState<string>();
 
@@ -180,17 +181,18 @@ export function Image({
           <DialogContent>
             <Box sx={{ position: "relative", height: "75vh" }}>
               <LoadingImg
-                key={imgid}
-                src={productImageUrl(flavor, barcode, imgid, "full")}
+                key={originalSrc}
+                src={originalSrc}
                 alt={label}
                 fit="contain"
+                errorFallback={<DefaultNotFound imgid={imgid} />}
               />
             </Box>
             <ImageInfo image={image} isPending={isPending} />
           </DialogContent>
           <DialogActions>
             <Button
-              href={productImageUrl(flavor, barcode, imgid, "full")}
+              href={originalSrc}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -217,16 +219,19 @@ function LoadingImg({
   alt,
   fit,
   onError,
+  errorFallback,
 }: {
   src: string;
   alt: string;
   fit: "cover" | "contain";
   onError?: () => void;
+  errorFallback?: ReactNode;
 }) {
-  const [loaded, setLoaded] = useState(false);
+  const [status, setStatus] = useState<"loading" | "loaded" | "error">("loading");
+  if (status === "error") return errorFallback ?? null;
   return (
     <>
-      {!loaded && (
+      {status === "loading" && (
         <Skeleton
           variant="rectangular"
           sx={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
@@ -237,14 +242,17 @@ function LoadingImg({
         src={src}
         alt={alt}
         loading="lazy"
-        onLoad={() => setLoaded(true)}
-        onError={onError}
+        onLoad={() => setStatus("loaded")}
+        onError={() => {
+          setStatus("error");
+          onError?.();
+        }}
         sx={{
           display: "block",
           width: "100%",
           height: "100%",
           objectFit: fit,
-          opacity: loaded ? 1 : 0,
+          opacity: status === "loaded" ? 1 : 0,
         }}
       />
     </>
