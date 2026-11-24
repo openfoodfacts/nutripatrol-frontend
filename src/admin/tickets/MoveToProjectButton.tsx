@@ -5,7 +5,7 @@ import { useNotify } from "react-admin";
 import { projects } from "../../const/flagsConst";
 import type { QueueTicketActionProps } from "./fixQueues";
 import { moveTicketProduct } from "./offImages";
-import { useDropTicket } from "./useDropTicket";
+import { useRefreshTickets } from "./useRefreshTickets";
 
 /**
  * Move the product to a project the moderator picks, for when the reporters
@@ -19,7 +19,7 @@ export function MoveToProjectButton({
   suggested,
 }: QueueTicketActionProps & { suggested?: string }) {
   const notify = useNotify();
-  const dropTicket = useDropTicket();
+  const refreshTickets = useRefreshTickets();
   const choices = projects.filter((project) => project.value !== ticket.flavor);
   // The button the menu hangs from; null while it is closed.
   const [anchor, setAnchor] = useState<HTMLElement | null>(null);
@@ -38,7 +38,7 @@ export function MoveToProjectButton({
         "Moved after a NutriPatrol report: not a product of this project",
       );
       notify(`Moved to ${spec.label}, ticket closed`, { type: "info" });
-      dropTicket(ticket.id);
+      refreshTickets();
     } catch (error) {
       notify((error as Error).message, { type: "error" });
     } finally {

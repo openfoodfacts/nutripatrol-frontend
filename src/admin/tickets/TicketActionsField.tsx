@@ -21,6 +21,7 @@ import {
 } from "react-admin";
 import { CommentDialog } from "./CommentDialog";
 import { productEditUrl } from "./flavorUrls";
+import { useRefreshTickets } from "./useRefreshTickets";
 
 interface Ticket {
   id: number;
@@ -41,6 +42,7 @@ export function TicketActionsField(_props: Omit<FieldProps, "source">) {
   const record = useRecordContext<Ticket>();
   const notify = useNotify();
   const [update, { isPending }] = useUpdate();
+  const refreshTickets = useRefreshTickets();
   const { permissions } = usePermissions();
   const [commenting, setCommenting] = React.useState(false);
   const [anchor, setAnchor] = React.useState<HTMLElement | null>(null);
@@ -54,7 +56,12 @@ export function TicketActionsField(_props: Omit<FieldProps, "source">) {
       "tickets",
       { id: record.id, data: { status: newStatus }, previousData: record },
       {
-        onSuccess: () => notify(newStatus === 'open' ? 'Ticket re-opened' : "Ticket closed", { type: "info" }),
+        onSuccess: () => {
+          notify(newStatus === 'open' ? 'Ticket re-opened' : "Ticket closed", { type: "info" });
+          // The list is usually filtered by status (open, by default), so the
+          // ticket has to leave it - which only a reload does.
+          refreshTickets();
+        },
         onError: (error) =>
           notify((error as Error).message, { type: "error" }),
       },
