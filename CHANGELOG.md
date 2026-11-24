@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.4.0](https://github.com/openfoodfacts/nutripatrol-frontend/compare/v1.3.0...v1.4.0) (2026-11-24)
+
+
+### Features
+
+* reload the tickets after every action on one ([#342](https://github.com/openfoodfacts/nutripatrol-frontend/issues/342)) ([4701e14](https://github.com/openfoodfacts/nutripatrol-frontend/commit/4701e1498d129c47278f414142b488d155cc882e))
+
+
+### Bug Fixes
+
+* show when an original report image is unavailable ([#339](https://github.com/openfoodfacts/nutripatrol-frontend/issues/339)) ([e2f0c39](https://github.com/openfoodfacts/nutripatrol-frontend/commit/e2f0c393efaf45c27e6b49abec4d84c29df69159))
+
 ## [1.3.0](https://github.com/openfoodfacts/nutripatrol-frontend/compare/v1.2.1...v1.3.0) (2026-11-17)
 
 
