@@ -3,3 +3,104 @@
 GitHub Actions:
 - changed-files:
   - any-glob-to-any-file: '.github/**/*'
+
+"👩‍💻 DevOps":
+- changed-files:
+  - any-glob-to-any-file:
+    - '.github/**/*'
+    - '.env*'
+    - 'release-please-config.json'
+    - '.release-please-manifest.json'
+    - 'vite.config.ts'
+
+dependencies:
+- changed-files:
+  - any-glob-to-any-file:
+    - 'package.json'
+    - 'yarn.lock'
+
+"📚 Documentation":
+- changed-files:
+  - any-glob-to-any-file:
+    - '**/*.md'
+    - 'LICENSE'
+
+"🐳 Docker":
+- changed-files:
+  - any-glob-to-any-file:
+    - 'Dockerfile*'
+    - 'docker-compose*'
+    - '.dockerignore'
+
+"🧪 Tests":
+- changed-files:
+  - any-glob-to-any-file:
+    - '**/*.test.*'
+    - '**/*.spec.*'
+    - '**/__tests__/**/*'
+
+"📈 matomo":
+- changed-files:
+  - any-glob-to-any-file:
+    - 'src/analytics.ts'
+    - 'index.html'
+
+"🤗 Onboarding":
+- changed-files:
+  - any-glob-to-any-file:
+    - 'src/pages/Tutorial.tsx'
+    - 'src/pages/HomePage.tsx'
+
+"Top navigation":
+- changed-files:
+  - any-glob-to-any-file: 'src/admin/AdminAppBar.tsx'
+
+Images:
+- changed-files:
+  - any-glob-to-any-file:
+    - 'src/components/productImages/**/*'
+    - 'src/admin/tickets/ProductImagesManager.tsx'
+    - 'src/admin/tickets/ProductImagesPanel.tsx'
+    - 'src/admin/tickets/TicketThumbnailField.tsx'
+    - 'src/admin/tickets/offImages.ts'
+
+"Taking action":
+- changed-files:
+  - any-glob-to-any-file:
+    - 'src/admin/actions/**/*'
+    - 'src/admin/tickets/FlagActionsField.tsx'
+    - 'src/admin/tickets/TicketActionsField.tsx'
+    - 'src/admin/tickets/flagActions.ts'
+    - 'src/admin/tickets/MoveToProjectButton.tsx'
+    - 'src/admin/tickets/useDropTicket.ts'
+
+"Ticket remediation":
+- changed-files:
+  - any-glob-to-any-file: 'src/admin/tickets/**/*'
+
+Filters:
+- changed-files:
+  - any-glob-to-any-file:
+    - 'src/admin/tickets/TicketList.tsx'
+    - 'src/admin/tickets/ReasonTicketList.tsx'
+    - 'src/admin/tickets/InappropriateTicketList.tsx'
+    - 'src/admin/tickets/FixQueueList.tsx'
+    - 'src/admin/tickets/fixQueues.tsx'
+    - 'src/admin/tickets/choices.ts'
+
+"instant fix":
+- changed-files:
+  - any-glob-to-any-file:
+    - 'src/admin/tickets/FixQueueList.tsx'
+    - 'src/admin/tickets/fixQueues.tsx'
+
+"report causes":
+- changed-files:
+  - any-glob-to-any-file:
+    - 'src/const/flagsConst.ts'
+    - 'src/admin/tickets/flags.ts'
+    - 'src/admin/tickets/FlagSummary.tsx'
+    - 'src/admin/tickets/TicketFlagsField.tsx'
+    - 'src/pages/FlagFormPage.tsx'
+    - 'src/pages/FlagInfos.tsx'
+    - 'src/pages/ThanksPage.tsx'
